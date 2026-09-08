@@ -54,6 +54,10 @@ export class Exhibits {
     this.controls.enabled = false;
     this.controls.enableDamping = true;
     this.controls.enablePan = false;
+    // Polar clamp: the camera stays between 13° and 50° of elevation, so it
+    // can never dive under the floor or pierce the ceiling (hall is 5.2 high).
+    this.controls.minPolarAngle = 0.7;
+    this.controls.maxPolarAngle = 1.35;
 
     renderer.domElement.addEventListener("pointermove", (e) => {
       this.pointer.set(
@@ -118,19 +122,23 @@ export class Exhibits {
     this.highlight(null);
 
     // Orbit anchor: horizontal direction from the piece toward the camera.
+    // Max distance capped in absolute terms so big pieces cannot push the
+    // camera through the hall walls.
+    const maxDistance = Math.min(piece.radius * 4, 4.8);
+    const distance = Math.min(piece.radius * 2.4, maxDistance * 0.95);
     const direction = this.camera.position.clone().sub(piece.center);
     direction.y = 0;
     if (direction.lengthSq() < 0.01) direction.set(0, 0, 1);
     direction.normalize();
     const target = piece.center.clone()
-      .addScaledVector(direction, piece.radius * 2.4)
+      .addScaledVector(direction, distance)
       .setY(piece.center.y + piece.radius * 0.55);
 
     await this.flyTo(target, piece.center, 1100);
 
     this.controls.target.copy(piece.center);
     this.controls.minDistance = piece.radius * 1.2;
-    this.controls.maxDistance = piece.radius * 5;
+    this.controls.maxDistance = maxDistance;
     this.controls.enabled = true;
     this.state = "exhibit";
 
@@ -138,6 +146,20 @@ export class Exhibits {
     this.panelName.textContent = piece.info.name;
     this.panelFacts.innerHTML = piece.info.facts.map((f) => `<li>${f}</li>`).join("");
     this.panel.hidden = false;
+  }
+
+  // Zoom for the on-screen buttons: scales the camera-to-target distance
+  // within the same limits OrbitControls enforces for the wheel.
+  zoom(factor: number) {
+    if (this.state !== "exhibit") return;
+    const offset = this.camera.position.clone().sub(this.controls.target);
+    const length = THREE.MathUtils.clamp(
+      offset.length() * factor,
+      this.controls.minDistance,
+      this.controls.maxDistance,
+    );
+    offset.setLength(length);
+    this.camera.position.copy(this.controls.target).add(offset);
   }
 
   async exit() {

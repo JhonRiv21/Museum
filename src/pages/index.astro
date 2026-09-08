@@ -16,11 +16,9 @@ import "../museum/styles.css";
       name="description"
       content="Recorrido 3D interactivo por piezas reales de museo digitalizadas — esqueletos, fósiles y objetos históricos en dominio público."
     />
-    <!-- Critical CSS: keeps the first paint dark and the HUD hidden until the
-         stylesheet arrives, so there is no flash of unstyled text. -->
     <style is:inline>
       html { background: #0a0e14; }
-      #hud, #panel, #loader { visibility: hidden; }
+      #hud, #panel, #loader, #nav, #hint { visibility: hidden; }
     </style>
   </head>
   <body>
@@ -32,8 +30,9 @@ import "../museum/styles.css";
         <strong>Museo</strong>
         <span class="hall" id="hudHall">Vestíbulo</span>
       </div>
-      <p class="hint">Desplázate para recorrer · clic en una pieza para acercarte</p>
     </header>
+
+    <p id="hint">Desplázate para recorrer · clic en una pieza para acercarte</p>
 
     <aside id="panel" hidden>
       <header>
@@ -43,6 +42,17 @@ import "../museum/styles.css";
       <ul id="panelFacts"></ul>
       <button id="panelClose" type="button">← Volver al recorrido</button>
     </aside>
+
+    <nav id="nav" aria-label="Controles de navegación">
+      <div id="railNav">
+        <button class="navBtn" id="navForward" type="button" aria-label="Avanzar por el recorrido">▲</button>
+        <button class="navBtn" id="navBack" type="button" aria-label="Retroceder por el recorrido">▼</button>
+      </div>
+      <div id="zoomNav" hidden>
+        <button class="navBtn" id="navZoomIn" type="button" aria-label="Acercar">+</button>
+        <button class="navBtn" id="navZoomOut" type="button" aria-label="Alejar">−</button>
+      </div>
+    </nav>
 
     <div id="loader" hidden>
       <div class="box">

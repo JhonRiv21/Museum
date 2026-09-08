@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { buildStage, createDust, animateDust } from "./stage";
+import { buildStage, createDust, animateDust, updateSigns } from "./stage";
 import { Rail } from "./rail";
 import { Exhibits } from "./exhibits";
 import { loadWithProgress } from "./loader";
@@ -114,6 +114,52 @@ async function mountTriceratops() {
   exhibits.register(mount, PIECES.triceratops);
 }
 
+// Bottom navigation buttons (Google Maps style): tour steps on the rail,
+// zoom while inside an exhibit. Hold-to-repeat, plus keyboard equivalents,
+// for people without a working mouse wheel.
+function bindHold(el: HTMLElement, action: () => void) {
+  let timer: number | undefined;
+  const stop = () => {
+    if (timer !== undefined) { clearInterval(timer); timer = undefined; }
+  };
+  el.addEventListener("pointerdown", (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    action();
+    timer = window.setInterval(action, 90);
+  });
+  el.addEventListener("pointerup", stop);
+  el.addEventListener("pointerleave", stop);
+  el.addEventListener("pointercancel", stop);
+}
+
+const RAIL_STEP = 0.007;
+const railNav = document.getElementById("railNav") as HTMLElement;
+const zoomNav = document.getElementById("zoomNav") as HTMLElement;
+bindHold(document.getElementById("navForward") as HTMLElement, () => rail.nudge(RAIL_STEP));
+bindHold(document.getElementById("navBack") as HTMLElement, () => rail.nudge(-RAIL_STEP));
+bindHold(document.getElementById("navZoomIn") as HTMLElement, () => exhibits.zoom(0.94));
+bindHold(document.getElementById("navZoomOut") as HTMLElement, () => exhibits.zoom(1.06));
+
+addEventListener("keydown", (e) => {
+  if (e.key === "ArrowUp" || e.key === "w") rail.nudge(RAIL_STEP * 3);
+  if (e.key === "ArrowDown" || e.key === "s") rail.nudge(-RAIL_STEP * 3);
+  if (e.key === "+" || e.key === "=") exhibits.zoom(0.9);
+  if (e.key === "-") exhibits.zoom(1.11);
+});
+
+// The clusters swap with the tour state; both hide mid-flight. The hint only
+// applies while touring, so it leaves with the rail.
+const hint = document.getElementById("hint") as HTMLElement;
+let lastState = "";
+function updateNav() {
+  if (exhibits.state === lastState) return;
+  lastState = exhibits.state;
+  railNav.hidden = exhibits.state !== "rail";
+  zoomNav.hidden = exhibits.state !== "exhibit";
+  hint.hidden = exhibits.state !== "rail";
+}
+
 // Hall indicator in the HUD, driven by camera position.
 const hallLabel = document.getElementById("hudHall") as HTMLElement;
 function updateHallLabel() {
@@ -129,6 +175,8 @@ renderer.setAnimationLoop(() => {
   exhibits.update();
   animateDust(dust, dt);
   updateHallLabel();
+  updateNav();
+  updateSigns(camera);
   renderer.render(scene, camera);
 });
 

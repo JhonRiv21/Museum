@@ -65,13 +65,95 @@ export function buildStage(scene: THREE.Scene): Pedestal[] {
     spot.position.set(x, HEIGHT - 0.3, z);
     spot.target.position.set(x, 0, z);
     scene.add(spot, spot.target);
+
+    // The platform's overhead cone only reaches the piece's back: cross fills
+    // from the walkway side light the ends (skull and tail) at eye level.
+    if (width > 2) {
+      for (const [fx, tx] of [[-4.2, -1.7], [4.2, 1.7]]) {
+        const fill = new THREE.SpotLight(0xffe2b8, 26, 11, 0.6, 0.85, 1.1);
+        fill.position.set(fx, 3.4, z + 2.6);
+        fill.target.position.set(tx, 1.2, z);
+        scene.add(fill, fill.target);
+      }
+    }
   }
 
-  scene.add(new THREE.HemisphereLight(0x8899bb, 0x0c1016, 0.35));
+  scene.add(new THREE.HemisphereLight(0x8899bb, 0x0c1016, 0.45));
   scene.fog = new THREE.Fog(0x0a0e14, 18, 55);
   scene.background = new THREE.Color(0x0a0e14);
 
+  addHallSigns(scene);
+
   return pedestals;
+}
+
+// Physical signage: a hanging plaque over each hall entrance, so the visitor
+// reads where they are entering without depending on the HUD label.
+function makeSignTexture(kicker: string, title: string): THREE.CanvasTexture {
+  const canvas = document.createElement("canvas");
+  canvas.width = 1024;
+  canvas.height = 300;
+  const ctx = canvas.getContext("2d")!;
+
+  ctx.fillStyle = "#10151d";
+  ctx.fillRect(0, 0, 1024, 300);
+  ctx.strokeStyle = "#33415a";
+  ctx.lineWidth = 6;
+  ctx.strokeRect(10, 10, 1004, 280);
+
+  ctx.textAlign = "center";
+  ctx.fillStyle = "#e8c37a";
+  ctx.font = "600 46px system-ui, sans-serif";
+  ctx.fillText(kicker.toUpperCase().split("").join(" "), 512, 92);
+  ctx.fillRect(452, 118, 120, 4);
+
+  ctx.fillStyle = "#e6edf3";
+  ctx.font = "700 92px system-ui, sans-serif";
+  ctx.fillText(title, 512, 232);
+
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.colorSpace = THREE.SRGBColorSpace;
+  texture.anisotropy = 4;
+  return texture;
+}
+
+const plaques: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial>[] = [];
+
+function addHallSigns(scene: THREE.Scene) {
+  const signs = [
+    { kicker: "Sala I", title: "Paleontología", z: 2.5 },
+    { kicker: "Sala II", title: "Vuelo y espacio", z: -11.7 },
+    { kicker: "Sala III", title: "El regreso al mar", z: -35.7 },
+  ];
+  const rodMaterial = new THREE.MeshStandardMaterial({ color: 0x2a3648, roughness: 0.5 });
+
+  for (const sign of signs) {
+    const plaque = new THREE.Mesh(
+      new THREE.PlaneGeometry(3.4, 1.0),
+      new THREE.MeshBasicMaterial({
+        map: makeSignTexture(sign.kicker, sign.title),
+        transparent: true,
+      }),
+    );
+    plaque.position.set(0, 3.45, sign.z);
+    scene.add(plaque);
+    plaques.push(plaque);
+
+    for (const x of [-1.45, 1.45]) {
+      const rod = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 1.25, 8), rodMaterial);
+      rod.position.set(x, 4.58, sign.z);
+      scene.add(rod);
+    }
+  }
+}
+
+// Signs fade with distance so the one for the hall you are entering dominates
+// and far signs do not read on top of nearer pieces.
+export function updateSigns(camera: THREE.Camera) {
+  for (const plaque of plaques) {
+    const distance = plaque.position.distanceTo(camera.position);
+    plaque.material.opacity = THREE.MathUtils.clamp(1 - (distance - 11) / 7, 0.08, 1);
+  }
 }
 
 // Floating dust: sells the museum mood for almost nothing.

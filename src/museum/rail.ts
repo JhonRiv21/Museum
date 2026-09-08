@@ -56,6 +56,12 @@ export class Rail {
     if (value) this.target = this.t;
   }
 
+  // Step used by the on-screen buttons and the keyboard.
+  nudge(delta: number) {
+    if (!this.active) return;
+    this.target = THREE.MathUtils.clamp(this.target + delta, 0, 1);
+  }
+
   poseAt(t: number): { position: THREE.Vector3; lookTarget: THREE.Vector3 } {
     const tc = THREE.MathUtils.clamp(t, 0, 0.995);
     return {

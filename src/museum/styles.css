@@ -1,10 +1,10 @@
 :root {
-  --fondo: #0a0e14;
+  --bg: #0a0e14;
   --panel: rgba(18, 24, 33, 0.88);
-  --linea: #263242;
-  --texto: #e6edf3;
-  --suave: #8b98a8;
-  --acento: #e8c37a;
+  --line: #263242;
+  --text: #e6edf3;
+  --muted: #8b98a8;
+  --accent: #e8c37a;
 }
 
 * { box-sizing: border-box; }
@@ -12,8 +12,8 @@
 html, body {
   margin: 0;
   height: 100%;
-  background: var(--fondo);
-  color: var(--texto);
+  background: var(--bg);
+  color: var(--text);
   font: 14px/1.5 system-ui, -apple-system, sans-serif;
   overflow: hidden;
 }
@@ -38,7 +38,7 @@ html, body {
   align-items: center;
   gap: 8px;
   background: var(--panel);
-  border: 1px solid var(--linea);
+  border: 1px solid var(--line);
   border-radius: 999px;
   padding: 8px 16px;
   backdrop-filter: blur(8px);
@@ -48,22 +48,32 @@ html, body {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: var(--acento);
-  box-shadow: 0 0 10px var(--acento);
+  background: var(--accent);
+  box-shadow: 0 0 10px var(--accent);
 }
 
-.hall { color: var(--suave); font-size: 12px; }
+.hall { color: var(--muted); font-size: 12px; }
 
-.hint {
+#hint {
+  position: fixed;
+  bottom: 18px;
+  left: 50%;
+  transform: translateX(-50%);
   margin: 0;
+  max-width: calc(100vw - 140px);
+  text-align: center;
   font-size: 12px;
-  color: var(--suave);
+  color: var(--muted);
   background: var(--panel);
-  border: 1px solid var(--linea);
+  border: 1px solid var(--line);
   border-radius: 999px;
   padding: 8px 14px;
   backdrop-filter: blur(8px);
+  z-index: 5;
+  transition: opacity 0.3s;
 }
+
+#hint[hidden] { display: none; }
 
 #panel {
   position: fixed;
@@ -72,7 +82,7 @@ html, body {
   transform: translateY(-50%);
   width: min(320px, calc(100vw - 48px));
   background: var(--panel);
-  border: 1px solid var(--linea);
+  border: 1px solid var(--line);
   border-radius: 14px;
   padding: 20px;
   backdrop-filter: blur(10px);
@@ -90,7 +100,7 @@ html, body {
   font-size: 11px;
   font-style: italic;
   letter-spacing: 0.06em;
-  color: var(--acento);
+  color: var(--accent);
 }
 
 #panel h2 { margin: 2px 0 12px; font-size: 19px; letter-spacing: -0.2px; }
@@ -99,18 +109,18 @@ html, body {
 
 #panel li {
   padding: 8px 0;
-  border-top: 1px solid var(--linea);
+  border-top: 1px solid var(--line);
   font-size: 13px;
-  color: var(--suave);
+  color: var(--muted);
 }
 
-#panel li strong { color: var(--texto); font-weight: 500; }
+#panel li strong { color: var(--text); font-weight: 500; }
 
 #panelClose {
   width: 100%;
   background: transparent;
-  color: var(--texto);
-  border: 1px solid var(--linea);
+  color: var(--text);
+  border: 1px solid var(--line);
   border-radius: 8px;
   padding: 9px;
   font: inherit;
@@ -119,7 +129,7 @@ html, body {
   transition: 0.15s;
 }
 
-#panelClose:hover { border-color: var(--acento); color: var(--acento); }
+#panelClose:hover { border-color: var(--accent); color: var(--accent); }
 
 #loader {
   position: fixed;
@@ -141,7 +151,7 @@ html, body {
   font-size: 12px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--suave);
+  color: var(--muted);
 }
 
 .pct {
@@ -152,7 +162,7 @@ html, body {
 
 .track {
   height: 2px;
-  background: var(--linea);
+  background: var(--line);
   border-radius: 2px;
   overflow: hidden;
 }
@@ -160,9 +170,49 @@ html, body {
 #loaderBar {
   height: 100%;
   width: 0%;
-  background: var(--acento);
+  background: var(--accent);
   transition: width 0.15s ease;
 }
 
 /* Beats the critical inline CSS (type+id > id) once the stylesheet is in. */
-header#hud, aside#panel, div#loader { visibility: visible; }
+header#hud, aside#panel, div#loader, nav#nav, p#hint { visibility: visible; }
+
+#nav {
+  position: fixed;
+  right: 16px;
+  bottom: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 5;
+}
+
+#railNav, #zoomNav {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  overflow: hidden;
+  backdrop-filter: blur(8px);
+}
+
+#railNav[hidden], #zoomNav[hidden] { display: none; }
+
+.navBtn {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  background: var(--panel);
+  color: var(--text);
+  border: 0;
+  font: 500 17px/1 system-ui, sans-serif;
+  cursor: pointer;
+  transition: 0.15s;
+  touch-action: none;
+  user-select: none;
+}
+
+.navBtn + .navBtn { border-top: 1px solid var(--line); }
+.navBtn:hover { color: var(--accent); background: #17202c; }
+.navBtn:active { background: #0d1420; }
