@@ -163,3 +163,6 @@ html, body {
   background: var(--acento);
   transition: width 0.15s ease;
 }
+
+/* Beats the critical inline CSS (type+id > id) once the stylesheet is in. */
+header#hud, aside#panel, div#loader { visibility: visible; }

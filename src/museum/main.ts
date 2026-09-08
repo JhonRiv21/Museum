@@ -1,5 +1,4 @@
 import * as THREE from "three";
-import "./styles.css";
 import { buildStage, createDust, animateDust } from "./stage";
 import { Rail } from "./rail";
 import { Exhibits } from "./exhibits";

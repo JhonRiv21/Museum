@@ -1,0 +1,59 @@
+---
+import "../museum/styles.css";
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏛️</text></svg>"
+    />
+    <title>Museo — prototipo F1</title>
+    <meta
+      name="description"
+      content="Recorrido 3D interactivo por piezas reales de museo digitalizadas — esqueletos, fósiles y objetos históricos en dominio público."
+    />
+    <!-- Critical CSS: keeps the first paint dark and the HUD hidden until the
+         stylesheet arrives, so there is no flash of unstyled text. -->
+    <style is:inline>
+      html { background: #0a0e14; }
+      #hud, #panel, #loader { visibility: hidden; }
+    </style>
+  </head>
+  <body>
+    <div id="app"></div>
+
+    <header id="hud">
+      <div class="brand">
+        <span class="dot"></span>
+        <strong>Museo</strong>
+        <span class="hall" id="hudHall">Vestíbulo</span>
+      </div>
+      <p class="hint">Desplázate para recorrer · clic en una pieza para acercarte</p>
+    </header>
+
+    <aside id="panel" hidden>
+      <header>
+        <p class="species" id="panelSpecies"></p>
+        <h2 id="panelName"></h2>
+      </header>
+      <ul id="panelFacts"></ul>
+      <button id="panelClose" type="button">← Volver al recorrido</button>
+    </aside>
+
+    <div id="loader" hidden>
+      <div class="box">
+        <p class="loadingHall" id="loaderHall"></p>
+        <p class="pct"><span id="loaderPct">0</span>%</p>
+        <div class="track"><div id="loaderBar"></div></div>
+      </div>
+    </div>
+
+    <script>
+      import "../museum/main";
+    </script>
+  </body>
+</html>

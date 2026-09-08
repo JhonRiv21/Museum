@@ -7,12 +7,13 @@
     "copy:draco": "mkdir -p public/draco && cp node_modules/three/examples/jsm/libs/draco/gltf/* public/draco/",
     "predev": "npm run copy:draco",
     "prebuild": "npm run copy:draco",
-    "dev": "vite",
-    "build": "tsc --noEmit && vite build",
-    "preview": "vite preview",
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "astro": "^7.3.2",
     "three": "^0.185.1"
   },
   "devDependencies": {
@@ -21,4 +22,3 @@
     "vite": "^8.2.2"
   }
 }
- 
