@@ -88,7 +88,7 @@ export class Rail {
   // capped weight, a distance band that lets go before the piece is on top of
   // you, and hysteresis so the target never ping-pongs between sides.
   private pois: THREE.Vector3[] = [];
-  private gaze: THREE.Vector3 | null = null;
+  private gazeDirection: THREE.Vector3 | null = null;
   private currentPOI: THREE.Vector3 | null = null;
 
   setPOIs(points: THREE.Vector3[]) {
@@ -107,11 +107,17 @@ export class Rail {
     );
   }
 
-  poseAt(t: number): { position: THREE.Vector3; lookTarget: THREE.Vector3 } {
+  // cruise: 0 strolling, 1 at full speed. Fast travel damps the exhibit gaze
+  // so the camera simply looks down the path instead of whipping sideways.
+  poseAt(t: number, cruise = 0): { position: THREE.Vector3; lookTarget: THREE.Vector3 } {
     const tc = THREE.MathUtils.clamp(t, 0, 0.995);
     const position = this.curve.getPointAt(tc);
     const ahead = this.curve.getPointAt(Math.min(tc + 0.02, 1));
     const forward = ahead.clone().sub(position).setY(0).normalize();
+
+    // Entrance breather: the first steps look straight ahead so the visitor
+    // reads the hall sign before the first exhibit claims the gaze.
+    if (tc < 0.035) return { position, lookTarget: ahead };
 
     // End of the tour: settle the gaze on the closest piece instead of
     // letting the camera drift onto the back wall.
@@ -135,8 +141,9 @@ export class Rail {
     }
     this.currentPOI = bestWeight > 0.1 ? best : null;
 
+    const gazeStrength = Math.min(bestWeight, 1) * 0.35 * (1 - cruise * 0.85);
     const lookTarget = this.currentPOI
-      ? ahead.clone().lerp(this.currentPOI, Math.min(bestWeight, 1) * 0.35)
+      ? ahead.clone().lerp(this.currentPOI, gazeStrength)
       : ahead;
     return { position, lookTarget };
   }
@@ -144,13 +151,24 @@ export class Rail {
   update(camera: THREE.PerspectiveCamera, dt: number) {
     if (!this.active) return;
     this.t += (this.target - this.t) * Math.min(1, dt * 2.2);
-    const { position, lookTarget } = this.poseAt(this.t);
+    const cruise = THREE.MathUtils.clamp(
+      Math.abs(this.target - this.t) / MAX_LEAD_FORWARD,
+      0,
+      1,
+    );
+    const { position, lookTarget } = this.poseAt(this.t, cruise);
 
-    // Temporal smoothing keeps the gaze from snapping between exhibits.
-    if (!this.gaze) this.gaze = lookTarget.clone();
-    this.gaze.lerp(lookTarget, Math.min(1, dt * 2));
+    // Smooth the gaze as a DIRECTION, never as a point in space: a lagging
+    // point can end up beside the camera and slam the view into the floor.
+    const desired = lookTarget.sub(position).normalize();
+    if (!this.gazeDirection) this.gazeDirection = desired.clone();
+    this.gazeDirection.lerp(desired, Math.min(1, dt * 2.2)).normalize();
 
     camera.position.copy(position);
-    camera.lookAt(this.gaze);
+    camera.lookAt(
+      position.x + this.gazeDirection.x * 6,
+      position.y + this.gazeDirection.y * 6,
+      position.z + this.gazeDirection.z * 6,
+    );
   }
 }

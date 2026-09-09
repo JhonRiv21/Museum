@@ -14,7 +14,7 @@ const FLOOR = new THREE.MeshStandardMaterial({ color: 0x11161e, roughness: 0.85 
 const PLINTH = new THREE.MeshStandardMaterial({ color: 0x232d3b, roughness: 0.7 });
 
 const HEIGHT = 5.2;
-const WIDTH = 16;
+const WIDTH = 21;
 const Z_START = 9;
 const Z_END = -57;
 
@@ -145,12 +145,12 @@ function addHallSigns(scene: THREE.Scene) {
       transparent: true,
     }),
   );
-  hanging.position.set(0, 3.45, 2.5);
+  hanging.position.set(0, 3.0, 2.9);
   scene.add(hanging);
   plaques.push(hanging);
   for (const x of [-1.45, 1.45]) {
-    const rod = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 1.25, 8), rodMaterial);
-    rod.position.set(x, 4.58, 2.5);
+    const rod = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 1.5, 8), rodMaterial);
+    rod.position.set(x, 4.35, 2.9);
     scene.add(rod);
   }
 
