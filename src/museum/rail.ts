@@ -4,7 +4,9 @@ import * as THREE from "three";
 // with damping so the motion feels alive rather than robotic.
 
 const POINTS: [number, number, number][] = [
-  [0, 1.6, 7.5],
+  [0, 1.6, 13.5],
+  [-0.6, 1.6, 10.3],
+  [0.6, 1.6, 7.2],
   [-1.5, 1.6, 3],
   [2, 1.6, -1],
   [-2, 1.6, -6],

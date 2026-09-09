@@ -15,7 +15,7 @@ const PLINTH = new THREE.MeshStandardMaterial({ color: 0x232d3b, roughness: 0.7 
 
 const HEIGHT = 5.2;
 const WIDTH = 21;
-const Z_START = 9;
+const Z_START = 15;
 const Z_END = -57;
 
 function box(
@@ -145,12 +145,12 @@ function addHallSigns(scene: THREE.Scene) {
       transparent: true,
     }),
   );
-  hanging.position.set(0, 3.0, 2.9);
+  hanging.position.set(0, 3.05, 8.8);
   scene.add(hanging);
   plaques.push(hanging);
   for (const x of [-1.45, 1.45]) {
     const rod = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 1.5, 8), rodMaterial);
-    rod.position.set(x, 4.35, 2.9);
+    rod.position.set(x, 4.42, 8.8);
     scene.add(rod);
   }
 
