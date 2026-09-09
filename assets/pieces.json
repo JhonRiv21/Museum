@@ -1,0 +1,280 @@
+{
+  "halls": [
+    {
+      "id": "paleo",
+      "name": "Sala I · Paleontología",
+      "budgetMB": 11
+    },
+    {
+      "id": "flight",
+      "name": "Sala II · Vuelo y espacio",
+      "budgetMB": 8
+    },
+    {
+      "id": "ocean",
+      "name": "Sala III · El regreso al mar",
+      "budgetMB": 8
+    }
+  ],
+  "pieces": [
+    {
+      "id": "triceratops",
+      "hall": "paleo",
+      "pedestal": "paleo-platform",
+      "source": {
+        "archive": "Smithsonian NMNH · Paleobiología",
+        "uri": "https://3d-api.si.edu/content/document/3d_package:d8c623be-4ebc-11ea-b77f-2e728ce88125/Triceratops_20M-150k-2048-medium.glb",
+        "license": "CC0"
+      },
+      "simplifyError": 0.001,
+      "calibration": {
+        "upAxisFix": -1.5708,
+        "roll": 1.5708,
+        "pitch": -0.28,
+        "yaw": 1.5708,
+        "size": 4.6,
+        "yOffset": -0.16
+      },
+      "display": {
+        "name": "Hatcher",
+        "species": "Triceratops horridus · Marsh, 1889",
+        "facts": [
+          "<strong>Cretácico tardío</strong> — vivió hace unos 68-66 millones de años.",
+          "Este ejemplar del Smithsonian fue <strong>el primer esqueleto de dinosaurio digitalizado en 3D</strong> de la historia.",
+          "El volante óseo y los tres cuernos le daban defensa y regulación térmica.",
+          "Escaneo real del NMNH · dominio público (CC0)."
+        ]
+      },
+      "output": {
+        "bytes": 2113300
+      }
+    },
+    {
+      "id": "allosaurus-claw",
+      "hall": "paleo",
+      "pedestal": "paleo-a",
+      "source": {
+        "archive": "Smithsonian NMNH · Paleobiología",
+        "uri": "https://3d-api.si.edu/content/document/3d_package:5ea6957a-316c-44e6-953d-13a5e339c92c/Allosaurus_fragilis_Marsh__1877-150k-2048-medium.glb",
+        "license": "CC0"
+      },
+      "simplifyError": 0.001,
+      "calibration": {
+        "upAxisFix": 0,
+        "roll": 0,
+        "pitch": 0,
+        "yaw": 0,
+        "size": 0.45,
+        "yOffset": 0
+      },
+      "display": {
+        "name": "Garra de Allosaurus",
+        "species": "Allosaurus fragilis · Marsh, 1877",
+        "facts": [
+          "Garra de la mano de uno de los <strong>grandes depredadores del Jurásico tardío</strong>, hace unos 150 millones de años.",
+          "Curvas y comprimidas lateralmente, las garras servían para <strong>sujetar a la presa</strong> mientras mordía.",
+          "Descrito por O. C. Marsh en 1877, en plena <strong>Guerra de los Huesos</strong> contra E. D. Cope.",
+          "Escaneo real del NMNH · dominio público (CC0)."
+        ]
+      },
+      "output": {
+        "bytes": 387764
+      }
+    },
+    {
+      "id": "mammoth-molar",
+      "hall": "paleo",
+      "pedestal": "paleo-b",
+      "source": {
+        "archive": "Smithsonian NMNH · Paleobiología",
+        "uri": "https://3d-api.si.edu/content/document/3d_package:37f4a870-6aa3-4f66-a24e-713bad1ec648/V6667-150k-2048-medium.glb",
+        "license": "CC0"
+      },
+      "simplifyError": 0.001,
+      "calibration": {
+        "upAxisFix": 1.5708,
+        "roll": 0,
+        "pitch": 0,
+        "yaw": 0,
+        "size": 0.42,
+        "yOffset": 0
+      },
+      "display": {
+        "name": "Muela de mamut",
+        "species": "Mammuthus primigenius · Blumenbach, 1799",
+        "facts": [
+          "¿Una roca? No: es <strong>una sola muela</strong> de mamut lanudo.",
+          "Las crestas de esmalte formaban una <strong>superficie de molienda</strong> para triturar hierba dura.",
+          "Un mamut reemplazaba sus muelas <strong>hasta seis veces</strong> en la vida; al gastarse el último juego, no podía alimentarse más.",
+          "Escaneo real del NMNH · dominio público (CC0)."
+        ]
+      },
+      "output": {
+        "bytes": 1501256
+      }
+    },
+    {
+      "id": "stegosaurus-spike",
+      "hall": "paleo",
+      "pedestal": "paleo-c",
+      "source": {
+        "archive": "Smithsonian NMNH · Paleobiología",
+        "uri": "https://3d-api.si.edu/content/document/3d_package:68adcbc1-84bc-4e3c-9f85-a08c81a5a820/Stegosaurus_stenops_Marsh__1887-150k-2048-medium.glb",
+        "license": "CC0"
+      },
+      "simplifyError": 0.001,
+      "calibration": {
+        "upAxisFix": 0,
+        "roll": 0,
+        "pitch": 0,
+        "yaw": 0,
+        "size": 0.85,
+        "yOffset": 0
+      },
+      "display": {
+        "name": "Púa de Stegosaurus",
+        "species": "Stegosaurus stenops · Marsh, 1887",
+        "facts": [
+          "Púa de la cola de un Stegosaurus: su <strong>arma defensiva</strong> contra depredadores como Allosaurus.",
+          "El conjunto de cuatro púas se conoce como <strong>thagomizer</strong> — nombre nacido en una viñeta de Gary Larson (1982) y adoptado informalmente por los paleontólogos.",
+          "Jurásico tardío, hace unos 150 millones de años.",
+          "Escaneo real del NMNH · dominio público (CC0)."
+        ]
+      },
+      "output": {
+        "bytes": 294108
+      }
+    },
+    {
+      "id": "diplocaulus",
+      "hall": "paleo",
+      "pedestal": "paleo-d",
+      "source": {
+        "archive": "Smithsonian NMNH · Paleobiología",
+        "uri": "https://3d-api.si.edu/content/document/3d_package:23a3cd17-8526-4b30-80e7-fdae0ecdd36a/Diplocaulus_magnicornis-150k-2048-medium.glb",
+        "license": "CC0"
+      },
+      "simplifyError": 0.001,
+      "calibration": {
+        "upAxisFix": -1.5708,
+        "roll": 0,
+        "pitch": 0,
+        "yaw": 0.5,
+        "size": 0.6,
+        "yOffset": 0
+      },
+      "display": {
+        "name": "Diplocaulus",
+        "species": "Diplocaulus magnicornis · Pérmico",
+        "facts": [
+          "Cráneo en <strong>forma de búmeran</strong> de un anfibio del Pérmico, hace unos 275 millones de años.",
+          "Las 'alas' óseas pudieron dar <strong>sustentación al nadar</strong> — o simplemente hacerlo muy difícil de tragar.",
+          "No es un dinosaurio: es <strong>40 millones de años más antiguo</strong> que el primero de ellos.",
+          "Escaneo real del NMNH · dominio público (CC0)."
+        ]
+      },
+      "output": {
+        "bytes": 1146600
+      }
+    },
+    {
+      "id": "trex-skeleton",
+      "hall": "paleo",
+      "pedestal": "paleo-e",
+      "source": {
+        "archive": "Rigsters · Knuthenborg Safaripark · Sketchfab",
+        "uri": "sketchfab:77e21c4e5d65468bbe11780ae0557b95",
+        "license": "CC BY 4.0"
+      },
+      "simplifyError": 0.001,
+      "calibration": {
+        "upAxisFix": 0,
+        "roll": 0,
+        "pitch": 0,
+        "yaw": -1.5708,
+        "size": 5.5,
+        "yOffset": 0,
+        "offsetZ": 0.7
+      },
+      "display": {
+        "name": "Tyrannosaurus rex",
+        "species": "Tyrannosaurus rex · esqueleto completo",
+        "facts": [
+          "El depredador terrestre más famoso: hasta <strong>12 metros de largo</strong> y la mordida más potente conocida en un animal terrestre.",
+          "Cretácico tardío, 68-66 millones de años — cazaba en los mismos ecosistemas que Triceratops, aquí <strong>frente a frente</strong>.",
+          "<strong>Fotogrametría real</strong> de la réplica montada en el Knuthenborg Safaripark (Dinamarca).",
+          "Captura de <strong>Rigsters</strong> · CC BY 4.0."
+        ]
+      },
+      "output": {
+        "bytes": 1064868
+      }
+    },
+    {
+      "id": "stego-skeleton",
+      "hall": "paleo",
+      "pedestal": "paleo-f",
+      "source": {
+        "archive": "E_G_ · Denver Museum of Nature & Science · Sketchfab",
+        "uri": "sketchfab:dc6e1c748484449587b81426d41da6cb",
+        "license": "CC BY 4.0"
+      },
+      "simplifyError": 0.001,
+      "calibration": {
+        "upAxisFix": 0,
+        "roll": 0,
+        "pitch": 0,
+        "yaw": 1.5708,
+        "size": 4.6,
+        "yOffset": 0,
+        "offsetZ": 0.6
+      },
+      "display": {
+        "name": "Stegosaurus",
+        "species": "Stegosaurus · esqueleto completo",
+        "facts": [
+          "<strong>Fotogrametría del ejemplar real</strong> montado en el Denver Museum of Nature & Science: más de 8 metros de largo.",
+          "Las placas dorsales pudieron servir para <strong>regular temperatura</strong> y para exhibirse.",
+          "La púa de la vitrina de esta misma sala pertenece a su arma de cola: el <strong>thagomizer</strong>.",
+          "Escaneo de <strong>E_G_</strong> · CC BY 4.0."
+        ]
+      },
+      "output": {
+        "bytes": 1067988
+      }
+    },
+    {
+      "id": "raptor-skeleton",
+      "hall": "paleo",
+      "pedestal": "paleo-g",
+      "source": {
+        "archive": "tech.service.allwe · Sketchfab",
+        "uri": "sketchfab:2ef1135c92854ee0bc234e966adabcc2",
+        "license": "CC BY 4.0"
+      },
+      "simplifyError": 0.001,
+      "calibration": {
+        "upAxisFix": 0,
+        "roll": 0,
+        "pitch": 0,
+        "yaw": -0.6,
+        "size": 3.2,
+        "yOffset": 0,
+        "offsetX": -0.35
+      },
+      "display": {
+        "name": "Utahraptor",
+        "species": "Utahraptor ostrommaysi · Cretácico temprano",
+        "facts": [
+          "El <strong>raptor gigante real</strong>: unos 5 metros de largo y una garra falciforme de más de 20 cm en cada pie.",
+          "Los 'velociraptores' del cine tenían <strong>este tamaño</strong> — el Velociraptor real era como un pavo con plumas.",
+          "Descrito en 1993 en Utah, casi al tiempo que la película que hizo famosos a los raptores.",
+          "Modelo de <strong>tech.service.allwe</strong> · CC BY 4.0."
+        ]
+      },
+      "output": {
+        "bytes": 94464
+      }
+    }
+  ]
+}

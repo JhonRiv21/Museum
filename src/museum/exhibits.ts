@@ -85,6 +85,10 @@ export class Exhibits {
     return this.pieces.find((p) => p.info.id === id);
   }
 
+  centers(): THREE.Vector3[] {
+    return this.pieces.map((p) => p.center);
+  }
+
   private highlight(piece: Piece | null) {
     if (this.hovered === piece) return;
     for (const p of [this.hovered, piece]) {
@@ -145,7 +149,10 @@ export class Exhibits {
     this.panelSpecies.textContent = piece.info.species;
     this.panelName.textContent = piece.info.name;
     this.panelFacts.innerHTML = piece.info.facts.map((f) => `<li>${f}</li>`).join("");
+    this.panel.classList.remove("closing", "open");
     this.panel.hidden = false;
+    void this.panel.offsetWidth; // restart the pick-up animation
+    this.panel.classList.add("open");
   }
 
   // Zoom for the on-screen buttons: scales the camera-to-target distance
@@ -163,7 +170,14 @@ export class Exhibits {
   }
 
   async exit() {
-    this.panel.hidden = true;
+    // The label is put back down while the camera flies out.
+    this.panel.classList.remove("open");
+    this.panel.classList.add("closing");
+    setTimeout(() => {
+      this.panel.hidden = true;
+      this.panel.classList.remove("closing");
+    }, 300);
+
     const { position, lookTarget } = this.rail.poseAt(this.rail.t);
     await this.flyTo(position, lookTarget, 900);
     this.state = "rail";

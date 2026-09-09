@@ -1,11 +1,12 @@
 import * as THREE from "three";
-import { buildStage, createDust, animateDust, updateSigns } from "./stage";
+import { buildStage, createDust, animateDust, updateSigns, addNamePlate, type Pedestal } from "./stage";
 import { Rail } from "./rail";
 import { Exhibits } from "./exhibits";
-import { loadWithProgress } from "./loader";
-import { PIECES, HALLS } from "./data";
+import { loadHall } from "./loader";
+import { MANIFEST, PLACEHOLDER, HALLS, pieceInfo, hallName, type Calibration } from "./data";
 
 const app = document.getElementById("app") as HTMLElement;
+const debugMode = new URLSearchParams(location.search).has("debug");
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
@@ -17,6 +18,7 @@ const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(55, innerWidth / innerHeight, 0.05, 120);
 
 const pedestals = buildStage(scene);
+const pedestalById = new Map(pedestals.map((p) => [p.id, p]));
 const dust = createDust(scene);
 
 const rail = new Rail(renderer.domElement);
@@ -28,90 +30,93 @@ addEventListener("resize", () => {
   camera.updateProjectionMatrix();
 });
 
-// Gray placeholders on the small pedestals; the platform is the Triceratops'.
-const SHAPES = [
-  () => new THREE.IcosahedronGeometry(0.34, 1),
-  () => new THREE.TorusKnotGeometry(0.22, 0.07, 90, 12),
-  () => new THREE.ConeGeometry(0.28, 0.55, 24),
-  () => new THREE.OctahedronGeometry(0.34),
-];
-const placeholderMaterial = () =>
-  new THREE.MeshStandardMaterial({ color: 0x9aa7b8, roughness: 0.4, metalness: 0.1 });
+// Generic mounting: one nested group per axis, applied inside-out (upAxisFix
+// rights the scan, roll puts the base down, pitch fine-tunes, yaw orients it
+// along the pedestal). Composing them in a single Euler was the original F1
+// bug; nesting keeps every angle unambiguous. Calibration lives in the
+// manifest as data — no geometry is ever re-exported.
+type Mounted = { calibration: Calibration; settle: () => void; groups: THREE.Group[] };
+const mounted = new Map<string, Mounted>();
 
-const placeholderInfos = Object.values(PIECES).filter((p) => p.id.startsWith("placeholder"));
-pedestals
-  .filter((p) => p.width <= 2)
-  .forEach((pedestal, i) => {
-    const info = placeholderInfos[i % placeholderInfos.length];
-    const shape = new THREE.Mesh(SHAPES[i % SHAPES.length](), placeholderMaterial());
-    shape.position.copy(pedestal.position).y += 0.45;
-    scene.add(shape);
-    exhibits.register(shape, info);
-  });
-
-// Real Triceratops: normalize scale and orientation, rest it on the platform.
-// One nested group per axis, applied inside-out: upAxisFix lays the spine
-// horizontal, roll puts the feet down, yaw turns it along the platform.
-// Composing them in a single Euler was the original bug; this is unambiguous.
-// In F2 this calibration lives as data in the manifest.
-const CALIBRATION = {
-  upAxisFix: -Math.PI / 2,
-  roll: Math.PI / 2,
-  pitch: -0.3,
-  yaw: Math.PI / 2,
-  length: 4.6,
-};
-
-async function mountTriceratops() {
-  const gltf = await loadWithProgress("/models/triceratops.glb", "Sala I · Paleontología");
-  const model = gltf.scene;
-  model.rotation.x = CALIBRATION.upAxisFix;
+function mountPiece(model: THREE.Object3D, id: string, calibration: Calibration, pedestal: Pedestal) {
+  model.rotation.x = calibration.upAxisFix;
 
   const rollGroup = new THREE.Group();
   rollGroup.add(model);
-  rollGroup.rotation.z = CALIBRATION.roll;
+  rollGroup.rotation.z = calibration.roll;
 
   const pitchGroup = new THREE.Group();
   pitchGroup.add(rollGroup);
-  pitchGroup.rotation.x = CALIBRATION.pitch;
+  pitchGroup.rotation.x = calibration.pitch;
 
   const mount = new THREE.Group();
   mount.add(pitchGroup);
-  mount.rotation.y = CALIBRATION.yaw;
+  mount.rotation.y = calibration.yaw;
 
-  // Scale to target length and rest the feet on the platform. Idempotent so
-  // the debug recalibration can re-run it after changing an angle.
+  // Scale to the target size and rest the piece on the pedestal. Idempotent
+  // so the debug calibration tool can re-run it after changing an angle.
   const settle = () => {
     mount.scale.setScalar(1);
     mount.position.set(0, 0, 0);
 
     const bounds = new THREE.Box3().setFromObject(mount, true);
     const size = bounds.getSize(new THREE.Vector3());
-    mount.scale.setScalar(CALIBRATION.length / Math.max(size.x, size.z));
+    mount.scale.setScalar(calibration.size / Math.max(size.x, size.y, size.z));
 
     const scaled = new THREE.Box3().setFromObject(mount, true);
     const center = scaled.getCenter(new THREE.Vector3());
-    const platform = pedestals[0].position;
     mount.position.set(
-      platform.x - center.x,
-      platform.y - scaled.min.y,
-      platform.z - center.z,
+      pedestal.position.x - center.x + (calibration.offsetX ?? 0),
+      pedestal.position.y - scaled.min.y + calibration.yOffset,
+      pedestal.position.z - center.z + (calibration.offsetZ ?? 0),
     );
   };
   settle();
 
-  if (new URLSearchParams(location.search).has("debug")) {
-    Object.assign(window, {
-      __recalibrate: (pitch: number, roll?: number) => {
-        pitchGroup.rotation.x = pitch;
-        if (roll !== undefined) rollGroup.rotation.z = roll;
-        settle();
-      },
-    });
-  }
-
+  mounted.set(id, { calibration, settle, groups: [mount, pitchGroup, rollGroup] });
   scene.add(mount);
-  exhibits.register(mount, PIECES.triceratops);
+  return mount;
+}
+
+// Gray placeholders on the pedestals whose pieces arrive in F3.
+const SHAPES = [
+  () => new THREE.IcosahedronGeometry(0.34, 1),
+  () => new THREE.TorusKnotGeometry(0.22, 0.07, 90, 12),
+  () => new THREE.ConeGeometry(0.28, 0.55, 24),
+  () => new THREE.OctahedronGeometry(0.34),
+];
+// Only pieces whose optimized file exists (output written by the pipeline)
+// claim a pedestal; the rest get a gray marker until their piece arrives.
+const readyPieces = MANIFEST.pieces.filter((p) => "output" in p && p.output);
+const assignedPedestals = new Set(readyPieces.map((p) => p.pedestal));
+pedestals
+  .filter((p) => !assignedPedestals.has(p.id))
+  .forEach((pedestal, i) => {
+    const shape = new THREE.Mesh(
+      SHAPES[i % SHAPES.length](),
+      new THREE.MeshStandardMaterial({ color: 0x9aa7b8, roughness: 0.4, metalness: 0.1 }),
+    );
+    shape.position.copy(pedestal.position).y += 0.45;
+    scene.add(shape);
+    exhibits.register(shape, { ...PLACEHOLDER, id: `placeholder-${pedestal.id}` });
+  });
+
+// Real pieces, hall by hall, with one aggregated loading pass.
+async function loadPaleoHall() {
+  const pieces = readyPieces.filter((p) => p.hall === "paleo");
+  await loadHall(
+    hallName("paleo"),
+    pieces.map((p) => ({ url: `/models/${p.id}.glb`, bytes: p.output?.bytes ?? 1 })),
+    (gltf, i) => {
+      const piece = pieces[i];
+      const pedestal = pedestalById.get(piece.pedestal);
+      if (!pedestal) return;
+      const mount = mountPiece(gltf.scene, piece.id, piece.calibration, pedestal);
+      exhibits.register(mount, pieceInfo(piece));
+      addNamePlate(scene, piece.display.name, pedestal);
+    },
+  );
+  rail.setPOIs(exhibits.centers());
 }
 
 // Bottom navigation buttons (Google Maps style): tour steps on the rail,
@@ -180,9 +185,25 @@ renderer.setAnimationLoop(() => {
   renderer.render(scene, camera);
 });
 
-void mountTriceratops();
+void loadPaleoHall();
 
-// Debug hook for automated tests.
-if (new URLSearchParams(location.search).has("debug")) {
-  Object.assign(window, { __museum: { rail, exhibits, camera } });
+// Debug hooks for automated tests and the calibration workflow:
+//   __calibrate("mammoth-molar", { yaw: 1.2, size: 0.4 })
+if (debugMode) {
+  Object.assign(window, {
+    __museum: { rail, exhibits, camera },
+    __calibrate: (id: string, changes: Partial<Calibration>) => {
+      const entry = mounted.get(id);
+      if (!entry) return "unknown id";
+      Object.assign(entry.calibration, changes);
+      const [mount, pitchGroup, rollGroup] = entry.groups;
+      const model = rollGroup.children[0] as THREE.Object3D;
+      model.rotation.x = entry.calibration.upAxisFix;
+      rollGroup.rotation.z = entry.calibration.roll;
+      pitchGroup.rotation.x = entry.calibration.pitch;
+      mount.rotation.y = entry.calibration.yaw;
+      entry.settle();
+      return entry.calibration;
+    },
+  });
 }

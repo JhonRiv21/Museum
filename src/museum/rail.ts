@@ -8,7 +8,8 @@ const POINTS: [number, number, number][] = [
   [-1.5, 1.6, 3],
   [2, 1.6, -1],
   [-2, 1.6, -6],
-  [0, 1.6, -12],
+  [1.6, 1.6, -9.6],
+  [0, 1.6, -13],
   [2, 1.6, -18],
   [-2, 1.6, -24],
   [1.5, 1.6, -30],
@@ -17,6 +18,13 @@ const POINTS: [number, number, number][] = [
   [2, 1.6, -48],
   [0, 1.6, -53],
 ];
+
+// Speed limits: the target can never run further than this from the camera,
+// so an aggressive flick walks the tour instead of teleporting. Forward is
+// deliberately slower than backward — advancing is the guided visit and needs
+// time for the gaze beats; going back is just a correction.
+const MAX_LEAD_FORWARD = 0.028;
+const MAX_LEAD_BACK = 0.045;
 
 export class Rail {
   curve: THREE.CatmullRomCurve3;
@@ -35,7 +43,7 @@ export class Rail {
 
     dom.addEventListener("wheel", (e) => {
       if (!this.active) return;
-      this.target = THREE.MathUtils.clamp(this.target + e.deltaY * 0.00022, 0, 1);
+      this.advance(e.deltaY * (e.deltaY > 0 ? 0.00015 : 0.00022));
     }, { passive: true });
 
     dom.addEventListener("pointerdown", (e) => {
@@ -47,8 +55,21 @@ export class Rail {
       if (!this.active || !this.dragging) return;
       const delta = this.lastY - e.clientY;
       this.lastY = e.clientY;
-      this.target = THREE.MathUtils.clamp(this.target + delta * 0.0009, 0, 1);
+      this.advance(delta * (delta > 0 ? 0.00055 : 0.0009));
     });
+  }
+
+  private advance(delta: number) {
+    // Capped short of 1: the curve's final stretch faces the end wall.
+    this.target = THREE.MathUtils.clamp(
+      THREE.MathUtils.clamp(
+        this.target + delta,
+        this.t - MAX_LEAD_BACK,
+        this.t + MAX_LEAD_FORWARD,
+      ),
+      0,
+      0.96,
+    );
   }
 
   setActive(value: boolean) {
@@ -59,22 +80,77 @@ export class Rail {
   // Step used by the on-screen buttons and the keyboard.
   nudge(delta: number) {
     if (!this.active) return;
-    this.target = THREE.MathUtils.clamp(this.target + delta, 0, 1);
+    this.advance(delta);
+  }
+
+  // Points of interest: while touring, the gaze leans toward the nearest
+  // exhibit and releases as you pass it. Tuned as a gentle bias, not a lock:
+  // capped weight, a distance band that lets go before the piece is on top of
+  // you, and hysteresis so the target never ping-pongs between sides.
+  private pois: THREE.Vector3[] = [];
+  private gaze: THREE.Vector3 | null = null;
+  private currentPOI: THREE.Vector3 | null = null;
+
+  setPOIs(points: THREE.Vector3[]) {
+    this.pois = points;
+  }
+
+  private poiWeight(poi: THREE.Vector3, position: THREE.Vector3, forward: THREE.Vector3): number {
+    const offset = poi.clone().sub(position).setY(0);
+    const distance = offset.length();
+    if (distance < 2.2 || distance > 9) return 0;
+    if (offset.normalize().dot(forward) < 0.35) return 0; // too lateral or behind
+    // Band: ramps in approaching, lets go again when about to pass.
+    return (
+      THREE.MathUtils.smoothstep(9 - distance, 0, 3) *
+      THREE.MathUtils.smoothstep(distance - 2.2, 0, 1.6)
+    );
   }
 
   poseAt(t: number): { position: THREE.Vector3; lookTarget: THREE.Vector3 } {
     const tc = THREE.MathUtils.clamp(t, 0, 0.995);
-    return {
-      position: this.curve.getPointAt(tc),
-      lookTarget: this.curve.getPointAt(Math.min(tc + 0.02, 1)),
-    };
+    const position = this.curve.getPointAt(tc);
+    const ahead = this.curve.getPointAt(Math.min(tc + 0.02, 1));
+    const forward = ahead.clone().sub(position).setY(0).normalize();
+
+    // End of the tour: settle the gaze on the closest piece instead of
+    // letting the camera drift onto the back wall.
+    if (tc >= 0.93 && this.pois.length) {
+      let nearest = this.pois[0];
+      for (const poi of this.pois) {
+        if (poi.distanceTo(position) < nearest.distanceTo(position)) nearest = poi;
+      }
+      return { position, lookTarget: ahead.clone().lerp(nearest, 0.55) };
+    }
+
+    let best: THREE.Vector3 | null = null;
+    let bestWeight = 0;
+    for (const poi of this.pois) {
+      let weight = this.poiWeight(poi, position, forward);
+      if (poi === this.currentPOI) weight *= 1.2; // sticky: no ping-pong
+      if (weight > bestWeight) {
+        bestWeight = weight;
+        best = poi;
+      }
+    }
+    this.currentPOI = bestWeight > 0.1 ? best : null;
+
+    const lookTarget = this.currentPOI
+      ? ahead.clone().lerp(this.currentPOI, Math.min(bestWeight, 1) * 0.35)
+      : ahead;
+    return { position, lookTarget };
   }
 
   update(camera: THREE.PerspectiveCamera, dt: number) {
     if (!this.active) return;
     this.t += (this.target - this.t) * Math.min(1, dt * 2.2);
     const { position, lookTarget } = this.poseAt(this.t);
+
+    // Temporal smoothing keeps the gaze from snapping between exhibits.
+    if (!this.gaze) this.gaze = lookTarget.clone();
+    this.gaze.lerp(lookTarget, Math.min(1, dt * 2));
+
     camera.position.copy(position);
-    camera.lookAt(lookTarget);
+    camera.lookAt(this.gaze);
   }
 }
