@@ -50,6 +50,11 @@ export async function loadHall(
     onLoaded(model, i);
   }
 
+  // Warm the scene while the overlay still covers it: shader programs,
+  // texture uploads and geometry uploads all happen on first draw, and paid
+  // here they are invisible instead of stuttering the opening walk.
+  await beforeReveal?.();
+
   // Smooth finish plus a minimum display time so it never flickers.
   const remaining = Math.max(0, 900 - (performance.now() - start));
   await new Promise((r) => setTimeout(r, remaining));

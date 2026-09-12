@@ -113,6 +113,57 @@ function warmTextures() {
   });
 }
 
+// Warm-up sweep. Compiling and uploading is not enough: the driver defers the
+// real work until a material is first DRAWN, and while the loader is up the
+// camera sits in the vestibule, so nothing beyond it is ever drawn. This flies
+// a throwaway camera along the whole rail and renders each stop into a tiny
+// offscreen target — every program, texture and buffer gets exercised for real
+// while the overlay still hides it. Small target keeps each pass cheap; what
+// matters is that the draw calls happen, not their resolution.
+async function warmUpTour() {
+  // Render to the CANVAS, not to a render target: Three.js compiles different
+  // program variants for offscreen targets (tone mapping and output colour
+  // space are skipped there), so warming a target warms the wrong shaders.
+  // The overlay is covering the canvas, so none of this is seen. Pixel ratio
+  // drops for the sweep — programs do not depend on resolution, only fill does.
+  const probe = new THREE.PerspectiveCamera(camera.fov, camera.aspect, 0.05, 60);
+  const ratio = renderer.getPixelRatio();
+  renderer.setPixelRatio(0.25);
+
+  const at = new THREE.Vector3();
+  const ahead = new THREE.Vector3();
+  const frame = async () => {
+    renderer.render(scene, probe);
+    await new Promise((r) => setTimeout(r, 0));
+  };
+
+  // Pass 1: down the rail, which covers the architecture, signs and floor.
+  const STEPS = 20;
+  for (let i = 0; i <= STEPS; i++) {
+    const t = Math.min(0.995, i / STEPS);
+    rail.curve.getPointAt(t, at);
+    rail.curve.getPointAt(Math.min(t + 0.02, 1), ahead);
+    probe.position.copy(at);
+    probe.lookAt(ahead);
+    updateLights(probe);
+    await frame();
+  }
+
+  // Pass 2: aim straight at every exhibit. Looking only forward left the
+  // pieces beside the aisle outside the frustum, so their geometry and
+  // textures were still being uploaded mid-walk — which is the stutter.
+  for (const { point, radius } of exhibits.centers()) {
+    probe.position.set(point.x, point.y + radius * 0.4, point.z + radius * 2.5 + 1);
+    probe.lookAt(point);
+    updateLights(probe);
+    await frame();
+  }
+
+  renderer.setPixelRatio(ratio);
+  renderer.setSize(innerWidth, innerHeight);
+  updateLights(camera);
+}
+
 async function loadHalls() {
   // Hall I first so its pieces are ready earliest, then the rest.
   const ordered = [
@@ -126,6 +177,7 @@ async function loadHalls() {
     async () => {
       await renderer.compileAsync(scene, camera, scene);
       warmTextures();
+      await warmUpTour();
     },
   );
   rail.setPOIs(exhibits.centers());
