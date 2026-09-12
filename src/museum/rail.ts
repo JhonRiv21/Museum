@@ -10,11 +10,13 @@ const POINTS: [number, number, number][] = [
   [-1.5, 1.6, 3],
   [2, 1.6, -1],
   [-2, 1.6, -6],
-  [1.6, 1.6, -9.6],
-  [0, 1.6, -13],
-  [2, 1.6, -18],
-  [-2, 1.6, -24],
-  [1.5, 1.6, -30],
+  [-2.2, 1.6, -8.6],
+  [2.2, 1.6, -13.6],
+  [0, 1.6, -17.5],
+  [-2.2, 1.6, -20.5],
+  [2.2, 1.6, -24],
+  [-2.2, 1.6, -28.5],
+  [2.2, 1.6, -32],
   [0, 1.6, -36],
   [-2, 1.6, -42],
   [2, 1.6, -48],
@@ -26,6 +28,13 @@ const POINTS: [number, number, number][] = [
 // deliberately slower than backward — advancing is the guided visit and needs
 // time for the gaze beats; going back is just a correction.
 const MAX_LEAD_FORWARD = 0.028;
+
+// Reused scratch vectors: poseAt runs every frame, and cloning here was a
+// steady drip of garbage straight into the GC.
+const _pos = new THREE.Vector3();
+const _ahead = new THREE.Vector3();
+const _forward = new THREE.Vector3();
+const _look = new THREE.Vector3();
 const MAX_LEAD_BACK = 0.045;
 
 export class Rail {
@@ -167,9 +176,9 @@ export class Rail {
   // so the camera simply looks down the path instead of whipping sideways.
   poseAt(t: number, cruise = 0): { position: THREE.Vector3; lookTarget: THREE.Vector3 } {
     const tc = THREE.MathUtils.clamp(t, 0, 0.995);
-    const position = this.curve.getPointAt(tc);
-    const ahead = this.curve.getPointAt(Math.min(tc + 0.02, 1));
-    const forward = ahead.clone().sub(position).setY(0).normalize();
+    const position = this.curve.getPointAt(tc, _pos);
+    const ahead = this.curve.getPointAt(Math.min(tc + 0.02, 1), _ahead);
+    const forward = _forward.copy(ahead).sub(position).setY(0).normalize();
 
     // Entrance breather: the first steps look straight ahead so the visitor
     // reads the hall sign before the first exhibit claims the gaze.
@@ -184,7 +193,7 @@ export class Rail {
           nearest = stop.point;
         }
       }
-      return { position, lookTarget: ahead.clone().lerp(nearest, 0.55) };
+      return { position, lookTarget: _look.copy(ahead).lerp(nearest, 0.55) };
     }
 
     // Strict itinerary, driven by position ALONG THE RAIL rather than 3D
@@ -227,7 +236,7 @@ export class Rail {
     const flick = THREE.MathUtils.smoothstep(cruise, 0.55, 1);
     const gazeStrength = Math.min(bestWeight, 1) * 0.85 * (1 - flick * 0.75);
     const lookTarget = this.currentPOI
-      ? ahead.clone().lerp(this.currentPOI, gazeStrength)
+      ? _look.copy(ahead).lerp(this.currentPOI, gazeStrength)
       : ahead;
     return { position, lookTarget };
   }

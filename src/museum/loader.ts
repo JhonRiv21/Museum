@@ -21,29 +21,11 @@ function setProgress(pct: number) {
 
 export type HallFile = { url: string; bytes: number };
 
-// Background loading for the halls beyond the first: no overlay, the pieces
-// simply appear on their pedestals while the visitor tours hall I.
-export async function loadHallSilently(
-  files: HallFile[],
-  onLoaded: (model: GLTF, index: number) => void,
-  whenCalm: () => Promise<void>,
-): Promise<void> {
-  // Parsing a glb blocks the main thread for 100-180 ms — harmless while the
-  // visitor is standing still reading a label, jarring mid-stride. So each
-  // piece waits for a pause in the walk before it is decoded.
-  for (let i = 0; i < files.length; i++) {
-    await whenCalm();
-    const model = await new Promise<GLTF>((resolve, reject) => {
-      gltf.load(files[i].url, resolve, undefined, reject);
-    });
-    onLoaded(model, i);
-  }
-}
-
 export async function loadHall(
   hall: string,
   files: HallFile[],
   onLoaded: (model: GLTF, index: number) => void,
+  beforeReveal?: () => Promise<void>,
 ): Promise<void> {
   hallLabel.textContent = hall;
   setProgress(0);

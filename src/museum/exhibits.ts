@@ -32,11 +32,43 @@ function tween(durationMs: number, step: (k: number) => void): Promise<void> {
   });
 }
 
+
+// Picking proxy for heavy meshes. Three.js tests every triangle of a mesh the
+// ray reaches, which for a 250k-triangle skeleton costs more than rendering
+// the whole frame. Hover is an affordance, not a measurement, so above this
+// size the bounding box stands in for the geometry.
+const PICK_TRIANGLE_LIMIT = 40000;
+const _inverse = new THREE.Matrix4();
+const _localRay = new THREE.Ray();
+const _hit = new THREE.Vector3();
+
+function boxRaycast(this: THREE.Mesh, raycaster: THREE.Raycaster, intersects: THREE.Intersection[]) {
+  const geometry = this.geometry;
+  if (!geometry.boundingBox) geometry.computeBoundingBox();
+  _inverse.copy(this.matrixWorld).invert();
+  _localRay.copy(raycaster.ray).applyMatrix4(_inverse);
+  if (!_localRay.intersectBox(geometry.boundingBox!, _hit)) return;
+  const point = _hit.clone().applyMatrix4(this.matrixWorld);
+  const distance = raycaster.ray.origin.distanceTo(point);
+  if (distance < raycaster.near || distance > raycaster.far) return;
+  intersects.push({ distance, point, object: this });
+}
+
+function useCheapPicking(root: THREE.Object3D) {
+  root.traverse((o) => {
+    if (!(o instanceof THREE.Mesh)) return;
+    const index = o.geometry.index;
+    const count = index ? index.count : o.geometry.attributes.position.count;
+    if (count / 3 > PICK_TRIANGLE_LIMIT) o.raycast = boxRaycast;
+  });
+}
+
 export class Exhibits {
   state: TourState = "rail";
   private pieces: Piece[] = [];
   private hovered: Piece | null = null;
   private raycaster = new THREE.Raycaster();
+  private lastPick = 0;
   private pointer = new THREE.Vector2();
   private controls: OrbitControls;
 
@@ -75,6 +107,7 @@ export class Exhibits {
   }
 
   register(object: THREE.Object3D, info: PieceInfo) {
+    useCheapPicking(object);
     const bounds = new THREE.Box3().setFromObject(object, true);
     const center = bounds.getCenter(new THREE.Vector3());
     const radius = bounds.getSize(new THREE.Vector3()).length() / 2;
@@ -191,9 +224,19 @@ export class Exhibits {
     }
     if (this.state !== "rail") return;
 
+    // Hover picking is brute force: a ray that lands on a 250k-triangle
+    // skeleton tests every triangle, which costs more than the entire render.
+    // It is a pointer affordance, so ~9 Hz is imperceptible and takes the
+    // cost off the frame budget.
+    const now = performance.now();
+    if (now - this.lastPick < 110) return;
+    this.lastPick = now;
+
     this.raycaster.setFromCamera(this.pointer, this.camera);
-    const objects = this.pieces.map((p) => p.object);
-    const hits = this.raycaster.intersectObjects(objects, true);
+    const near = this.pieces.filter(
+      (p) => p.center.distanceTo(this.camera.position) < 14,
+    );
+    const hits = this.raycaster.intersectObjects(near.map((p) => p.object), true);
     if (!hits.length) {
       this.highlight(null);
       return;

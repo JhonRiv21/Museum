@@ -42,7 +42,7 @@ export function buildStage(scene: THREE.Scene): Pedestal[] {
   box(scene, WALL, WIDTH, HEIGHT, 0.4, 0, HEIGHT / 2, Z_END);
 
   // Partial partitions between halls, leaving a central 5-unit opening.
-  for (const z of [-12, -36]) {
+  for (const z of [-17.5, -36]) {
     const offset = (WIDTH / 2 - 2.5) / 2 + 2.5;
     box(scene, WALL, WIDTH / 2 - 2.5, HEIGHT, 0.4, -offset, HEIGHT / 2, z);
     box(scene, WALL, WIDTH / 2 - 2.5, HEIGHT, 0.4, offset, HEIGHT / 2, z);
@@ -54,17 +54,16 @@ export function buildStage(scene: THREE.Scene): Pedestal[] {
     // T. rex facing each other across the open aisle.
     ["paleo-f", -4.9, 5, 5],
     ["paleo-g", 4.6, 1.6, 2.2],
-    ["paleo-platform", -5.2, -5.9, 5],
+    ["paleo-platform", -5.2, -5.2, 5],
     ["paleo-e", 5.2, -2.4, 5],
-    ["paleo-a", -5, -7.6, 1.1], ["paleo-b", 5, -7.6, 1.1],
-    ["paleo-c", -5, -10, 1.1], ["paleo-d", 5, -10, 1.1],
-    ["flight-a", -5, -16, 1.1], ["flight-b", 5, -16, 1.1],
-    ["flight-c", -5.4, -25, 5.8],
-    ["flight-d", 5.2, -25, 5],
+    ["paleo-a", -4, -8.6, 1.1], ["paleo-c", -4, -9.7, 1.1],
+    ["paleo-b", 4, -13.6, 1.1], ["paleo-d", 4, -14.7, 1.1],
+    ["flight-a", -4, -20.5, 1.1], ["flight-b", 4, -24, 1.1],
+    ["flight-c", -5.4, -28.5, 5.8],
+    ["flight-d", 5.2, -32, 5],
     ["ocean-a", -5, -40.5, 1.1], ["ocean-b", 5, -40.5, 1.1],
     ["ocean-c", -5, -45.5, 1.1], ["ocean-d", 5, -45.5, 1.1],
     ["ocean-e", 0, -52, 4],
-    ["ocean-f", -5.4, -50, 5],
   ];
 
   const pedestals: Pedestal[] = [];
@@ -77,7 +76,7 @@ export function buildStage(scene: THREE.Scene): Pedestal[] {
   buildLightRig(scene, pedestals);
 
   scene.add(new THREE.HemisphereLight(0x9aaccc, 0x14191f, 0.75));
-  scene.fog = new THREE.Fog(0x0a0e14, 18, 55);
+  scene.fog = new THREE.Fog(0x0a0e14, 13, 32);
   scene.background = new THREE.Color(0x0a0e14);
 
   addHallSigns(scene);
@@ -143,33 +142,53 @@ function aimFills(wides: Pedestal[]) {
 
 // Reassign the pool to the pedestals nearest the camera. Cheap enough to run
 // every frame, but only touches lights when the selection actually changes.
-export function updateLights(camera: THREE.Camera) {
-  const byDistance = rigPedestals
-    .map((p) => ({ p, d: p.position.distanceToSquared(camera.position) }))
-    .sort((a, b) => a.d - b.d);
+const _lightScratch: { p: Pedestal; d: number }[] = [];
+const _chosen: Pedestal[] = [];
+const _wides: Pedestal[] = [];
+const _lastRigAt = new THREE.Vector3(Infinity, 0, 0);
 
-  const chosen = byDistance.slice(0, SPOT_UNITS).map((e) => e.p);
-  for (const pedestal of chosen) {
+export function updateLights(camera: THREE.Camera) {
+  // Only re-sort when the visitor has actually moved: doing it every frame
+  // allocated a fresh array of every pedestal each time, and that garbage was
+  // enough to trigger GC pauses mid-walk.
+  if (camera.position.distanceToSquared(_lastRigAt) < 0.25) return;
+  _lastRigAt.copy(camera.position);
+
+  _lightScratch.length = 0;
+  for (const p of rigPedestals) {
+    _lightScratch.push({ p, d: p.position.distanceToSquared(camera.position) });
+  }
+  _lightScratch.sort((a, b) => a.d - b.d);
+
+  _chosen.length = 0;
+  for (let i = 0; i < SPOT_UNITS && i < _lightScratch.length; i++) {
+    _chosen.push(_lightScratch[i].p);
+  }
+
+  for (const pedestal of _chosen) {
     if (spotUnits.some((u) => u.pedestal === pedestal)) continue;
-    const free = spotUnits.find((u) => !u.pedestal || !chosen.includes(u.pedestal));
+    const free = spotUnits.find((u) => !u.pedestal || !_chosen.includes(u.pedestal));
     if (free) aimSpot(free, pedestal);
   }
   for (const unit of spotUnits) {
-    if (unit.pedestal && !chosen.includes(unit.pedestal)) {
+    if (unit.pedestal && !_chosen.includes(unit.pedestal)) {
       unit.light.intensity = 0;
       unit.pedestal = null;
     }
   }
 
-  const wides = chosen.filter((p) => p.width > 2);
-  const current = fillUnits.map((u) => u.pedestal).filter(Boolean);
-  const changed = wides.length !== new Set(current).size
-    || wides.some((p) => !current.includes(p));
-  if (changed) aimFills(wides);
+  _wides.length = 0;
+  for (const p of _chosen) if (p.width > 2) _wides.push(p);
+  const changed =
+    _wides.length !== new Set(fillUnits.map((u) => u.pedestal).filter(Boolean)).size ||
+    _wides.some((p) => !fillUnits.some((u) => u.pedestal === p));
+  if (changed) aimFills(_wides);
 }
 
-// Physical signage: a hanging plaque over each hall entrance, so the visitor
-// reads where they are entering without depending on the HUD label.
+
+// Physical signage: a hanging plaque over the entrance of hall I, and
+// eye-level panels on both partition faces flanking each doorway — right
+// where the visitor is already looking when crossing.
 function makeSignTexture(kicker: string, title: string): THREE.CanvasTexture {
   const canvas = document.createElement("canvas");
   canvas.width = 1024;
@@ -185,7 +204,7 @@ function makeSignTexture(kicker: string, title: string): THREE.CanvasTexture {
   ctx.textAlign = "center";
   ctx.fillStyle = "#e8c37a";
   ctx.font = "600 46px system-ui, sans-serif";
-  ctx.fillText(kicker.toUpperCase().split("").join(" "), 512, 92);
+  ctx.fillText(kicker.toUpperCase().split("").join(" "), 512, 92);
   ctx.fillRect(452, 118, 120, 4);
 
   ctx.fillStyle = "#e6edf3";
@@ -203,7 +222,6 @@ const plaques: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial>[] = [];
 function addHallSigns(scene: THREE.Scene) {
   const rodMaterial = new THREE.MeshStandardMaterial({ color: 0x2a3648, roughness: 0.5 });
 
-  // Sala I has no partition: its sign hangs over the entrance.
   const hanging = new THREE.Mesh(
     new THREE.PlaneGeometry(3.4, 1.0),
     new THREE.MeshBasicMaterial({
@@ -211,19 +229,17 @@ function addHallSigns(scene: THREE.Scene) {
       transparent: true,
     }),
   );
-  hanging.position.set(0, 3.05, 8.8);
+  hanging.position.set(0, 3.0, 2.9);
   scene.add(hanging);
   plaques.push(hanging);
   for (const x of [-1.45, 1.45]) {
-    const rod = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 1.5, 8), rodMaterial);
-    rod.position.set(x, 4.42, 8.8);
+    const rod = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 1.7, 8), rodMaterial);
+    rod.position.set(x, 4.35, 2.9);
     scene.add(rod);
   }
 
-  // Doorway halls: eye-level panels on BOTH partition faces flanking the
-  // opening, right where the visitor is already looking when crossing.
   const doorwaySigns = [
-    { kicker: "Sala II", title: "Vuelo y espacio", z: -11.7 },
+    { kicker: "Sala II", title: "Vuelo y espacio", z: -17.2 },
     { kicker: "Sala III", title: "El regreso al mar", z: -35.7 },
   ];
   for (const sign of doorwaySigns) {
@@ -242,8 +258,7 @@ function addHallSigns(scene: THREE.Scene) {
   }
 }
 
-// Signs fade with distance so the one for the hall you are entering dominates
-// and far signs do not read on top of nearer pieces.
+// Signs fade with distance so the one for the hall being entered dominates.
 export function updateSigns(camera: THREE.Camera) {
   for (const plaque of plaques) {
     const distance = plaque.position.distanceTo(camera.position);

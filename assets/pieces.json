@@ -47,7 +47,8 @@
       },
       "output": {
         "bytes": 2113300
-      }
+      },
+      "textureSize": 2048
     },
     {
       "id": "allosaurus-claw",
@@ -78,8 +79,9 @@
         ]
       },
       "output": {
-        "bytes": 387764
-      }
+        "bytes": 175832
+      },
+      "textureSize": 1024
     },
     {
       "id": "mammoth-molar",
@@ -110,8 +112,9 @@
         ]
       },
       "output": {
-        "bytes": 1501256
-      }
+        "bytes": 770404
+      },
+      "textureSize": 1024
     },
     {
       "id": "stegosaurus-spike",
@@ -142,8 +145,9 @@
         ]
       },
       "output": {
-        "bytes": 294108
-      }
+        "bytes": 126936
+      },
+      "textureSize": 1024
     },
     {
       "id": "diplocaulus",
@@ -174,8 +178,9 @@
         ]
       },
       "output": {
-        "bytes": 1146600
-      }
+        "bytes": 530184
+      },
+      "textureSize": 1024
     },
     {
       "id": "trex-skeleton",
@@ -208,7 +213,8 @@
       },
       "output": {
         "bytes": 1064868
-      }
+      },
+      "textureSize": 2048
     },
     {
       "id": "stego-skeleton",
@@ -219,7 +225,7 @@
         "uri": "sketchfab:dc6e1c748484449587b81426d41da6cb",
         "license": "CC BY 4.0"
       },
-      "simplifyError": 0.001,
+      "simplifyError": 0.004,
       "calibration": {
         "upAxisFix": 0,
         "roll": 0,
@@ -240,8 +246,9 @@
         ]
       },
       "output": {
-        "bytes": 1067988
-      }
+        "bytes": 1023600
+      },
+      "textureSize": 2048
     },
     {
       "id": "raptor-skeleton",
@@ -274,7 +281,8 @@
       },
       "output": {
         "bytes": 94464
-      }
+      },
+      "textureSize": 2048
     },
     {
       "id": "cher-ami",
@@ -291,7 +299,7 @@
         "roll": 0,
         "pitch": 0,
         "yaw": 0,
-        "size": 0.55,
+        "size": 0.7,
         "yOffset": 0
       },
       "display": {
@@ -305,8 +313,9 @@
         ]
       },
       "output": {
-        "bytes": 2145572
-      }
+        "bytes": 970692
+      },
+      "textureSize": 1024
     },
     {
       "id": "apollo-hatch",
@@ -322,7 +331,7 @@
         "upAxisFix": 0,
         "roll": 0,
         "pitch": 0,
-        "yaw": 0,
+        "yaw": -1.5708,
         "size": 0.85,
         "yOffset": 0
       },
@@ -336,8 +345,9 @@
         ]
       },
       "output": {
-        "bytes": 1548892
-      }
+        "bytes": 815284
+      },
+      "textureSize": 1024
     },
     {
       "id": "wright-flyer",
@@ -352,7 +362,7 @@
           "https://cdn.3d-api.si.edu/d8c62e5e-4ebc-11ea-b77f-2e728ce88125/wright_flyer_filler_mesh-48k-2048-medium.glb"
         ]
       },
-      "simplifyError": 0.001,
+      "simplifyError": 0.002,
       "calibration": {
         "upAxisFix": 0,
         "roll": 0,
@@ -372,8 +382,9 @@
         ]
       },
       "output": {
-        "bytes": 2668872
-      }
+        "bytes": 2668800
+      },
+      "textureSize": 2048
     },
     {
       "id": "apollo-cm",
@@ -394,7 +405,7 @@
         "pitch": 0,
         "yaw": 0,
         "size": 3.3,
-        "yOffset": 0
+        "yOffset": -0.35
       },
       "display": {
         "name": "Columbia",
@@ -408,7 +419,8 @@
       },
       "output": {
         "bytes": 1987504
-      }
+      },
+      "textureSize": 2048
     },
     {
       "id": "deer-skull",
@@ -438,8 +450,9 @@
         ]
       },
       "output": {
-        "bytes": 562808
-      }
+        "bytes": 314008
+      },
+      "textureSize": 1024
     },
     {
       "id": "chonecetus",
@@ -469,8 +482,9 @@
         ]
       },
       "output": {
-        "bytes": 1126512
-      }
+        "bytes": 514304
+      },
+      "textureSize": 1024
     },
     {
       "id": "isthminia",
@@ -500,8 +514,9 @@
         ]
       },
       "output": {
-        "bytes": 652524
-      }
+        "bytes": 328484
+      },
+      "textureSize": 1024
     },
     {
       "id": "leptophoca",
@@ -531,8 +546,9 @@
         ]
       },
       "output": {
-        "bytes": 937052
-      }
+        "bytes": 448652
+      },
+      "textureSize": 1024
     },
     {
       "id": "pilot-whale",
@@ -562,8 +578,9 @@
         ]
       },
       "output": {
-        "bytes": 487588
-      }
+        "bytes": 261332
+      },
+      "textureSize": 1024
     },
     {
       "id": "mosasaur",
@@ -591,7 +608,8 @@
           "Fósil real hallado en Kansas en 1967, hoy en el Johnston Geology Museum.",
           "Escaneo de <strong>ESUEarthSci</strong> · CC BY 4.0."
         ]
-      }
+      },
+      "textureSize": 1024
     }
   ]
 }

@@ -200,6 +200,7 @@ html, body {
 
 /* Beats the critical inline CSS (type+id > id) once the stylesheet is in. */
 header#hud, aside#panel, div#loader, nav#nav, p#hint { visibility: visible; }
+div#perf { visibility: visible; }
 
 #nav {
   position: fixed;
@@ -240,3 +241,37 @@ header#hud, aside#panel, div#loader, nav#nav, p#hint { visibility: visible; }
 .navBtn + .navBtn { border-top: 1px solid var(--line); }
 .navBtn:hover { color: var(--accent); background: #17202c; }
 .navBtn:active { background: #0d1420; }
+
+#perf {
+  position: fixed;
+  left: 16px;
+  bottom: 18px;
+  width: min(420px, calc(100vw - 32px));
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 10px 12px;
+  backdrop-filter: blur(8px);
+  font: 11px/1.4 ui-monospace, monospace;
+  color: var(--muted);
+  z-index: 7;
+  user-select: none;
+}
+
+.perfTop { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
+#perfNow { font-size: 17px; font-weight: 600; }
+#perfNow.ok { color: #4a9d6a; }
+#perfNow.warn { color: var(--accent); }
+#perfNow.bad { color: #e5484d; }
+
+.perfMap {
+  display: flex;
+  align-items: flex-end;
+  gap: 1px;
+  height: 40px;
+  margin: 8px 0 5px;
+  border-bottom: 1px solid var(--line);
+}
+
+.perfMap i { flex: 1; min-height: 0; border-radius: 1px 1px 0 0; transition: height 0.2s; }
+.perfFoot { font-size: 10px; opacity: 0.65; }

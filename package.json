@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
-    "copy:draco": "mkdir -p public/draco && cp node_modules/three/examples/jsm/libs/draco/gltf/* public/draco/",
+    "copy:draco": "mkdir -p public/draco public/basis && cp node_modules/three/examples/jsm/libs/draco/gltf/* public/draco/ && cp node_modules/three/examples/jsm/libs/basis/* public/basis/",
     "predev": "npm run copy:draco",
     "prebuild": "npm run copy:draco",
     "dev": "astro dev",

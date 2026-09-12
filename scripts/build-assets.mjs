@@ -113,6 +113,10 @@ function optimize(piece, input) {
     "--texture-compress", "webp",
     "--simplify", "true",
     "--simplify-error", String(piece.simplifyError ?? 0.001),
+    // Texture upload is the sync cost when a piece arrives mid-walk, and it
+    // scales with area: 1024 is a quarter of the work of 2048 and is plenty
+    // for anything not displayed at full height.
+    "--texture-size", String(piece.textureSize ?? 1024),
   ], { stdio: "pipe" });
   return statSync(output).size;
 }

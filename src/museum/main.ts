@@ -2,11 +2,13 @@ import * as THREE from "three";
 import { buildStage, createDust, animateDust, updateSigns, updateLights, addNamePlate, type Pedestal } from "./stage";
 import { Rail } from "./rail";
 import { Exhibits } from "./exhibits";
-import { loadHall, loadHallSilently } from "./loader";
-import { MANIFEST, PLACEHOLDER, HALLS, pieceInfo, hallName, type Calibration } from "./data";
+import { loadHall } from "./loader";
+import { MANIFEST, HALLS, pieceInfo, hallName, type Calibration } from "./data";
+import { Perf } from "./perf";
 
 const app = document.getElementById("app") as HTMLElement;
-const debugMode = new URLSearchParams(location.search).has("debug");
+const params = new URLSearchParams(location.search);
+const debugMode = params.has("debug");
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
@@ -15,7 +17,7 @@ renderer.toneMapping = THREE.ACESFilmicToneMapping;
 app.appendChild(renderer.domElement);
 
 const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(55, innerWidth / innerHeight, 0.05, 120);
+const camera = new THREE.PerspectiveCamera(55, innerWidth / innerHeight, 0.05, 34);
 
 const pedestals = buildStage(scene);
 const pedestalById = new Map(pedestals.map((p) => [p.id, p]));
@@ -23,6 +25,7 @@ const dust = createDust(scene);
 
 const rail = new Rail(renderer.domElement);
 const exhibits = new Exhibits(camera, rail, renderer);
+const perf = params.has("perf") ? new Perf(renderer, rail) : null;
 
 addEventListener("resize", () => {
   renderer.setSize(innerWidth, innerHeight);
@@ -79,90 +82,53 @@ function mountPiece(model: THREE.Object3D, id: string, calibration: Calibration,
 }
 
 // Gray placeholders on the pedestals whose pieces arrive in F3.
-const SHAPES = [
-  () => new THREE.IcosahedronGeometry(0.34, 1),
-  () => new THREE.TorusKnotGeometry(0.22, 0.07, 90, 12),
-  () => new THREE.ConeGeometry(0.28, 0.55, 24),
-  () => new THREE.OctahedronGeometry(0.34),
-];
-// Only pieces whose optimized file exists (output written by the pipeline)
-// claim a pedestal; the rest get a gray marker until their piece arrives.
+// Only pieces whose optimized file exists are placed; a pedestal whose piece
+// is still pending simply stays empty.
 const readyPieces = MANIFEST.pieces.filter((p) => "output" in p && p.output);
-const assignedPedestals = new Set(readyPieces.map((p) => p.pedestal));
-pedestals
-  .filter((p) => !assignedPedestals.has(p.id))
-  .forEach((pedestal, i) => {
-    const shape = new THREE.Mesh(
-      SHAPES[i % SHAPES.length](),
-      new THREE.MeshStandardMaterial({ color: 0x9aa7b8, roughness: 0.4, metalness: 0.1 }),
-    );
-    shape.position.copy(pedestal.position).y += 0.45;
-    scene.add(shape);
-    exhibits.register(shape, { ...PLACEHOLDER, id: `placeholder-${pedestal.id}` });
-  });
 
-// Resolves once the rail has been still for a moment (or after a long wait,
-// so the halls still arrive for a visitor who never scrolls).
-function whenCalm(): Promise<void> {
-  return new Promise((go) => {
-    const deadline = performance.now() + 15000;
-    let stillSince = 0;
-    let last = rail.t;
-    const check = () => {
-      const moved = Math.abs(rail.t - last) > 1e-4;
-      last = rail.t;
-      const now = performance.now();
-      if (moved) stillSince = 0;
-      else if (!stillSince) stillSince = now;
-      if ((stillSince && now - stillSince > 500) || now > deadline) go();
-      else requestAnimationFrame(check);
-    };
-    check();
-  });
-}
-
-// Real pieces, hall by hall. Hall I gets the loading overlay; the rest are
-// fetched silently in the background while the visitor tours.
 function placePiece(gltf: { scene: THREE.Object3D }, piece: (typeof readyPieces)[number]) {
   const pedestal = pedestalById.get(piece.pedestal);
-  if (!pedestal) return null;
+  if (!pedestal) return;
   const mount = mountPiece(gltf.scene, piece.id, piece.calibration, pedestal);
   exhibits.register(mount, pieceInfo(piece));
   addNamePlate(scene, piece.display.name, pedestal);
-  return mount;
 }
 
-// A material's shader is compiled the first time it renders — with this many
-// lights that costs over 100 ms on the main thread, which is exactly the
-// hitch felt while walking. compileAsync does it off the critical path
-// (parallel shader compile) before the piece is ever shown.
-async function placeQuietly(gltf: { scene: THREE.Object3D }, piece: (typeof readyPieces)[number]) {
-  const mount = placePiece(gltf, piece);
-  if (!mount) return;
-  mount.visible = false;
-  await renderer.compileAsync(mount, camera, scene);
-  mount.visible = true;
+// Textures are only uploaded to the GPU the first time their material is
+// rendered, which is a stall in the middle of the walk. Forcing every upload
+// while the overlay is still up moves that cost somewhere invisible.
+function warmTextures() {
+  const seen = new Set<string>();
+  scene.traverse((o) => {
+    if (!(o instanceof THREE.Mesh)) return;
+    for (const material of [o.material].flat()) {
+      for (const key of ["map", "normalMap", "roughnessMap", "metalnessMap", "aoMap", "emissiveMap"] as const) {
+        const texture = (material as THREE.MeshStandardMaterial)[key];
+        if (texture && !seen.has(texture.uuid)) {
+          seen.add(texture.uuid);
+          renderer.initTexture(texture);
+        }
+      }
+    }
+  });
 }
 
 async function loadHalls() {
-  const paleo = readyPieces.filter((p) => p.hall === "paleo");
+  // Hall I first so its pieces are ready earliest, then the rest.
+  const ordered = [
+    ...readyPieces.filter((p) => p.hall === "paleo"),
+    ...readyPieces.filter((p) => p.hall !== "paleo"),
+  ];
   await loadHall(
     hallName("paleo"),
-    paleo.map((p) => ({ url: `/models/${p.id}.glb`, bytes: p.output?.bytes ?? 1 })),
-    (gltf, i) => placePiece(gltf, paleo[i]),
+    ordered.map((p) => ({ url: `/models/${p.id}.glb`, bytes: p.output?.bytes ?? 1 })),
+    (gltf, i) => placePiece(gltf, ordered[i]),
+    async () => {
+      await renderer.compileAsync(scene, camera, scene);
+      warmTextures();
+    },
   );
   rail.setPOIs(exhibits.centers());
-
-  for (const hallId of ["flight", "ocean"]) {
-    const pieces = readyPieces.filter((p) => p.hall === hallId);
-    if (!pieces.length) continue;
-    await loadHallSilently(
-      pieces.map((p) => ({ url: `/models/${p.id}.glb`, bytes: p.output?.bytes ?? 1 })),
-      (gltf, i) => void placeQuietly(gltf, pieces[i]),
-      whenCalm,
-    );
-    rail.setPOIs(exhibits.centers());
-  }
 }
 
 // Bottom navigation buttons (Google Maps style): tour steps on the rail,
@@ -231,6 +197,7 @@ renderer.setAnimationLoop(() => {
   updateSigns(camera);
   updateLights(camera);
   renderer.render(scene, camera);
+  perf?.update();
 });
 
 void loadHalls();
@@ -240,6 +207,8 @@ void loadHalls();
 if (debugMode) {
   Object.assign(window, {
     __museum: { rail, exhibits, camera },
+    __r: renderer,
+    __perf: perf,
     __calibrate: (id: string, changes: Partial<Calibration>) => {
       const entry = mounted.get(id);
       if (!entry) return "unknown id";
