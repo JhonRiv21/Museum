@@ -8,7 +8,7 @@
     {
       "id": "flight",
       "name": "Sala II · Vuelo y espacio",
-      "budgetMB": 8
+      "budgetMB": 9
     },
     {
       "id": "ocean",
@@ -258,7 +258,7 @@
         "roll": 0,
         "pitch": 0,
         "yaw": -0.6,
-        "size": 3.2,
+        "size": 4.3,
         "yOffset": 0,
         "offsetX": -0.35
       },
@@ -274,6 +274,323 @@
       },
       "output": {
         "bytes": 94464
+      }
+    },
+    {
+      "id": "cher-ami",
+      "hall": "flight",
+      "pedestal": "flight-a",
+      "source": {
+        "archive": "Smithsonian · escaneo del original",
+        "license": "CC0",
+        "uri": "https://3d-api.si.edu/content/document/3d_package:687b5a18-e20d-481c-bff3-698d506cd69b/nmah-af_30714-cher_ami-150k-2048-medium.glb"
+      },
+      "simplifyError": 0.001,
+      "calibration": {
+        "upAxisFix": 0,
+        "roll": 0,
+        "pitch": 0,
+        "yaw": 0,
+        "size": 0.55,
+        "yOffset": 0
+      },
+      "display": {
+        "name": "Cher Ami",
+        "species": "Paloma mensajera · I Guerra Mundial",
+        "facts": [
+          "El vuelo más antiguo de esta sala es <strong>biológico</strong>: una paloma mensajera del ejército de EE. UU.",
+          "En octubre de 1918, gravemente herida, entregó el mensaje que ayudó a salvar a los ~190 hombres del <strong>'Batallón Perdido'</strong>.",
+          "Francia la condecoró con la <strong>Croix de Guerre</strong>.",
+          "Taxidermia real del Smithsonian · dominio público (CC0)."
+        ]
+      },
+      "output": {
+        "bytes": 2145572
+      }
+    },
+    {
+      "id": "apollo-hatch",
+      "hall": "flight",
+      "pedestal": "flight-b",
+      "source": {
+        "archive": "Smithsonian · escaneo del original",
+        "license": "CC0",
+        "uri": "https://3d-api.si.edu/content/document/3d_package:e7514eea-3f12-490d-a2d0-999f2a1a70f7/apollo-11-command-module-hatch-150k-2048-medium.glb"
+      },
+      "simplifyError": 0.001,
+      "calibration": {
+        "upAxisFix": 0,
+        "roll": 0,
+        "pitch": 0,
+        "yaw": 0,
+        "size": 0.85,
+        "yOffset": 0
+      },
+      "display": {
+        "name": "Escotilla del Apollo 11",
+        "species": "Módulo de mando Columbia · 1969",
+        "facts": [
+          "La puerta por la que salieron y volvieron a entrar los <strong>primeros humanos que pisaron la Luna</strong>.",
+          "Rediseñada tras el incendio del Apollo 1 para poder <strong>abrirse en segundos</strong>.",
+          "Escaneo del original · dominio público (CC0)."
+        ]
+      },
+      "output": {
+        "bytes": 1548892
+      }
+    },
+    {
+      "id": "wright-flyer",
+      "hall": "flight",
+      "pedestal": "flight-c",
+      "source": {
+        "archive": "Smithsonian · escaneo del original",
+        "license": "CC0",
+        "uris": [
+          "https://cdn.3d-api.si.edu/d8c62e5e-4ebc-11ea-b77f-2e728ce88125/wright_flyer_wings_mesh-49k-2048-medium.glb",
+          "https://cdn.3d-api.si.edu/d8c62e5e-4ebc-11ea-b77f-2e728ce88125/wright_flyer_engine_mesh-53k-2048-medium.glb",
+          "https://cdn.3d-api.si.edu/d8c62e5e-4ebc-11ea-b77f-2e728ce88125/wright_flyer_filler_mesh-48k-2048-medium.glb"
+        ]
+      },
+      "simplifyError": 0.001,
+      "calibration": {
+        "upAxisFix": 0,
+        "roll": 0,
+        "pitch": 0,
+        "yaw": 0,
+        "size": 5.8,
+        "yOffset": 0
+      },
+      "display": {
+        "name": "Wright Flyer",
+        "species": "El primer avión · 1903",
+        "facts": [
+          "La máquina del <strong>primer vuelo controlado y con motor</strong> de la historia: Kitty Hawk, 17 de diciembre de 1903.",
+          "El primer vuelo duró <strong>12 segundos y 36 metros</strong> — menos que la envergadura de un 747.",
+          "Orville pilotaba tumbado sobre el ala inferior; Wilbur corría al lado sujetando el ala.",
+          "Escaneo del original · Smithsonian · dominio público (CC0)."
+        ]
+      },
+      "output": {
+        "bytes": 2668872
+      }
+    },
+    {
+      "id": "apollo-cm",
+      "hall": "flight",
+      "pedestal": "flight-d",
+      "source": {
+        "archive": "Smithsonian · escaneo del original",
+        "license": "CC0",
+        "uris": [
+          "https://3d-api.si.edu/content/document/3d_package:d8c6457e-4ebc-11ea-b77f-2e728ce88125/x3d-cm-exterior-shell-90k-uvs-150k-2048-medium.glb",
+          "https://3d-api.si.edu/content/document/3d_package:d8c6457e-4ebc-11ea-b77f-2e728ce88125/x3d-cm-exterior-top-160k-uvs-150k-2048-medium.glb"
+        ]
+      },
+      "simplifyError": 0.001,
+      "calibration": {
+        "upAxisFix": 0,
+        "roll": 0,
+        "pitch": 0,
+        "yaw": 0,
+        "size": 3.3,
+        "yOffset": 0
+      },
+      "display": {
+        "name": "Columbia",
+        "species": "Módulo de mando del Apollo 11 · 1969",
+        "facts": [
+          "La <strong>única parte de la nave que regresó</strong> del primer viaje a la Luna, julio de 1969.",
+          "Llevó a Armstrong, Aldrin y Collins — y soportó unos <strong>2.800 °C</strong> en la reentrada.",
+          "De la paloma a la cápsula: <strong>66 años</strong> separan esta pieza del Wright Flyer de enfrente.",
+          "Escaneo del original · dominio público (CC0)."
+        ]
+      },
+      "output": {
+        "bytes": 1987504
+      }
+    },
+    {
+      "id": "deer-skull",
+      "hall": "ocean",
+      "pedestal": "ocean-a",
+      "source": {
+        "archive": "Smithsonian · escaneo del original",
+        "license": "CC0",
+        "uri": "https://3d-api.si.edu/content/document/3d_package:fcc69841-d8be-4103-be0f-143e374c9ce6/PALDEERSKULL-150k-2048-medium.glb"
+      },
+      "simplifyError": 0.001,
+      "calibration": {
+        "upAxisFix": 0,
+        "roll": 0,
+        "pitch": 0,
+        "yaw": 0.5,
+        "size": 0.7,
+        "yOffset": 0
+      },
+      "display": {
+        "name": "Ciervo de cola blanca",
+        "species": "Artiodáctilo terrestre · el punto de partida",
+        "facts": [
+          "El relato empieza <strong>en tierra</strong>: los parientes vivos más cercanos de las ballenas son artiodáctilos, el grupo del ciervo y el hipopótamo.",
+          "Hace unos <strong>50 millones de años</strong>, parientes de este grupo empezaron a volver al agua.",
+          "Escaneo real del NMNH · dominio público (CC0)."
+        ]
+      },
+      "output": {
+        "bytes": 562808
+      }
+    },
+    {
+      "id": "chonecetus",
+      "hall": "ocean",
+      "pedestal": "ocean-b",
+      "source": {
+        "archive": "Smithsonian · escaneo del original",
+        "license": "CC0",
+        "uri": "https://3d-api.si.edu/content/document/3d_package:6bd320bc-25b0-4ef8-9654-a6bdeea28636/cf-_Chonecetus_goedertorum-150k-2048-medium.glb"
+      },
+      "simplifyError": 0.001,
+      "calibration": {
+        "upAxisFix": 0,
+        "roll": 0,
+        "pitch": 0,
+        "yaw": 0,
+        "size": 1.1,
+        "yOffset": 0
+      },
+      "display": {
+        "name": "Ballena primitiva",
+        "species": "cf. Chonecetus goedertorum · Oligoceno",
+        "facts": [
+          "Cráneo de una ballena de hace ~25-28 millones de años, <strong>cercana al origen de las ballenas barbadas</strong>.",
+          "Aún conservaba <strong>dientes</strong>; sus descendientes los cambiarían por barbas para filtrar.",
+          "Escaneo real del NMNH · dominio público (CC0)."
+        ]
+      },
+      "output": {
+        "bytes": 1126512
+      }
+    },
+    {
+      "id": "isthminia",
+      "hall": "ocean",
+      "pedestal": "ocean-c",
+      "source": {
+        "archive": "Smithsonian · escaneo del original",
+        "license": "CC0",
+        "uri": "https://3d-api.si.edu/content/document/3d_package:8a3dc218-7fdd-44cf-8d97-2ba2cc3d92e0/fossil-dolphin-(skull)-150k-2048-medium.glb"
+      },
+      "simplifyError": 0.001,
+      "calibration": {
+        "upAxisFix": 0,
+        "roll": 0,
+        "pitch": 0,
+        "yaw": -0.2,
+        "size": 0.82,
+        "yOffset": 0
+      },
+      "display": {
+        "name": "Isthminia",
+        "species": "Isthminia panamensis · Mioceno",
+        "facts": [
+          "Delfín fósil de Panamá (~6 millones de años), <strong>descrito en 2015 a partir de este ejemplar</strong>.",
+          "Pariente cercano del <strong>delfín rosado del Amazonas</strong> — pero este aún vivía en el mar.",
+          "Escaneo real del NMNH · dominio público (CC0)."
+        ]
+      },
+      "output": {
+        "bytes": 652524
+      }
+    },
+    {
+      "id": "leptophoca",
+      "hall": "ocean",
+      "pedestal": "ocean-d",
+      "source": {
+        "archive": "Smithsonian · escaneo del original",
+        "license": "CC0",
+        "uri": "https://3d-api.si.edu/content/document/3d_package:e45041be-c65c-4430-b882-0a86aff69c26/Leptophoca_lenis_True-150k-2048-medium.glb"
+      },
+      "simplifyError": 0.001,
+      "calibration": {
+        "upAxisFix": -1.5707963267948966,
+        "roll": 0,
+        "pitch": 0,
+        "yaw": 0,
+        "size": 0.62,
+        "yOffset": 0
+      },
+      "display": {
+        "name": "Foca del Mioceno",
+        "species": "Leptophoca lenis · ~17 Ma",
+        "facts": [
+          "El regreso al mar <strong>no ocurrió una sola vez</strong>: las focas son otro linaje que volvió por su cuenta.",
+          "Cetáceos, sirenios y pinnípedos hicieron el mismo viaje <strong>por caminos separados</strong>.",
+          "Escaneo real del NMNH · dominio público (CC0)."
+        ]
+      },
+      "output": {
+        "bytes": 937052
+      }
+    },
+    {
+      "id": "pilot-whale",
+      "hall": "ocean",
+      "pedestal": "ocean-e",
+      "source": {
+        "archive": "Smithsonian · escaneo del original",
+        "license": "CC0",
+        "uri": "https://3d-api.si.edu/content/document/3d_package:a8ab02ba-bcae-470a-9df4-db1265b25905/VZ20957-150k-2048-medium.glb"
+      },
+      "simplifyError": 0.001,
+      "calibration": {
+        "upAxisFix": 0,
+        "roll": 0,
+        "pitch": 0,
+        "yaw": 3.1416,
+        "size": 2.4,
+        "yOffset": 0
+      },
+      "display": {
+        "name": "Calderón común",
+        "species": "Globicephala melas · el presente",
+        "facts": [
+          "El punto de llegada: <strong>50 millones de años después</strong>, los descendientes de aquellos artiodáctilos viven enteramente en el mar.",
+          "Respiran aire, amamantan a sus crías — y navegan con <strong>ecolocalización</strong>.",
+          "Cráneo y mandíbula reales del NMNH · dominio público (CC0)."
+        ]
+      },
+      "output": {
+        "bytes": 487588
+      }
+    },
+    {
+      "id": "mosasaur",
+      "hall": "ocean",
+      "pedestal": "ocean-f",
+      "source": {
+        "archive": "ESU Earth Science · Johnston Geology Museum · Sketchfab",
+        "uri": "sketchfab:0e33035bf91748f39d8a261a31cc22da",
+        "license": "CC BY 4.0"
+      },
+      "simplifyError": 0.001,
+      "calibration": {
+        "upAxisFix": 0,
+        "roll": 0,
+        "pitch": 0,
+        "yaw": 0,
+        "size": 4.5,
+        "yOffset": 0
+      },
+      "display": {
+        "name": "Mosasaurio",
+        "species": "Mosasaurio · Cretácico · el prólogo",
+        "facts": [
+          "Antes que los mamíferos, <strong>los reptiles hicieron el mismo viaje</strong>: este depredador marino del Cretácico desciende de lagartos terrestres.",
+          "Fósil real hallado en Kansas en 1967, hoy en el Johnston Geology Museum.",
+          "Escaneo de <strong>ESUEarthSci</strong> · CC BY 4.0."
+        ]
       }
     }
   ]

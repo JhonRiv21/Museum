@@ -85,8 +85,8 @@ export class Exhibits {
     return this.pieces.find((p) => p.info.id === id);
   }
 
-  centers(): THREE.Vector3[] {
-    return this.pieces.map((p) => p.center);
+  centers(): { point: THREE.Vector3; radius: number }[] {
+    return this.pieces.map((p) => ({ point: p.center, radius: p.radius }));
   }
 
   private highlight(piece: Piece | null) {

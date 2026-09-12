@@ -54,13 +54,17 @@ export function buildStage(scene: THREE.Scene): Pedestal[] {
     // T. rex facing each other across the open aisle.
     ["paleo-f", -4.9, 5, 5],
     ["paleo-g", 4.6, 1.6, 2.2],
-    ["paleo-platform", -5.2, -4, 5],
-    ["paleo-e", 5.2, -4, 5],
+    ["paleo-platform", -5.2, -5.9, 5],
+    ["paleo-e", 5.2, -2.4, 5],
     ["paleo-a", -5, -7.6, 1.1], ["paleo-b", 5, -7.6, 1.1],
     ["paleo-c", -5, -10, 1.1], ["paleo-d", 5, -10, 1.1],
-    ["flight-a", -5, -19, 1.1], ["flight-b", 5, -19, 1.1],
-    ["flight-c", -5, -29, 1.1], ["flight-d", 5, -29, 1.1],
-    ["ocean-a", -5, -43, 1.1], ["ocean-b", 5, -43, 1.1], ["ocean-c", 0, -51, 1.1],
+    ["flight-a", -5, -16, 1.1], ["flight-b", 5, -16, 1.1],
+    ["flight-c", -5.4, -25, 5.8],
+    ["flight-d", 5.2, -25, 5],
+    ["ocean-a", -5, -40.5, 1.1], ["ocean-b", 5, -40.5, 1.1],
+    ["ocean-c", -5, -45.5, 1.1], ["ocean-d", 5, -45.5, 1.1],
+    ["ocean-e", 0, -52, 4],
+    ["ocean-f", -5.4, -50, 5],
   ];
 
   const pedestals: Pedestal[] = [];
@@ -69,37 +73,99 @@ export function buildStage(scene: THREE.Scene): Pedestal[] {
     const depth = width > 4 ? 3.6 : width > 2 ? 2.8 : width;
     box(scene, PLINTH, width, height, depth, x, height / 2, z);
     pedestals.push({ id, position: new THREE.Vector3(x, height, z), width });
-
-    const spot = new THREE.SpotLight(0xffe2b8, 60, 12, 0.5, 0.65, 1.2);
-    spot.position.set(x, HEIGHT - 0.3, z);
-    spot.target.position.set(x, 0, z);
-    scene.add(spot, spot.target);
-
-    // The platform's overhead cone only reaches the piece's back: cross fills
-    // light the ends (skull and tail) at eye level. Center platforms get a
-    // symmetric cross from the walkway; wall-side platforms are lit from the
-    // aisle, since their far side is inside the wall.
-    if (width > 2) {
-      const aisle = Math.abs(x) < 0.1 ? 0 : x > 0 ? -1 : 1;
-      const fills: [number, number, number, number][] = aisle === 0
-        ? [[-4.2, 2.6, -1.7, 0], [4.2, 2.6, 1.7, 0]]
-        : [[aisle * 3.8, 2.2, -aisle * 0.6, 0.6], [aisle * 3.8, -2.2, -aisle * 0.6, -0.6]];
-      for (const [fx, fz, tx, tz] of fills) {
-        const fill = new THREE.SpotLight(0xffe2b8, 26, 11, 0.6, 0.85, 1.1);
-        fill.position.set(x + fx, 3.4, z + fz);
-        fill.target.position.set(x + tx, 1.2, z + tz);
-        scene.add(fill, fill.target);
-      }
-    }
   }
+  buildLightRig(scene, pedestals);
 
-  scene.add(new THREE.HemisphereLight(0x8899bb, 0x0c1016, 0.45));
+  scene.add(new THREE.HemisphereLight(0x9aaccc, 0x14191f, 0.75));
   scene.fog = new THREE.Fog(0x0a0e14, 18, 55);
   scene.background = new THREE.Color(0x0a0e14);
 
   addHallSigns(scene);
 
   return pedestals;
+}
+
+
+// Lighting rig: a FIXED pool of lights that follows the visitor instead of one
+// light per pedestal. Three.js evaluates every light against every material in
+// the fragment shader, so a light per pedestal is O(lights x meshes) and tanks
+// the framerate. Keeping the pool size constant also avoids shader recompiles
+// (which a visible=false toggle would trigger on every reassignment).
+const SPOT_UNITS = 8;   // key lights, one per nearby pedestal
+const FILL_UNITS = 6;   // cross fills: 2 per wide platform, 3 platforms at once
+
+type SpotUnit = { light: THREE.SpotLight; target: THREE.Object3D; pedestal: Pedestal | null };
+const spotUnits: SpotUnit[] = [];
+const fillUnits: SpotUnit[] = [];
+let rigPedestals: Pedestal[] = [];
+
+function makeUnit(scene: THREE.Scene, intensity: number, distance: number, angle: number, penumbra: number): SpotUnit {
+  const light = new THREE.SpotLight(0xffe2b8, intensity, distance, angle, penumbra, 1.2);
+  light.intensity = 0;
+  scene.add(light, light.target);
+  return { light, target: light.target, pedestal: null };
+}
+
+function buildLightRig(scene: THREE.Scene, pedestals: Pedestal[]) {
+  rigPedestals = pedestals;
+  for (let i = 0; i < SPOT_UNITS; i++) spotUnits.push(makeUnit(scene, 70, 14, 0.8, 0.7));
+  for (let i = 0; i < FILL_UNITS; i++) fillUnits.push(makeUnit(scene, 30, 13, 0.85, 0.9));
+}
+
+function aimSpot(unit: SpotUnit, pedestal: Pedestal) {
+  const { x, z } = pedestal.position;
+  unit.light.position.set(x, HEIGHT - 0.3, z);
+  unit.target.position.set(x, 0, z);
+  unit.light.intensity = 70;
+  unit.pedestal = pedestal;
+}
+
+// Cross fills for wide platforms: the overhead cone only reaches the piece's
+// back, so these light the ends (skull and tail) at eye level from the aisle.
+function aimFills(wides: Pedestal[]) {
+  for (const unit of fillUnits) unit.light.intensity = 0;
+  wides.slice(0, FILL_UNITS / 2).forEach((pedestal, w) => {
+    const { x, z } = pedestal.position;
+    const aisle = Math.abs(x) < 0.1 ? 0 : x > 0 ? -1 : 1;
+    const layout: [number, number, number, number][] = aisle === 0
+      ? [[-4.2, 2.6, -1.7, 0], [4.2, 2.6, 1.7, 0]]
+      : [[aisle * 3.8, 2.2, -aisle * 0.6, 0.6], [aisle * 3.8, -2.2, -aisle * 0.6, -0.6]];
+    for (let i = 0; i < 2; i++) {
+      const unit = fillUnits[w * 2 + i];
+      const [fx, fz, tx, tz] = layout[i];
+      unit.light.position.set(x + fx, 3.4, z + fz);
+      unit.target.position.set(x + tx, 1.2, z + tz);
+      unit.light.intensity = 30;
+      unit.pedestal = pedestal;
+    }
+  });
+}
+
+// Reassign the pool to the pedestals nearest the camera. Cheap enough to run
+// every frame, but only touches lights when the selection actually changes.
+export function updateLights(camera: THREE.Camera) {
+  const byDistance = rigPedestals
+    .map((p) => ({ p, d: p.position.distanceToSquared(camera.position) }))
+    .sort((a, b) => a.d - b.d);
+
+  const chosen = byDistance.slice(0, SPOT_UNITS).map((e) => e.p);
+  for (const pedestal of chosen) {
+    if (spotUnits.some((u) => u.pedestal === pedestal)) continue;
+    const free = spotUnits.find((u) => !u.pedestal || !chosen.includes(u.pedestal));
+    if (free) aimSpot(free, pedestal);
+  }
+  for (const unit of spotUnits) {
+    if (unit.pedestal && !chosen.includes(unit.pedestal)) {
+      unit.light.intensity = 0;
+      unit.pedestal = null;
+    }
+  }
+
+  const wides = chosen.filter((p) => p.width > 2);
+  const current = fillUnits.map((u) => u.pedestal).filter(Boolean);
+  const changed = wides.length !== new Set(current).size
+    || wides.some((p) => !current.includes(p));
+  if (changed) aimFills(wides);
 }
 
 // Physical signage: a hanging plaque over each hall entrance, so the visitor

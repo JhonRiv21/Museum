@@ -1,8 +1,8 @@
 import * as THREE from "three";
-import { buildStage, createDust, animateDust, updateSigns, addNamePlate, type Pedestal } from "./stage";
+import { buildStage, createDust, animateDust, updateSigns, updateLights, addNamePlate, type Pedestal } from "./stage";
 import { Rail } from "./rail";
 import { Exhibits } from "./exhibits";
-import { loadHall } from "./loader";
+import { loadHall, loadHallSilently } from "./loader";
 import { MANIFEST, PLACEHOLDER, HALLS, pieceInfo, hallName, type Calibration } from "./data";
 
 const app = document.getElementById("app") as HTMLElement;
@@ -101,22 +101,68 @@ pedestals
     exhibits.register(shape, { ...PLACEHOLDER, id: `placeholder-${pedestal.id}` });
   });
 
-// Real pieces, hall by hall, with one aggregated loading pass.
-async function loadPaleoHall() {
-  const pieces = readyPieces.filter((p) => p.hall === "paleo");
+// Resolves once the rail has been still for a moment (or after a long wait,
+// so the halls still arrive for a visitor who never scrolls).
+function whenCalm(): Promise<void> {
+  return new Promise((go) => {
+    const deadline = performance.now() + 15000;
+    let stillSince = 0;
+    let last = rail.t;
+    const check = () => {
+      const moved = Math.abs(rail.t - last) > 1e-4;
+      last = rail.t;
+      const now = performance.now();
+      if (moved) stillSince = 0;
+      else if (!stillSince) stillSince = now;
+      if ((stillSince && now - stillSince > 500) || now > deadline) go();
+      else requestAnimationFrame(check);
+    };
+    check();
+  });
+}
+
+// Real pieces, hall by hall. Hall I gets the loading overlay; the rest are
+// fetched silently in the background while the visitor tours.
+function placePiece(gltf: { scene: THREE.Object3D }, piece: (typeof readyPieces)[number]) {
+  const pedestal = pedestalById.get(piece.pedestal);
+  if (!pedestal) return null;
+  const mount = mountPiece(gltf.scene, piece.id, piece.calibration, pedestal);
+  exhibits.register(mount, pieceInfo(piece));
+  addNamePlate(scene, piece.display.name, pedestal);
+  return mount;
+}
+
+// A material's shader is compiled the first time it renders — with this many
+// lights that costs over 100 ms on the main thread, which is exactly the
+// hitch felt while walking. compileAsync does it off the critical path
+// (parallel shader compile) before the piece is ever shown.
+async function placeQuietly(gltf: { scene: THREE.Object3D }, piece: (typeof readyPieces)[number]) {
+  const mount = placePiece(gltf, piece);
+  if (!mount) return;
+  mount.visible = false;
+  await renderer.compileAsync(mount, camera, scene);
+  mount.visible = true;
+}
+
+async function loadHalls() {
+  const paleo = readyPieces.filter((p) => p.hall === "paleo");
   await loadHall(
     hallName("paleo"),
-    pieces.map((p) => ({ url: `/models/${p.id}.glb`, bytes: p.output?.bytes ?? 1 })),
-    (gltf, i) => {
-      const piece = pieces[i];
-      const pedestal = pedestalById.get(piece.pedestal);
-      if (!pedestal) return;
-      const mount = mountPiece(gltf.scene, piece.id, piece.calibration, pedestal);
-      exhibits.register(mount, pieceInfo(piece));
-      addNamePlate(scene, piece.display.name, pedestal);
-    },
+    paleo.map((p) => ({ url: `/models/${p.id}.glb`, bytes: p.output?.bytes ?? 1 })),
+    (gltf, i) => placePiece(gltf, paleo[i]),
   );
   rail.setPOIs(exhibits.centers());
+
+  for (const hallId of ["flight", "ocean"]) {
+    const pieces = readyPieces.filter((p) => p.hall === hallId);
+    if (!pieces.length) continue;
+    await loadHallSilently(
+      pieces.map((p) => ({ url: `/models/${p.id}.glb`, bytes: p.output?.bytes ?? 1 })),
+      (gltf, i) => void placeQuietly(gltf, pieces[i]),
+      whenCalm,
+    );
+    rail.setPOIs(exhibits.centers());
+  }
 }
 
 // Bottom navigation buttons (Google Maps style): tour steps on the rail,
@@ -173,19 +219,21 @@ function updateHallLabel() {
   if (hallLabel.textContent !== hall.name) hallLabel.textContent = hall.name;
 }
 
-const clock = new THREE.Clock();
+const timer = new THREE.Timer();
 renderer.setAnimationLoop(() => {
-  const dt = Math.min(clock.getDelta(), 0.05);
+  timer.update();
+  const dt = Math.min(timer.getDelta(), 0.05);
   rail.update(camera, dt);
   exhibits.update();
   animateDust(dust, dt);
   updateHallLabel();
   updateNav();
   updateSigns(camera);
+  updateLights(camera);
   renderer.render(scene, camera);
 });
 
-void loadPaleoHall();
+void loadHalls();
 
 // Debug hooks for automated tests and the calibration workflow:
 //   __calibrate("mammoth-molar", { yaw: 1.2, size: 0.4 })

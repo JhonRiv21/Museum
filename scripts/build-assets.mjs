@@ -37,7 +37,7 @@ async function download(piece) {
 
   // Manually-sourced pieces: the file is dropped by hand into
   // assets/originals as <id>.glb or <id>/scene.gltf.
-  if (piece.source.uri.startsWith("manual:")) {
+  if (piece.source.uri?.startsWith("manual:")) {
     const extracted = join(originalsDir, piece.id, "scene.gltf");
     if (existsSync(extracted)) return extracted;
     console.log(`  ${piece.id}: falta el archivo manual (${piece.source.uri.slice(7)}) — omitida`);
@@ -46,7 +46,7 @@ async function download(piece) {
 
   // Sketchfab pieces: downloaded through the official Download API using the
   // owner's token (SKETCHFAB_TOKEN in .env). The zip contains scene.gltf.
-  if (piece.source.uri.startsWith("sketchfab:")) {
+  if (piece.source.uri?.startsWith("sketchfab:")) {
     const extracted = join(originalsDir, piece.id, "scene.gltf");
     if (existsSync(extracted)) return extracted;
     const token = process.env.SKETCHFAB_TOKEN;
@@ -76,6 +76,25 @@ async function download(piece) {
     execFileSync("unzip", ["-o", "-q", zip, "-d", join(originalsDir, piece.id)]);
     console.log(`${mb(statSync(zip).size)} MB (gltf zip)`);
     return extracted;
+  }
+
+  // Multi-part scans (e.g. Wright Flyer wings+engine, Apollo shell+top):
+  // download every part and merge them into a single glb before optimizing.
+  if (Array.isArray(piece.source.uris)) {
+    process.stdout.write(`  descargando ${piece.id} (${piece.source.uris.length} partes)… `);
+    const parts = [];
+    for (let i = 0; i < piece.source.uris.length; i++) {
+      const part = join(originalsDir, `${piece.id}-part${i}.glb`);
+      if (!existsSync(part)) {
+        const res = await fetch(piece.source.uris[i]);
+        if (!res.ok) throw new Error(`HTTP ${res.status} para ${piece.id} parte ${i}`);
+        writeFileSync(part, Buffer.from(await res.arrayBuffer()));
+      }
+      parts.push(part);
+    }
+    execFileSync("npx", ["gltf-transform", "merge", ...parts, file, "--merge-scenes"], { stdio: "pipe" });
+    console.log(`${mb(statSync(file).size)} MB (fusionadas)`);
+    return file;
   }
 
   process.stdout.write(`  descargando ${piece.id}… `);
