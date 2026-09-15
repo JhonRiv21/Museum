@@ -13,6 +13,8 @@ const WALL = new THREE.MeshStandardMaterial({ color: 0x1b2430, roughness: 0.95 }
 const FLOOR = new THREE.MeshStandardMaterial({ color: 0x11161e, roughness: 0.85 });
 const PLINTH = new THREE.MeshStandardMaterial({ color: 0x232d3b, roughness: 0.7 });
 
+const PARTITIONS = [-17.5, -36];
+
 const HEIGHT = 5.2;
 const WIDTH = 21;
 const Z_START = 15;
@@ -42,7 +44,7 @@ export function buildStage(scene: THREE.Scene): Pedestal[] {
   box(scene, WALL, WIDTH, HEIGHT, 0.4, 0, HEIGHT / 2, Z_END);
 
   // Partial partitions between halls, leaving a central 5-unit opening.
-  for (const z of [-17.5, -36]) {
+  for (const z of PARTITIONS) {
     const offset = (WIDTH / 2 - 2.5) / 2 + 2.5;
     box(scene, WALL, WIDTH / 2 - 2.5, HEIGHT, 0.4, -offset, HEIGHT / 2, z);
     box(scene, WALL, WIDTH / 2 - 2.5, HEIGHT, 0.4, offset, HEIGHT / 2, z);
@@ -218,6 +220,15 @@ function makeSignTexture(kicker: string, title: string): THREE.CanvasTexture {
 }
 
 const plaques: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial>[] = [];
+
+// How much room the orbit camera has around a point before it would reach a
+// wall or a hall partition. The old flat 4.8 m cap only knew about the side
+// walls, so orbiting a piece parked near a partition went straight through it.
+export function clearance(point: THREE.Vector3): number {
+  let room = Math.min(WIDTH / 2 - Math.abs(point.x), Z_START - point.z, point.z - Z_END);
+  for (const z of PARTITIONS) room = Math.min(room, Math.abs(point.z - z));
+  return room;
+}
 
 function addHallSigns(scene: THREE.Scene) {
   const rodMaterial = new THREE.MeshStandardMaterial({ color: 0x2a3648, roughness: 0.5 });

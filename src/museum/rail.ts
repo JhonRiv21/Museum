@@ -189,7 +189,7 @@ export class Rail {
   private static readonly FADE = 0.04;
   private static readonly RELEASE = 0.006;
   private static readonly BLUR_PASSES = 3;
-  private static readonly BLUR_RADIUS = 9; // samples each side, ~3 m of track
+  private static readonly BLUR_METRES = 1.17;
 
   // Raw target before smoothing: the same itinerary rules as before, but
   // stateless — for a given t the governing stop is simply the first one not
@@ -231,7 +231,8 @@ export class Rail {
     }
 
     // Separable box blur, repeated — cheap and converges on a gaussian.
-    const radius = Rail.BLUR_RADIUS;
+    const metresPerSample = this.curve.getLength() / n;
+    const radius = Math.max(1, Math.round(Rail.BLUR_METRES / metresPerSample));
     for (let pass = 0; pass < Rail.BLUR_PASSES; pass++) {
       const next: THREE.Vector3[] = [];
       for (let i = 0; i <= n; i++) {

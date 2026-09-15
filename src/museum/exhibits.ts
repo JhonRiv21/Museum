@@ -2,6 +2,7 @@ import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import type { Rail } from "./rail";
 import type { PieceInfo } from "./data";
+import { clearance } from "./stage";
 
 // Exhibited pieces and the tour state machine:
 // rail <-> (animated camera flight) <-> exhibit with free orbit.
@@ -159,9 +160,9 @@ export class Exhibits {
     this.highlight(null);
 
     // Orbit anchor: horizontal direction from the piece toward the camera.
-    // Max distance capped in absolute terms so big pieces cannot push the
-    // camera through the hall walls.
-    const maxDistance = Math.min(piece.radius * 4, 4.8);
+    const room = Math.max(clearance(piece.center) - 0.7, 1.5);
+    const maxDistance = Math.min(piece.radius * 4, 4.8, room);
+    const minDistance = Math.min(piece.radius * 1.2, maxDistance * 0.85);
     const distance = Math.min(piece.radius * 2.4, maxDistance * 0.95);
     const direction = this.camera.position.clone().sub(piece.center);
     direction.y = 0;
@@ -174,7 +175,7 @@ export class Exhibits {
     await this.flyTo(target, piece.center, 1100);
 
     this.controls.target.copy(piece.center);
-    this.controls.minDistance = piece.radius * 1.2;
+    this.controls.minDistance = minDistance;
     this.controls.maxDistance = maxDistance;
     this.controls.enabled = true;
     this.state = "exhibit";
