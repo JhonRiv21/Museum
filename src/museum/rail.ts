@@ -27,7 +27,7 @@ const POINTS: [number, number, number][] = [
 // so an aggressive flick walks the tour instead of teleporting. Forward is
 // deliberately slower than backward — advancing is the guided visit and needs
 // time for the gaze beats; going back is just a correction.
-const MAX_LEAD_FORWARD = 0.028;
+const MAX_LEAD_FORWARD = 0.034;
 
 // Reused scratch vectors: poseAt runs every frame, and cloning here was a
 // steady drip of garbage straight into the GC.
@@ -99,10 +99,6 @@ export class Rail {
   // No competition, no side glances — one piece gets full focus, is released,
   // and only then does the following piece exist for the camera.
   private stops: { point: THREE.Vector3; at: number }[] = [];
-  private nextStop = 0;
-  private gazeDirection: THREE.Vector3 | null = null;
-  private currentPOI: THREE.Vector3 | null = null;
-  private lastT = 0;
 
   setPOIs(points: { point: THREE.Vector3; radius: number }[]) {
     // Order stops by DEPTH along the hall, not by nearest point on the curve:
@@ -169,99 +165,108 @@ export class Rail {
     flush();
 
     this.stops = spaced;
-    this.nextStop = 0;
+    this.bakeGaze();
   }
 
-  // cruise: 0 strolling, 1 at full speed. Fast travel damps the exhibit gaze
-  // so the camera simply looks down the path instead of whipping sideways.
-  poseAt(t: number, cruise = 0): { position: THREE.Vector3; lookTarget: THREE.Vector3 } {
-    const tc = THREE.MathUtils.clamp(t, 0, 0.995);
+  // --- Gaze as a pure function of position -------------------------------
+  //
+  // The camera's orientation is BAKED against the rail, not integrated over
+  // time. A time-based smoother (gazeDirection.lerp(desired, dt * k)) moves
+  // fastest at the very start of every transition and lags behind the input —
+  // which is precisely what reads as whiplash and as the camera fighting you.
+  //
+  // Instead the look-at target is precomputed for the whole tour and then
+  // blurred ONCE along the track. Blurring in track space rounds the corners
+  // of each turn while leaving its peak intact, so the exhibits stay framed;
+  // blurring in time would only ever lag and never arrive. At runtime the
+  // camera simply samples the baked curve: scroll fast and it pans fast but
+  // smoothly, stop and it stops dead, scroll back and it retraces exactly.
+  private gaze: THREE.Vector3[] = [];
+
+  private static readonly SAMPLES = 640;
+  private static readonly APPROACH = 0.19;
+  private static readonly FULL = 0.105;
+  private static readonly FADE = 0.04;
+  private static readonly RELEASE = 0.006;
+  private static readonly BLUR_PASSES = 3;
+  private static readonly BLUR_RADIUS = 9; // samples each side, ~3 m of track
+
+  // Raw target before smoothing: the same itinerary rules as before, but
+  // stateless — for a given t the governing stop is simply the first one not
+  // yet passed, so it can be evaluated in any order while baking.
+  private rawTarget(tc: number, out: THREE.Vector3): THREE.Vector3 {
     const position = this.curve.getPointAt(tc, _pos);
-    const ahead = this.curve.getPointAt(Math.min(tc + 0.02, 1), _ahead);
-    const forward = _forward.copy(ahead).sub(position).setY(0).normalize();
+    // A far look-ahead keeps the base target well in front of the camera: a
+    // target only a metre away sweeps a huge angle for a small move, which is
+    // what made the baked turns spike even at a walking pace.
+    const ahead = this.curve.getPointAt(Math.min(tc + 0.07, 1), _ahead);
 
-    // Entrance breather: the first steps look straight ahead so the visitor
-    // reads the hall sign before the first exhibit claims the gaze.
-    if (tc < 0.035) return { position, lookTarget: ahead };
+    if (!this.stops.length) return out.copy(ahead);
 
-    // End of the tour: settle the gaze on the closest piece instead of
-    // letting the camera drift onto the back wall.
-    if (tc >= 0.93 && this.stops.length) {
+    if (tc >= 0.93) {
       let nearest = this.stops[0].point;
       for (const stop of this.stops) {
         if (stop.point.distanceTo(position) < nearest.distanceTo(position)) {
           nearest = stop.point;
         }
       }
-      return { position, lookTarget: _look.copy(ahead).lerp(nearest, 0.55) };
+      return out.copy(ahead).lerp(nearest, 0.55);
     }
 
-    // Strict itinerary, driven by position ALONG THE RAIL rather than 3D
-    // distance: each stop owns a window that opens before it and closes just
-    // after, so engagement is monotonic and cannot flicker or ping-pong.
-    // The beat plays on APPROACH and fades before the closest pass: at the
-    // nearest point a 5 m skeleton no longer fits the frame, and looking
-    // sideways at something you are already beside feels unnatural.
-    const APPROACH = 0.145;  // window opens this far before the stop
-    const FULL = 0.088;      // fully engaged from here
-    const FADE = 0.028;      // starts letting go here
-    const RELEASE = 0.006;   // free again just before passing
+    const stop = this.stops.find((s) => tc <= s.at + Rail.RELEASE);
+    if (!stop || tc <= stop.at - Rail.APPROACH) return out.copy(ahead);
 
-    // Only resync backward when the visitor is actually walking back.
-    if (tc < this.lastT - 1e-4) {
-      while (this.nextStop > 0 && tc < this.stops[this.nextStop - 1].at - RELEASE) {
-        this.nextStop--;
+    const weight =
+      THREE.MathUtils.smoothstep(tc, stop.at - Rail.APPROACH, stop.at - Rail.FULL) *
+      (1 - THREE.MathUtils.smoothstep(tc, stop.at - Rail.FADE, stop.at - Rail.RELEASE));
+
+    return out.copy(ahead).lerp(stop.point, Math.min(weight, 1));
+  }
+
+  private bakeGaze() {
+    const n = Rail.SAMPLES;
+    let buffer: THREE.Vector3[] = [];
+    for (let i = 0; i <= n; i++) {
+      buffer.push(this.rawTarget(Math.min(i / n, 0.995), new THREE.Vector3()));
+    }
+
+    // Separable box blur, repeated — cheap and converges on a gaussian.
+    const radius = Rail.BLUR_RADIUS;
+    for (let pass = 0; pass < Rail.BLUR_PASSES; pass++) {
+      const next: THREE.Vector3[] = [];
+      for (let i = 0; i <= n; i++) {
+        const acc = new THREE.Vector3();
+        let count = 0;
+        for (let k = -radius; k <= radius; k++) {
+          const j = THREE.MathUtils.clamp(i + k, 0, n);
+          acc.add(buffer[j]);
+          count++;
+        }
+        next.push(acc.divideScalar(count));
       }
+      buffer = next;
     }
-    this.lastT = tc;
+    this.gaze = buffer;
+  }
 
-    // Skip any stop already left behind.
-    while (this.nextStop < this.stops.length && tc > this.stops[this.nextStop].at + RELEASE) {
-      this.nextStop++;
-    }
-
-    const stop = this.stops[this.nextStop];
-    let bestWeight = 0;
-    if (stop && tc > stop.at - APPROACH) {
-      bestWeight =
-        THREE.MathUtils.smoothstep(tc, stop.at - APPROACH, stop.at - FULL) *
-        (1 - THREE.MathUtils.smoothstep(tc, stop.at - FADE, stop.at - RELEASE));
-      this.currentPOI = bestWeight > 0.02 ? stop.point : null;
-    } else {
-      this.currentPOI = null;
+  poseAt(t: number): { position: THREE.Vector3; lookTarget: THREE.Vector3 } {
+    const tc = THREE.MathUtils.clamp(t, 0, 0.995);
+    const position = this.curve.getPointAt(tc, _pos);
+    if (!this.gaze.length) {
+      return { position, lookTarget: this.curve.getPointAt(Math.min(tc + 0.02, 1), _ahead) };
     }
 
-    // Cruise damping only bites at true flick speeds; a normal stroll or a
-    // held button keeps the full museum gaze.
-    const flick = THREE.MathUtils.smoothstep(cruise, 0.55, 1);
-    const gazeStrength = Math.min(bestWeight, 1) * 0.85 * (1 - flick * 0.75);
-    const lookTarget = this.currentPOI
-      ? _look.copy(ahead).lerp(this.currentPOI, gazeStrength)
-      : ahead;
+    const x = tc * Rail.SAMPLES;
+    const i = Math.min(Rail.SAMPLES - 1, Math.floor(x));
+    const lookTarget = _look.copy(this.gaze[i]).lerp(this.gaze[i + 1], x - i);
     return { position, lookTarget };
   }
 
   update(camera: THREE.PerspectiveCamera, dt: number) {
     if (!this.active) return;
-    this.t += (this.target - this.t) * Math.min(1, dt * 2.2);
-    const cruise = THREE.MathUtils.clamp(
-      Math.abs(this.target - this.t) / MAX_LEAD_FORWARD,
-      0,
-      1,
-    );
-    const { position, lookTarget } = this.poseAt(this.t, cruise);
-
-    // Smooth the gaze as a DIRECTION, never as a point in space: a lagging
-    // point can end up beside the camera and slam the view into the floor.
-    const desired = lookTarget.sub(position).normalize();
-    if (!this.gazeDirection) this.gazeDirection = desired.clone();
-    this.gazeDirection.lerp(desired, Math.min(1, dt * 3.2)).normalize();
-
+    this.t += (this.target - this.t) * Math.min(1, dt * 1.25);
+    const { position, lookTarget } = this.poseAt(this.t);
     camera.position.copy(position);
-    camera.lookAt(
-      position.x + this.gazeDirection.x * 6,
-      position.y + this.gazeDirection.y * 6,
-      position.z + this.gazeDirection.z * 6,
-    );
+    camera.lookAt(lookTarget);
   }
 }
