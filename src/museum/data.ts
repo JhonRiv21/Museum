@@ -39,5 +39,5 @@ export const HALLS = [
   { name: "Vestíbulo", untilZ: 4 },
   { name: hallName("paleo"), untilZ: -17.5 },
   { name: hallName("flight"), untilZ: -36 },
-  { name: hallName("ocean"), untilZ: -Infinity },
+  { name: hallName("ancient"), untilZ: -Infinity },
 ];

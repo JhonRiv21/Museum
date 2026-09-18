@@ -18,7 +18,7 @@ const PARTITIONS = [-17.5, -36];
 const HEIGHT = 5.2;
 const WIDTH = 21;
 const Z_START = 15;
-const Z_END = -57;
+const Z_END = -61;
 
 function box(
   scene: THREE.Scene,
@@ -63,9 +63,20 @@ export function buildStage(scene: THREE.Scene): Pedestal[] {
     ["flight-a", -3.3, -20.5, 1.1], ["flight-b", 3.3, -24, 1.1],
     ["flight-c", -5.4, -28.5, 5.8],
     ["flight-d", 5.2, -32, 5],
-    ["ocean-a", -3.3, -40.5, 1.1], ["ocean-b", 3.3, -41.6, 1.1],
-    ["ocean-c", -3.3, -45.5, 1.1], ["ocean-d", 3.3, -46.6, 1.1],
-    ["ocean-e", 0, -52, 4],
+    // Hall III alternates sides like hall I. The Assyrian panel faces the
+    // Louvre group across the aisle so neither half of the hall reads as empty.
+    // Hall III is a hall of human-scale objects: a 1.3 m statue seen from the
+    // 5 m that suited a mounted dinosaur is a speck. The pedestals sit closer
+    // to the aisle so the visitor walks past them the way they would in a real
+    // gallery — only the Louvre group, at 3.15 m, keeps its distance.
+    ["ancient-a", -3.4, -40.5, 3],
+    ["ancient-b", 2.9, -44, 1.1],
+    ["ancient-c", -5.4, -47.5, 5.8],
+    ["ancient-f", 4.4, -50.5, 2.6],
+    ["ancient-d", -2.9, -53.5, 1.1],
+    // The tour ends facing the Buddha rather than beside it: the rail stops
+    // 2.5 m short so the piece is seen whole, which is the point of a finale.
+    ["ancient-e", 0, -57, 4],
   ];
 
   const pedestals: Pedestal[] = [];
@@ -251,7 +262,7 @@ function addHallSigns(scene: THREE.Scene) {
 
   const doorwaySigns = [
     { kicker: "Sala II", title: "Vuelo y espacio", z: -17.2 },
-    { kicker: "Sala III", title: "El regreso al mar", z: -35.7 },
+    { kicker: "Sala III", title: "Civilizaciones antiguas", z: -35.7 },
   ];
   for (const sign of doorwaySigns) {
     for (const x of [-4.2, 4.2]) {

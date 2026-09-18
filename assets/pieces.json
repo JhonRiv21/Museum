@@ -11,9 +11,9 @@
       "budgetMB": 9
     },
     {
-      "id": "ocean",
-      "name": "Sala III · El regreso al mar",
-      "budgetMB": 8
+      "id": "ancient",
+      "name": "Sala III · Civilizaciones antiguas",
+      "budgetMB": 10
     }
   ],
   "pieces": [
@@ -423,193 +423,204 @@
       "textureSize": 2048
     },
     {
-      "id": "deer-skull",
-      "hall": "ocean",
-      "pedestal": "ocean-a",
+      "id": "ramesses-iii",
+      "hall": "ancient",
+      "pedestal": "ancient-a",
       "source": {
-        "archive": "Smithsonian · escaneo del original",
-        "license": "CC0",
-        "uri": "https://3d-api.si.edu/content/document/3d_package:fcc69841-d8be-4103-be0f-143e374c9ce6/PALDEERSKULL-150k-2048-medium.glb"
+        "archive": "Abby Gancz · Museo de Israel · Sketchfab",
+        "uri": "manual:statue-of-ramesses-iii",
+        "license": "CC BY 4.0"
       },
-      "simplifyError": 0.001,
+      "simplifyError": 0.0001,
       "calibration": {
         "upAxisFix": 0,
         "roll": 0,
         "pitch": 0,
-        "yaw": 0.5,
-        "size": 0.7,
+        "yaw": 1.5708,
+        "size": 1.3,
         "yOffset": 0
       },
       "display": {
-        "name": "Ciervo de cola blanca",
-        "species": "Artiodáctilo terrestre · el punto de partida",
+        "name": "Ramsés III",
+        "species": "Egipto · dinastía XX, 1185-1153 a.C.",
         "facts": [
-          "El relato empieza <strong>en tierra</strong>: los parientes vivos más cercanos de las ballenas son artiodáctilos, el grupo del ciervo y el hipopótamo.",
-          "Hace unos <strong>50 millones de años</strong>, parientes de este grupo empezaron a volver al agua.",
-          "Escaneo real del NMNH · dominio público (CC0)."
+          "Estatua sedente en <strong>basalto</strong>, de tamaño natural. Ramsés III gobernó 32 años y suele considerarse el último faraón poderoso del Reino Nuevo.",
+          "No apareció en el valle del Nilo sino en <strong>Bet She'an</strong>, en Canaán: se erigió en un templo local como afirmación de autoridad, justo cuando el dominio egipcio sobre la región se apagaba.",
+          "Se encontró rota y mutilada, y fuera del sitio para el que se hizo — una estatua de propaganda que sobrevivió al poder que anunciaba.",
+          "Museo de Israel. Fotogrametría de <strong>Abby Gancz</strong> · CC BY 4.0."
         ]
       },
+      "textureSize": 2048,
       "output": {
-        "bytes": 314008
-      },
-      "textureSize": 1024
+        "bytes": 1589708
+      }
     },
     {
-      "id": "chonecetus",
-      "hall": "ocean",
-      "pedestal": "ocean-b",
+      "id": "marcus-aurelius",
+      "hall": "ancient",
+      "pedestal": "ancient-b",
       "source": {
-        "archive": "Smithsonian · escaneo del original",
-        "license": "CC0",
-        "uri": "https://3d-api.si.edu/content/document/3d_package:6bd320bc-25b0-4ef8-9654-a6bdeea28636/cf-_Chonecetus_goedertorum-150k-2048-medium.glb"
+        "archive": "Fitzwilliam Museum, Cambridge · Sketchfab",
+        "uri": "manual:bust-of-marcus-aurelius",
+        "license": "CC BY 4.0"
       },
-      "simplifyError": 0.001,
+      "simplifyError": 0.0001,
       "calibration": {
         "upAxisFix": 0,
         "roll": 0,
         "pitch": 0,
-        "yaw": 0,
-        "size": 1.1,
+        "yaw": -1.5708,
+        "size": 0.31,
         "yOffset": 0
       },
       "display": {
-        "name": "Ballena primitiva",
-        "species": "cf. Chonecetus goedertorum · Oligoceno",
+        "name": "Marco Aurelio",
+        "species": "Roma · siglo II",
         "facts": [
-          "Cráneo de una ballena de hace ~25-28 millones de años, <strong>cercana al origen de las ballenas barbadas</strong>.",
-          "Aún conservaba <strong>dientes</strong>; sus descendientes los cambiarían por barbas para filtrar.",
-          "Escaneo real del NMNH · dominio público (CC0)."
+          "Cabeza en <strong>mármol de Paros</strong>, 31 cm. Retrato del emperador que gobernó entre 161 y 180 y escribió las <em>Meditaciones</em> durante sus campañas en la frontera.",
+          "La barba densa y los rizos no son gusto del escultor: eran el código visual con el que los emperadores de su tiempo se presentaban como filósofos griegos.",
+          "Donada al museo en <strong>1850</strong> por el doctor John Disney; catalogada como GR.33.1850.",
+          "Fitzwilliam Museum, Cambridge · CC BY 4.0."
         ]
       },
+      "textureSize": 1024,
       "output": {
-        "bytes": 514304
-      },
-      "textureSize": 1024
+        "bytes": 1133480
+      }
     },
     {
-      "id": "isthminia",
-      "hall": "ocean",
-      "pedestal": "ocean-c",
+      "id": "mercury-pegasus",
+      "hall": "ancient",
+      "pedestal": "ancient-c",
       "source": {
-        "archive": "Smithsonian · escaneo del original",
-        "license": "CC0",
-        "uri": "https://3d-api.si.edu/content/document/3d_package:8a3dc218-7fdd-44cf-8d97-2ba2cc3d92e0/fossil-dolphin-(skull)-150k-2048-medium.glb"
+        "archive": "Benjamin Bardou · Musée du Louvre · Sketchfab",
+        "uri": "manual:mercure-monte-sur-pegase",
+        "license": "CC BY 4.0"
       },
-      "simplifyError": 0.001,
+      "simplifyError": 0.0001,
       "calibration": {
         "upAxisFix": 0,
         "roll": 0,
         "pitch": 0,
-        "yaw": -0.2,
-        "size": 0.82,
+        "yaw": 1.5708,
+        "size": 3.15,
         "yOffset": 0
       },
       "display": {
-        "name": "Isthminia",
-        "species": "Isthminia panamensis · Mioceno",
+        "name": "Mercurio sobre Pegaso",
+        "species": "Antoine Coysevox · 1701-1702",
         "facts": [
-          "Delfín fósil de Panamá (~6 millones de años), <strong>descrito en 2015 a partir de este ejemplar</strong>.",
-          "Pariente cercano del <strong>delfín rosado del Amazonas</strong> — pero este aún vivía en el mar.",
-          "Escaneo real del NMNH · dominio público (CC0)."
+          "<strong>3,15 metros</strong> tallados en un solo bloque de mármol de Carrara. Coysevox presumía en el pedestal de haber resuelto semejante monolito en apenas dos años.",
+          "Se encargó en 1699 para el abrevadero de <strong>Marly</strong>, la residencia donde Luis XIV escapaba del protocolo de Versalles. Se instaló allí en agosto de 1702.",
+          "Mercurio, mensajero de los dioses, cabalga a Pegaso; hacía pareja con <em>La Renommée</em>, y juntas anunciaban al visitante la gloria del rey.",
+          "En 1719 pasaron a la entrada de las <strong>Tullerías</strong>, sustituidas por moldes en 1986. Los originales están en el Louvre.",
+          "Escaneo de <strong>Benjamin Bardou</strong> · CC BY 4.0."
         ]
       },
+      "textureSize": 2048,
       "output": {
-        "bytes": 328484
-      },
-      "textureSize": 1024
+        "bytes": 2234728
+      }
     },
     {
-      "id": "leptophoca",
-      "hall": "ocean",
-      "pedestal": "ocean-d",
+      "id": "thoth-baboon",
+      "hall": "ancient",
+      "pedestal": "ancient-d",
       "source": {
-        "archive": "Smithsonian · escaneo del original",
-        "license": "CC0",
-        "uri": "https://3d-api.si.edu/content/document/3d_package:e45041be-c65c-4430-b882-0a86aff69c26/Leptophoca_lenis_True-150k-2048-medium.glb"
+        "archive": "The Hunt Museum, Limerick · Sketchfab",
+        "uri": "manual:limestone-statue-of-god-thoth-as-a-baboon",
+        "license": "CC0"
       },
-      "simplifyError": 0.001,
+      "simplifyError": 0.0001,
       "calibration": {
-        "upAxisFix": -1.5707963267948966,
+        "upAxisFix": 0,
         "roll": 0,
         "pitch": 0,
-        "yaw": 0,
-        "size": 0.62,
+        "yaw": -1.5708,
+        "size": 0.195,
         "yOffset": 0
       },
       "display": {
-        "name": "Foca del Mioceno",
-        "species": "Leptophoca lenis · ~17 Ma",
+        "name": "Thot como babuino",
+        "species": "Egipto · Baja Época",
         "facts": [
-          "El regreso al mar <strong>no ocurrió una sola vez</strong>: las focas son otro linaje que volvió por su cuenta.",
-          "Cetáceos, sirenios y pinnípedos hicieron el mismo viaje <strong>por caminos separados</strong>.",
-          "Escaneo real del NMNH · dominio público (CC0)."
+          "Caliza, <strong>19,5 cm</strong>. El babuino está en cuclillas, con los antebrazos sobre las rodillas — la postura en que los egipcios lo representaban al amanecer.",
+          "Es una manifestación de <strong>Thot</strong>, dios de la escritura, el cálculo y la luna. El orificio de la coronilla sujetaba un disco, probablemente de madera dorada.",
+          "El rostro liso y los hombros sin melena lo sitúan en la Baja Época y no en el Reino Nuevo.",
+          "The Hunt Museum, Limerick (MG 005) · dominio público (CC0)."
         ]
       },
+      "textureSize": 1024,
       "output": {
-        "bytes": 448652
-      },
-      "textureSize": 1024
+        "bytes": 459608
+      }
     },
     {
-      "id": "pilot-whale",
-      "hall": "ocean",
-      "pedestal": "ocean-e",
+      "id": "cosmic-buddha",
+      "hall": "ancient",
+      "pedestal": "ancient-e",
       "source": {
-        "archive": "Smithsonian · escaneo del original",
-        "license": "CC0",
-        "uri": "https://3d-api.si.edu/content/document/3d_package:a8ab02ba-bcae-470a-9df4-db1265b25905/VZ20957-150k-2048-medium.glb"
+        "archive": "Smithsonian · Freer Gallery of Art",
+        "uri": "https://3d-api.si.edu/content/document/3d_package:d8c62be8-4ebc-11ea-b77f-2e728ce88125/cosmic-buddha-laser-scan-150k-4096-high.glb",
+        "license": "CC0"
       },
-      "simplifyError": 0.001,
+      "simplifyError": 0.0001,
       "calibration": {
         "upAxisFix": 0,
         "roll": 0,
         "pitch": 0,
         "yaw": 3.1416,
-        "size": 2.4,
+        "size": 1.51,
         "yOffset": 0
       },
       "display": {
-        "name": "Calderón común",
-        "species": "Globicephala melas · el presente",
+        "name": "Buda Cósmico",
+        "species": "China · dinastía Qi del Norte, 550-577",
         "facts": [
-          "El punto de llegada: <strong>50 millones de años después</strong>, los descendientes de aquellos artiodáctilos viven enteramente en el mar.",
-          "Respiran aire, amamantan a sus crías — y navegan con <strong>ecolocalización</strong>.",
-          "Cráneo y mandíbula reales del NMNH · dominio público (CC0)."
+          "Caliza, <strong>1,51 metros</strong>. Le faltan la cabeza y las manos, y aun así es una de las piezas capitales de la colección Freer.",
+          "Lo excepcional está en el manto: cubierto de <strong>escenas talladas</strong> que narran la vida de Buda y dibujan los Reinos de la Existencia, un mapa del cosmos budista.",
+          "Los relieves son tan tenues que apenas se leen de pie frente a la pieza. Fue el <strong>escaneo 3D</strong> del Smithsonian el que permitió descifrarlos.",
+          "Freer Gallery of Art (F1923.15) · dominio público (CC0)."
         ]
       },
+      "textureSize": 2048,
       "output": {
-        "bytes": 261332
-      },
-      "textureSize": 1024
+        "bytes": 1761520
+      }
     },
     {
-      "id": "mosasaur",
-      "hall": "ocean",
-      "pedestal": "ocean-f",
+      "id": "assyrian-relief",
+      "hall": "ancient",
+      "pedestal": "ancient-f",
       "source": {
-        "archive": "ESU Earth Science · Johnston Geology Museum · Sketchfab",
-        "uri": "sketchfab:0e33035bf91748f39d8a261a31cc22da",
-        "license": "CC BY 4.0"
+        "archive": "Cleveland Museum of Art · Sketchfab",
+        "uri": "manual:saluting-protective-spirit",
+        "license": "CC0"
       },
-      "simplifyError": 0.001,
+      "simplifyError": 0.0001,
       "calibration": {
         "upAxisFix": 0,
         "roll": 0,
         "pitch": 0,
         "yaw": 0,
-        "size": 4.5,
+        "size": 2.3,
         "yOffset": 0
       },
       "display": {
-        "name": "Mosasaurio",
-        "species": "Mosasaurio · Cretácico · el prólogo",
+        "name": "Espíritu protector",
+        "species": "Asiria · Nimrud, 883-859 a.C.",
         "facts": [
-          "Antes que los mamíferos, <strong>los reptiles hicieron el mismo viaje</strong>: este depredador marino del Cretácico desciende de lagartos terrestres.",
-          "Fósil real hallado en Kansas en 1967, hoy en el Johnston Geology Museum.",
-          "Escaneo de <strong>ESUEarthSci</strong> · CC BY 4.0."
+          "Panel de <strong>yeso</strong> de 2,3 metros, del palacio noroeste de Asurnasirpal II en Nimrud. Cientos como este forraban sus salas.",
+          "La figura alada alza la mano derecha en saludo ritual y sostiene con la izquierda una rama con rosetas, probablemente una palmera datilera: protección y abundancia en un solo gesto.",
+          "Cruzando la imagen corre una inscripción en <strong>cuneiforme acadio</strong> con las conquistas del rey y la reconstrucción de la ciudad — el texto pasa por encima del relieve sin pedirle permiso.",
+          "El palacio cayó en 612 a.C. y quedó enterrado <strong>veinticuatro siglos</strong>, hasta 1845.",
+          "Cleveland Museum of Art (1943.246) · dominio público (CC0)."
         ]
       },
-      "textureSize": 1024
+      "textureSize": 2048,
+      "output": {
+        "bytes": 863440
+      }
     }
   ]
 }

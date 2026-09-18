@@ -18,9 +18,12 @@ const POINTS: [number, number, number][] = [
   [-2.2, 1.6, -28.5],
   [2.2, 1.6, -32],
   [0, 1.6, -36],
-  [-2, 1.6, -42],
-  [2, 1.6, -48],
-  [0, 1.6, -53],
+  [-2, 1.6, -40.5],
+  [2, 1.6, -44],
+  [-2, 1.6, -47.5],
+  [2, 1.6, -50.5],
+  [-2, 1.6, -53.5],
+  [0, 1.6, -54.5],
 ];
 
 // Speed limits: the target can never run further than this from the camera,
@@ -51,6 +54,9 @@ export class Rail {
       false,
       "centripetal",
     );
+    const length = this.curve.getLength();
+    this.tPerMetre = 1 / length;
+    this.samples = Math.round(length * Rail.SAMPLES_PER_METRE);
 
     dom.addEventListener("wheel", (e) => {
       if (!this.active) return;
@@ -79,7 +85,7 @@ export class Rail {
         this.t + MAX_LEAD_FORWARD,
       ),
       0,
-      0.96,
+      0.985,
     );
   }
 
@@ -98,14 +104,14 @@ export class Rail {
   // they sit along the curve, and the gaze only ever considers the NEXT one.
   // No competition, no side glances — one piece gets full focus, is released,
   // and only then does the following piece exist for the camera.
-  private stops: { point: THREE.Vector3; at: number }[] = [];
+  private stops: { point: THREE.Vector3; at: number; radius: number }[] = [];
 
   setPOIs(points: { point: THREE.Vector3; radius: number }[]) {
     // Order stops by DEPTH along the hall, not by nearest point on the curve:
     // the rail weaves side to side, so projecting an off-axis exhibit onto it
     // clusters distant pieces at the same t (the raptor and the T. rex, 5 m
     // apart, landed 0.02 apart and one never got its turn).
-    const SAMPLES = 512;
+    const SAMPLES = 1024;
     const zAt: number[] = [];
     for (let i = 0; i <= SAMPLES; i++) zAt.push(this.curve.getPointAt(i / SAMPLES).z);
 
@@ -127,7 +133,7 @@ export class Rail {
     // shared beat — that is the "two vitrines at once" framing. Large pieces
     // always keep their own beat, and pieces facing each other across the
     // aisle are never merged: their midpoint is empty floor.
-    const PAIR_DEPTH = 0.04;
+    const PAIR_DEPTH = 3.3 * this.tPerMetre;
     const SAME_SIDE = 4;
     const SMALL = 1.2;
     const merged: { point: THREE.Vector3; radius: number; at: number }[] = [];
@@ -149,13 +155,13 @@ export class Rail {
 
     // Where exhibits still crowd each other, the largest one wins its slot:
     // pushing a beat away from its piece makes it fire beside or past it.
-    const MIN_GAP = 0.04;
-    const spaced: { point: THREE.Vector3; at: number }[] = [];
+    const MIN_GAP = 3.3 * this.tPerMetre;
+    const spaced: { point: THREE.Vector3; at: number; radius: number }[] = [];
     let cluster: typeof merged = [];
     const flush = () => {
       if (!cluster.length) return;
       const best = cluster.reduce((a, b) => (b.radius > a.radius ? b : a));
-      spaced.push({ point: best.point, at: best.at });
+      spaced.push({ point: best.point, at: best.at, radius: best.radius });
       cluster = [];
     };
     for (const stop of merged) {
@@ -182,12 +188,22 @@ export class Rail {
   // camera simply samples the baked curve: scroll fast and it pans fast but
   // smoothly, stop and it stops dead, scroll back and it retraces exactly.
   private gaze: THREE.Vector3[] = [];
+  private tPerMetre = 0;
 
-  private static readonly SAMPLES = 640;
-  private static readonly APPROACH = 0.19;
-  private static readonly FULL = 0.105;
-  private static readonly FADE = 0.04;
-  private static readonly RELEASE = 0.006;
+  // Resolution of the baked gaze, in samples per metre of track rather than a
+  // fixed count: a longer route spread the same 640 samples thinner and cost
+  // real framing accuracy in halls that had not been touched at all.
+  private static readonly SAMPLES_PER_METRE = 8;
+  private samples = 640;
+  // Every window below is METRES OF TRACK, never a fraction of t. A value in t
+  // silently changes meaning whenever the route grows or shrinks: adding the
+  // exhibits of hall III would otherwise re-time every beat in halls I and II
+  // and spoil framing that was already right. These are the t-values that were
+  // tuned by hand, converted at the 83 m route they were tuned on.
+  private static readonly APPROACH_M = 15.8;
+  private static readonly FULL_M = 8.7;
+  private static readonly FADE_M = 3.3;
+  private static readonly RELEASE_M = 0.5;
   private static readonly BLUR_PASSES = 3;
   private static readonly BLUR_METRES = 1.17;
 
@@ -203,7 +219,7 @@ export class Rail {
 
     if (!this.stops.length) return out.copy(ahead);
 
-    if (tc >= 0.93) {
+    if (tc >= 0.965) {
       let nearest = this.stops[0].point;
       for (const stop of this.stops) {
         if (stop.point.distanceTo(position) < nearest.distanceTo(position)) {
@@ -213,18 +229,28 @@ export class Rail {
       return out.copy(ahead).lerp(nearest, 0.55);
     }
 
-    const stop = this.stops.find((s) => tc <= s.at + Rail.RELEASE);
-    if (!stop || tc <= stop.at - Rail.APPROACH) return out.copy(ahead);
+    const k = this.tPerMetre;
+    const stop = this.stops.find((s) => tc <= s.at + Rail.RELEASE_M * this.hold(s.radius) * k);
+    if (!stop || tc <= stop.at - Rail.APPROACH_M * k) return out.copy(ahead);
 
+    // How long the gaze holds before letting go, as a fraction of the window
+    // tuned for the big mounted skeletons. Releasing 3.3 m before the piece is
+    // right for something five metres tall and wrong for a 1.3 m statue: it
+    // means the visitor never gets close enough for it to fill the frame.
+    const h = this.hold(stop.radius);
     const weight =
-      THREE.MathUtils.smoothstep(tc, stop.at - Rail.APPROACH, stop.at - Rail.FULL) *
-      (1 - THREE.MathUtils.smoothstep(tc, stop.at - Rail.FADE, stop.at - Rail.RELEASE));
+      THREE.MathUtils.smoothstep(tc, stop.at - Rail.APPROACH_M * k, stop.at - Rail.FULL_M * k) *
+      (1 - THREE.MathUtils.smoothstep(tc, stop.at - Rail.FADE_M * h * k, stop.at - Rail.RELEASE_M * h * k));
 
     return out.copy(ahead).lerp(stop.point, Math.min(weight, 1));
   }
 
+  private hold(radius: number): number {
+    return THREE.MathUtils.clamp(radius / 2, 0.65, 1);
+  }
+
   private bakeGaze() {
-    const n = Rail.SAMPLES;
+    const n = this.samples;
     let buffer: THREE.Vector3[] = [];
     for (let i = 0; i <= n; i++) {
       buffer.push(this.rawTarget(Math.min(i / n, 0.995), new THREE.Vector3()));
@@ -257,8 +283,8 @@ export class Rail {
       return { position, lookTarget: this.curve.getPointAt(Math.min(tc + 0.02, 1), _ahead) };
     }
 
-    const x = tc * Rail.SAMPLES;
-    const i = Math.min(Rail.SAMPLES - 1, Math.floor(x));
+    const x = tc * this.samples;
+    const i = Math.min(this.samples - 1, Math.floor(x));
     const lookTarget = _look.copy(this.gaze[i]).lerp(this.gaze[i + 1], x - i);
     return { position, lookTarget };
   }
