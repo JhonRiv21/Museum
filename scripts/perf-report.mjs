@@ -23,12 +23,17 @@ function load(dir) {
   return { name: basename(dir), env, runs, frames };
 }
 
-function stats(ms) {
+// A "slow" frame is one that missed the loop's own deadline. Reports from the
+// fixed-rate loop carry objetivo_fps; older ones were uncapped, where the
+// meaningful drop was 60 -> 30, i.e. over 33 ms.
+const slowMsOf = (env) => (env.objetivo_fps ? (1000 / env.objetivo_fps) * 1.2 : 33);
+
+function stats(ms, slowMs = 33) {
   if (!ms.length) return null;
   const s = ms.slice().sort((a, b) => a - b);
   const over = (v) => s.filter((x) => x > v).length;
   return { n: s.length, median: s[s.length >> 1], p95: s[Math.floor(s.length * 0.95)],
-    worst: s[s.length - 1], over33: (100 * over(33)) / s.length, over50: over(50) };
+    worst: s[s.length - 1], over33: (100 * over(slowMs)) / s.length, over50: over(50) };
 }
 
 const sets = process.argv.slice(2).map(load);
@@ -36,7 +41,8 @@ if (!sets.length) { console.error("usage: perf-report.mjs <folder> [folder...]")
 
 for (const set of sets) {
   const e = set.env;
-  console.log(`\n■ ${set.name}  ·  ${set.runs} run(s), ${set.frames.length} frames  ·  ratio ${e.pixelRatio}, ${e.megapixeles} Mpx, ${e.piezas} pieces`);
+  set.slowMs = slowMsOf(e);
+  console.log(`\n■ ${set.name}  ·  ${set.runs} run(s), ${set.frames.length} frames  ·  ratio ${e.pixelRatio}, ${e.megapixeles} Mpx, ${e.piezas} pieces  ·  ${e.objetivo_fps ?? "sin tope"} fps, lento > ${set.slowMs.toFixed(0)} ms`);
 }
 
 // What changed between states, when the reports say which pieces they held.
@@ -47,11 +53,11 @@ for (const set of sets.slice(1)) {
   if (gone.length || added.length) console.log(`\n${set.name}: + ${added.join(", ") || "–"}   − ${gone.join(", ") || "–"}`);
 }
 
-console.log(`\nPER HALL — median ms · p95 · % frames over 33 ms · frames over 50 ms`);
+console.log(`\nPER HALL — median ms · p95 · % slow frames (see threshold above) · frames over 50 ms`);
 console.log("hall".padEnd(11) + sets.map((s) => s.name.slice(0, 26).padStart(30)).join(""));
 for (const [hall] of HALLS) {
   const cells = sets.map((set) => {
-    const s = stats(set.frames.filter((f) => hallOf(f[4]) === hall).map((f) => f[1]));
+    const s = stats(set.frames.filter((f) => hallOf(f[4]) === hall).map((f) => f[1]), set.slowMs);
     return s ? `${s.median.toFixed(1)} · ${s.p95.toFixed(1)} · ${s.over33.toFixed(1)}% · ${s.over50}` : "–";
   });
   console.log(hall.padEnd(11) + cells.map((c) => c.padStart(30)).join(""));
@@ -69,12 +75,12 @@ if (sets.length > 1) {
     const m = byMetre(set.frames);
     const rows = [];
     for (const [z, ms] of m) {
-      const a = stats(refM.get(z) ?? []), b = stats(ms);
+      const a = stats(refM.get(z) ?? [], ref.slowMs), b = stats(ms, set.slowMs);
       if (!a || !b) continue;
       rows.push({ z, hall: hallOf(z), a: a.over33, b: b.over33, delta: b.over33 - a.over33, worstA: a.worst, worstB: b.worst });
     }
     rows.sort((x, y) => y.delta - x.delta);
-    console.log(`\nWHERE ${set.name} GOT WORSE than ${ref.name} (per metre of depth, % frames over 33 ms)`);
+    console.log(`\nWHERE ${set.name} GOT WORSE than ${ref.name} (per metre of depth, % slow frames)`);
     for (const r of rows.filter((r) => r.delta > 10).slice(0, 15)) {
       console.log(`  z=${String(r.z).padStart(4)}  ${r.hall.padEnd(10)} ${r.a.toFixed(0).padStart(3)}% → ${r.b.toFixed(0).padStart(3)}%   worst ${r.worstA.toFixed(0)} → ${r.worstB.toFixed(0)} ms`);
     }

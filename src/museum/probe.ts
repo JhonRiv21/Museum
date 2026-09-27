@@ -43,6 +43,11 @@ const MIN_FRAMES = 60;
 // entrance, and it used to wipe everything recorded so far.
 const STORE_KEY = "museo-probe-runs";
 const round = (v: number, d = 2) => +v.toFixed(d);
+// The render loop runs at a fixed rate (30 fps unless ?fps= says otherwise), so
+// "slow" means a frame that missed that deadline, not one over 33 ms: at 30 fps
+// every frame is 33.3 ms by design. 20% of margin absorbs vsync jitter.
+const TARGET_FPS = Number(new URLSearchParams(location.search).get("fps")) || 30;
+const SLOW_MS = (1000 / TARGET_FPS) * 1.2;
 
 function hallAt(z: number): string {
   return (HALLS.find((h) => z > h.untilZ) ?? HALLS[HALLS.length - 1]).name;
@@ -177,7 +182,7 @@ export function mountProbe(deps: Deps) {
         mediana: round(ms[ms.length >> 1], 1),
         p95: round(ms[Math.floor(ms.length * 0.95)], 1),
         peor: round(ms[ms.length - 1], 1),
-        sobre33: ms.filter((v) => v > 33).length,
+        lentos: ms.filter((v) => v > SLOW_MS).length,
         sobre50: ms.filter((v) => v > 50).length,
         draws: mid[5], ktri: mid[6],
       });
@@ -195,7 +200,8 @@ export function mountProbe(deps: Deps) {
       p95: round(ms[Math.floor(ms.length * 0.95)], 1),
       p99: round(ms[Math.floor(ms.length * 0.99)], 1),
       peor: round(ms[ms.length - 1], 1),
-      sobre33: ms.filter((v) => v > 33).length,
+      lentos: ms.filter((v) => v > SLOW_MS).length,
+      umbral_lento_ms: round(SLOW_MS, 1),
       sobre50: ms.filter((v) => v > 50).length,
       sobre100: ms.filter((v) => v > 100).length,
     };
@@ -206,6 +212,7 @@ export function mountProbe(deps: Deps) {
     const dbg = gl.getExtension("WEBGL_debug_renderer_info");
     return {
       fecha: new Date().toISOString(),
+      objetivo_fps: TARGET_FPS,
       url: location.href,
       pixelRatio: renderer.getPixelRatio(),
       lienzo: [renderer.domElement.width, renderer.domElement.height],
@@ -259,7 +266,7 @@ export function mountProbe(deps: Deps) {
   function refresh() {
     $("pbRuns").textContent = runs.length ? `${runs.length} recorrido(s)` : "";
     if (current) {
-      $("pbStat").textContent = `grabando #${current.index}: ${liveFrames} fotogramas · >33ms ${liveOver33}`;
+      $("pbStat").textContent = `grabando #${current.index}: ${liveFrames} fotogramas · lentos ${liveOver33}`;
       paint(liveWorst);
       return;
     }
@@ -275,7 +282,7 @@ export function mountProbe(deps: Deps) {
       const peor = worst[i];
       bars[i].style.height = peor ? `${Math.min(100, (peor / 60) * 100)}%` : "0";
       bars[i].style.background = !peor ? "#2a3442"
-        : peor > 50 ? "#e5484d" : peor > 33 ? "#e8c37a" : "#4a9d6a";
+        : peor > SLOW_MS * 1.4 ? "#e5484d" : peor > SLOW_MS ? "#e8c37a" : "#4a9d6a";
     }
   }
 
@@ -285,8 +292,16 @@ export function mountProbe(deps: Deps) {
   // Frame capture. Wrapping rAF catches the renderer's own loop without the
   // loop knowing about us.
   const raf = window.requestAnimationFrame.bind(window);
+  // The render loop wakes on every vsync but only draws at its own fixed rate.
+  // A tick where nothing was drawn is not a frame the visitor saw, so only
+  // ticks that advanced the renderer's frame counter are recorded.
+  let drawn = renderer.info.render.frame;
   window.requestAnimationFrame = (cb: FrameRequestCallback) =>
     raf((ts) => {
+      cb(ts);
+      const frame = renderer.info.render.frame;
+      if (frame === drawn) return;
+      drawn = frame;
       if (last) {
         const ms = ts - last;
         acc += ms; n++;
@@ -307,7 +322,7 @@ export function mountProbe(deps: Deps) {
           current.durationMs = ts - runStart;
           const slot = Math.min(59, Math.floor(t * 60));
           if (ms > liveWorst[slot]) liveWorst[slot] = ms;
-          liveFrames++; if (ms > 33) liveOver33++;
+          liveFrames++; if (ms > SLOW_MS) liveOver33++;
           if (t >= END_T) {
             el.classList.remove("rec");
             // Only a run with real content is kept; a stray start is dropped.
@@ -321,7 +336,7 @@ export function mountProbe(deps: Deps) {
         }
         if (n === 0) {
           $("pbFps").textContent = `${Math.round(fps)} fps`;
-          ($("pbFps") as HTMLElement).style.color = fps >= 50 ? "#4a9d6a" : fps >= 30 ? "#e8c37a" : "#e5484d";
+          ($("pbFps") as HTMLElement).style.color = fps >= TARGET_FPS * 0.95 ? "#4a9d6a" : fps >= TARGET_FPS * 0.7 ? "#e8c37a" : "#e5484d";
           $("pbWhere").textContent = `${hallAt(camera.position.z)}${current ? " · grabando" : ""}`;
           if (!body.hidden) {
             $("pbT").textContent = t.toFixed(3);
@@ -334,7 +349,6 @@ export function mountProbe(deps: Deps) {
         }
       }
       last = ts;
-      cb(ts);
     });
 
   Object.assign(window, { __probe: { runs, fullReport, summary, download, pause: (v: boolean) => (paused = v) } });

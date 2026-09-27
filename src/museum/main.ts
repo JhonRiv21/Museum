@@ -5,6 +5,7 @@ import { Exhibits } from "./exhibits";
 import { loadHall } from "./loader";
 import { MANIFEST, HALLS, pieceInfo, hallName, type Calibration } from "./data";
 import { Perf } from "./perf";
+import { bindFullscreen } from "./fullscreen";
 
 const app = document.getElementById("app") as HTMLElement;
 const params = new URLSearchParams(location.search);
@@ -238,7 +239,38 @@ function updateHallLabel() {
 }
 
 const timer = new THREE.Timer();
-renderer.setAnimationLoop(() => {
+// Fixed 30 fps for everyone. On machines that cannot hold 60 the frame rate
+// used to alternate between 16.7 and 33.3 ms, and that uneven pacing is what
+// reads as stutter — a steady 30 looked smooth where a wobbling 40-60 did not.
+// The limiter works on time, not on "every other vsync", so it holds the same
+// cadence on 60, 120 and 144 Hz displays. ?fps=60 lifts it for measurements.
+const TARGET_MS = 1000 / (Number(params.get("fps")) || 30);
+const FRAME_SLACK_MS = 2;   // accept a vsync that lands a hair early
+let nextFrameAt = 0;
+let lastTick = 0;
+let vsyncMs = 1000 / 60;    // refined from the display's real cadence below
+let refreshesPerFrame = 2;
+
+renderer.setAnimationLoop((now: number) => {
+  // Track the display's refresh interval, ignoring stalls. The frame interval is
+  // then a WHOLE number of refreshes: 144 Hz cannot do 33.3 ms, and a limiter
+  // that aimed for it alternated 4 and 5 refreshes — the same uneven pacing
+  // this whole limiter exists to remove. 5 refreshes every time is smoother.
+  const tick = now - lastTick;
+  lastTick = now;
+  if (tick > 3 && tick < 25) vsyncMs += (tick - vsyncMs) * 0.05;
+  // Hysteresis: at 165 Hz the ideal is 5.5 refreshes, and plain rounding
+  // flipped between 5 and 6 on every wobble of the estimate.
+  const ideal = TARGET_MS / vsyncMs;
+  if (Math.abs(ideal - refreshesPerFrame) > 0.6) refreshesPerFrame = Math.max(1, Math.round(ideal));
+  const frameMs = refreshesPerFrame * vsyncMs;
+
+  if (now < nextFrameAt - FRAME_SLACK_MS) return;
+  // Schedule from the ideal time, not from now, so the cadence stays even. If a
+  // slow frame left us behind, restart one full interval from now instead of
+  // catching up — catching up would fire the next frames back to back.
+  nextFrameAt += frameMs;
+  if (nextFrameAt < now) nextFrameAt = now + frameMs;
   timer.update();
   const dt = Math.min(timer.getDelta(), 0.05);
   rail.update(camera, dt);
@@ -251,6 +283,8 @@ renderer.setAnimationLoop(() => {
   renderer.render(scene, camera);
   perf?.update();
 });
+
+bindFullscreen(document.getElementById("fullscreen") as HTMLButtonElement);
 
 void loadHalls();
 

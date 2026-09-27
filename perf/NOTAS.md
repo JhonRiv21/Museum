@@ -57,3 +57,15 @@ Incluye además dos arreglos que salieron al montarlo:
 Vaciado KAS65 de la Colección Real del SMK, bajado de su API abierta sin login
 (STL → GLB con `scripts/stl-to-glb.mjs`, fuente `smk:` en el pipeline).
 400k triángulos, 0,76 MB optimizado — más ligero que el Buda (0,83 MB).
+
+## Cambio de régimen: 30 fps fijos
+El tirón no era por fps bajos sino por fps IRREGULARES: a pixelRatio 2 el Mac no
+sostiene 60 y alternaba fotogramas de 16,7 y 33,3 ms. Con Chrome en ahorro de
+energía (tope 30) se veía limpio. Ahora el bucle dibuja a 30 fps fijos
+(`?fps=60` lo levanta para medir coste), con el intervalo redondeado a refrescos
+enteros de la pantalla: constante en 30-240 Hz en simulación, 33,3 ms medidos
+en 60 Hz. La sonda solo cuenta fotogramas dibujados y "lento" pasa a significar
+"no llegó a tiempo" (> 1,2 × intervalo = 40 ms a 30 fps).
+Desde aquí hay dos formas de medir: por defecto (lo que ve el visitante: ¿se
+pierde algún fotograma?) y con `?fps=60` (coste real de la escena, comparable
+con los pasos 01-04).

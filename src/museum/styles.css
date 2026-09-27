@@ -54,6 +54,29 @@ html, body {
 
 .hall { color: var(--muted); font-size: 12px; }
 
+/* Round HUD control, same material as the brand pill. The HUD itself lets
+   clicks through to the scene, so the button has to opt back in. */
+.hudBtn {
+  pointer-events: auto;
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  flex: none;
+  color: var(--text);
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  backdrop-filter: blur(8px);
+  cursor: pointer;
+  transition: color 0.15s, background 0.15s;
+}
+.hudBtn:hover { color: var(--accent); background: #17202c; }
+.hudBtn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.hudBtn svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.hudBtn[data-state="off"] .iconExit,
+.hudBtn[data-state="on"] .iconEnter { display: none; }
+
 #hint {
   position: fixed;
   bottom: 18px;
@@ -139,6 +162,8 @@ html, body {
 #panel li:first-child { border-top: 0; }
 
 #panel li strong { color: #241d12; font-weight: 700; }
+#panel li a { color: #6b4a14; text-decoration: underline; text-underline-offset: 2px; }
+#panel li a:hover { color: #241d12; }
 
 #panelClose {
   width: 100%;
