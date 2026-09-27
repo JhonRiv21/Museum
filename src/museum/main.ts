@@ -1,3 +1,7 @@
+/*!
+ * Museum — 3D virtual museum. Developed by Jhon Rivero.
+ * https://github.com/JhonRiv21/Museum · https://jhon.riverogz.com/
+ */
 import * as THREE from "three";
 import { buildStage, createDust, animateDust, updateSigns, updateLights, addNamePlate, type Pedestal } from "./stage";
 import { Rail } from "./rail";

@@ -2,6 +2,17 @@
   "name": "museo",
   "private": true,
   "version": "0.1.0",
+  "description": "3D virtual museum in the browser: a guided tour through real scanned museum pieces.",
+  "author": {
+    "name": "Jhon Rivero",
+    "url": "https://jhon.riverogz.com/"
+  },
+  "license": "MIT",
+  "homepage": "https://museum.riverogz.com",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JhonRiv21/Museum.git"
+  },
   "type": "module",
   "scripts": {
     "copy:draco": "mkdir -p public/draco public/basis && cp node_modules/three/examples/jsm/libs/draco/gltf/* public/draco/ && cp node_modules/three/examples/jsm/libs/basis/* public/basis/",

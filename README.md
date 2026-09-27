@@ -50,6 +50,12 @@ On `localhost` a performance probe appears (frame times along the route, JSON ex
 
 Scans come from the Smithsonian Open Access program, the SMK (Statens Museum for Kunst), the Rijksmuseum van Oudheden, the Cleveland Museum of Art and Sketchfab authors, under **CC0** or **CC BY 4.0**. Each piece's label in the museum names its author, links the original model and its license, and notes that the model was simplified for the web. The full list lives in `assets/pieces.json`.
 
+### License
+
+The source code is released under the [MIT License](LICENSE): you may reuse it as long as you keep the copyright notice with the author's name.
+
+The 3D models are **not** covered by that license. They belong to their original authors and institutions and keep their own licenses (CC0 or CC BY 4.0). Anyone reusing a CC BY model must credit its author, link the license and state that it was modified; those attributions must be kept in any copy of this project.
+
 ### Author
 
 Developed by **Jhon Rivero** — [GitHub](https://github.com/JhonRiv21) · [Portfolio](https://jhon.riverogz.com/)
@@ -99,6 +105,12 @@ En `localhost` aparece una sonda de rendimiento (tiempos de fotograma a lo largo
 ### Créditos y licencias
 
 Los escaneos vienen del programa Open Access del Smithsonian, el SMK (Statens Museum for Kunst), el Rijksmuseum van Oudheden, el Museo de Arte de Cleveland y autores de Sketchfab, bajo **CC0** o **CC BY 4.0**. La ficha de cada pieza en el museo nombra a su autor, enlaza el modelo original y su licencia, e indica que el modelo se simplificó para la web. La lista completa está en `assets/pieces.json`.
+
+### Licencia
+
+El código fuente se publica bajo la [licencia MIT](LICENSE): puedes reutilizarlo siempre que conserves el aviso de copyright con el nombre del autor.
+
+Los modelos 3D **no** están cubiertos por esa licencia. Pertenecen a sus autores e instituciones originales y conservan sus propias licencias (CC0 o CC BY 4.0). Quien reutilice un modelo CC BY debe dar crédito a su autor, enlazar la licencia e indicar que fue modificado; esas atribuciones deben mantenerse en cualquier copia de este proyecto.
 
 ### Autor
 
