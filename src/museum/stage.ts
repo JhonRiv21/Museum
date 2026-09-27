@@ -93,6 +93,7 @@ export function buildStage(scene: THREE.Scene): Pedestal[] {
   scene.background = new THREE.Color(0x0a0e14);
 
   addHallSigns(scene);
+  addCarpet(scene);
 
   return pedestals;
 }
@@ -208,6 +209,74 @@ export function updateLights(camera: THREE.Camera) {
 // Physical signage: a hanging plaque over the entrance of hall I, and
 // eye-level panels on both partition faces flanking each doorway — right
 // where the visitor is already looking when crossing.
+// Runner carpet: a straight axis from the entrance to the foot of the finale's
+// pedestal. It does NOT follow the camera — the rail weaves between exhibits,
+// but a gallery runner is architecture, and straight reads as intentional.
+// 2.6 m wide clears every plinth (the closest, Ramesses', starts 1.9 m off
+// the axis) and passes through the central openings of both partitions.
+const CARPET_WIDTH = 2.6;
+const CARPET_FROM_Z = 14.2;     // just inside the entrance wall
+const CARPET_TO_Z = -55.6;      // front face of the finale's plinth (z −57, 2.8 deep)
+const CARPET_TILE_M = 0.65;     // length of track one texture repeat covers
+
+function makeCarpetTexture(): THREE.CanvasTexture {
+  // Across the canvas = across the runner; the texture repeats along its length.
+  const w = 512, h = Math.round((w * CARPET_TILE_M) / CARPET_WIDTH);
+  const canvas = document.createElement("canvas");
+  canvas.width = w;
+  canvas.height = h;
+  const ctx = canvas.getContext("2d")!;
+
+  // Deep wine, not gala red: a bright red reads as a film premiere. Slightly
+  // cool on purpose — the spotlights are warm and push red towards terracotta.
+  ctx.fillStyle = "#2c0913";
+  ctx.fillRect(0, 0, w, h);
+
+  // Woven texture: fine rows of slightly lighter and darker thread. A flat
+  // colour under a spotlight is what gives a 3D carpet away.
+  for (let y = 0; y < h; y += 2) {
+    ctx.fillStyle = y % 4 ? "rgba(70, 16, 30, 0.3)" : "rgba(14, 2, 6, 0.3)";
+    ctx.fillRect(0, y, w, 1);
+  }
+  for (let i = 0; i < 1400; i++) {
+    ctx.fillStyle = Math.random() < 0.5 ? "rgba(255, 210, 200, 0.035)" : "rgba(0, 0, 0, 0.08)";
+    ctx.fillRect(Math.random() * w, Math.random() * h, 1 + Math.random() * 3, 1);
+  }
+
+  // Edge bands: a darker outer margin and a thin muted-gold rule, the same
+  // family as the brass nameplates and the interface accent.
+  const band = (x: number, width: number, colour: string) => {
+    ctx.fillStyle = colour;
+    ctx.fillRect(x, 0, width, h);
+    ctx.fillRect(w - x - width, 0, width, h);
+  };
+  // Kept dark: under a spotlight a brighter gold glowed like a neon strip.
+  band(0, 22, "#1a0508");
+  band(26, 3, "#6b5226");
+  band(33, 1, "#45351c");
+
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.colorSpace = THREE.SRGBColorSpace;
+  texture.wrapT = THREE.RepeatWrapping;
+  // The runner is always seen at a grazing angle; without anisotropic
+  // filtering the gold rules smear into a blur a few metres ahead.
+  texture.anisotropy = 8;
+  return texture;
+}
+
+function addCarpet(scene: THREE.Scene) {
+  const length = CARPET_FROM_Z - CARPET_TO_Z;
+  const texture = makeCarpetTexture();
+  texture.repeat.set(1, length / CARPET_TILE_M);
+  const material = new THREE.MeshStandardMaterial({ map: texture, roughness: 0.96, metalness: 0 });
+  // A 12 mm slab rather than a decal: it has an edge the light can catch, and
+  // it cannot z-fight with the floor.
+  const carpet = new THREE.Mesh(new THREE.BoxGeometry(CARPET_WIDTH, 0.012, length), material);
+  carpet.position.set(0, 0.006, (CARPET_FROM_Z + CARPET_TO_Z) / 2);
+  carpet.name = "carpet";
+  scene.add(carpet);
+}
+
 function makeSignTexture(kicker: string, title: string): THREE.CanvasTexture {
   const canvas = document.createElement("canvas");
   canvas.width = 1024;

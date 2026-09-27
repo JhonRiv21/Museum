@@ -69,3 +69,9 @@ en 60 Hz. La sonda solo cuenta fotogramas dibujados y "lento" pasa a significar
 Desde aquí hay dos formas de medir: por defecto (lo que ve el visitante: ¿se
 pierde algún fotograma?) y con `?fps=60` (coste real de la escena, comparable
 con los pasos 01-04).
+
+## Alfombra central
+Plano de 2,6 × 69,8 m (una llamada de dibujo, textura de 512 px generada en
+código). Coste de dibujado A/B alternando 8 veces en la misma página, a la
+resolución real (2810×1672): 20,21 ms con alfombra, 20,07 sin ella — 0,14 ms,
+dentro de la variación entre repeticiones (19,5-22 ms). Sin coste medible.
