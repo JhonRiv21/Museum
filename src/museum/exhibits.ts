@@ -206,6 +206,7 @@ export class Exhibits {
     this.panelFacts.innerHTML = piece.info.facts.map((f) => `<li>${f}</li>`).join("");
     this.panel.classList.remove("closing", "open");
     this.foldPanel(this.compact.matches);
+    this.panel.classList.toggle("low", !piece.info.labelTop);
     this.panel.hidden = false;
     void this.panel.offsetWidth; // restart the pick-up animation
     this.panel.classList.add("open");

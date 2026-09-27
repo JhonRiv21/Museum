@@ -9,6 +9,7 @@ export type PieceInfo = {
   name: string;
   species: string;
   facts: string[];
+  labelTop?: boolean;
 };
 
 export type Calibration = {

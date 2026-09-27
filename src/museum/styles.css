@@ -396,6 +396,13 @@ div#perf { visibility: visible; }
   #panel.open { animation: dropIn 0.35s ease-out; }
   #panel.closing { animation: liftOut 0.25s ease-in forwards; }
   #panel h2 { font-size: 18px; }
+  #panel.low {
+    top: auto;
+    bottom: 18px;
+    right: auto;
+    left: 16px;
+    width: min(300px, calc(100vw - 32px - 60px));
+  }
   #panel.collapsed { width: 215px; }
   #panel.collapsed ul { display: none; }
   #panelClose .long { display: none; }
