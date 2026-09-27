@@ -300,3 +300,63 @@ div#perf { visibility: visible; }
 
 .perfMap i { flex: 1; min-height: 0; border-radius: 1px 1px 0 0; transition: height 0.2s; }
 .perfFoot { font-size: 10px; opacity: 0.65; }
+
+/* Authorship label at the finale: same paper as the exhibit labels, on the
+   left so the statue in the centre stays clear. visibility (not display) so it
+   can fade, and so it leaves the tab order while hidden. */
+#credits {
+  position: fixed;
+  left: 28px;
+  top: 50%;
+  transform: translateY(-46%) rotate(0.8deg);
+  width: 230px;
+  padding: 18px 20px 16px;
+  background: linear-gradient(180deg, #f7f0e0, #eee5cf);
+  color: #2b251c;
+  border: 1px solid #d8cba9;
+  border-radius: 3px;
+  box-shadow: 0 18px 36px rgba(0, 0, 0, 0.5), 0 3px 8px rgba(0, 0, 0, 0.3);
+  font-family: Georgia, "Times New Roman", serif;
+  z-index: 5;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.5s ease, transform 0.5s ease, visibility 0s linear 0.5s;
+}
+#credits.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(-50%) rotate(0.8deg);
+  transition: opacity 0.6s ease 0.2s, transform 0.6s ease 0.2s, visibility 0s;
+}
+#credits .kicker {
+  margin: 0;
+  font: 600 10px/1.4 system-ui, sans-serif;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #8a6a2f;
+}
+#credits .author { margin: 4px 0 12px; font-size: 22px; font-weight: 700; color: #241d12; }
+#credits .links {
+  display: flex;
+  gap: 16px;
+  margin: 0;
+  padding-top: 10px;
+  border-top: 1px solid #d8cba9;
+  font: 500 14px/1.4 system-ui, sans-serif;
+}
+#credits a { color: #6b4a14; text-decoration: underline; text-underline-offset: 3px; }
+#credits a:hover { color: #241d12; }
+#credits a:focus-visible { outline: 2px solid #8a6a2f; outline-offset: 2px; }
+
+@media (max-width: 700px) {
+  #credits {
+    left: 16px;
+    right: 16px;
+    top: auto;
+    /* Clears the ▲▼ column (18 px + two 44 px buttons) and the hint beneath. */
+    bottom: 124px;
+    width: auto;
+    transform: translateY(12px);
+  }
+  #credits.show { transform: none; }
+}

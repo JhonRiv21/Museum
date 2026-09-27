@@ -6,6 +6,7 @@ import { loadHall } from "./loader";
 import { MANIFEST, HALLS, pieceInfo, hallName, type Calibration } from "./data";
 import { Perf } from "./perf";
 import { bindFullscreen } from "./fullscreen";
+import { bindCredits } from "./credits";
 
 const app = document.getElementById("app") as HTMLElement;
 const params = new URLSearchParams(location.search);
@@ -278,6 +279,7 @@ renderer.setAnimationLoop((now: number) => {
   animateDust(dust, dt);
   updateHallLabel();
   updateNav();
+  updateCredits(rail.t, exhibits.state);
   updateSigns(camera);
   updateLights(camera);
   renderer.render(scene, camera);
@@ -285,6 +287,7 @@ renderer.setAnimationLoop((now: number) => {
 });
 
 bindFullscreen(document.getElementById("fullscreen") as HTMLButtonElement);
+const updateCredits = bindCredits(document.getElementById("credits") as HTMLElement);
 
 void loadHalls();
 
