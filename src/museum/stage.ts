@@ -70,10 +70,10 @@ export function buildStage(scene: THREE.Scene): Pedestal[] {
     // to the aisle so the visitor walks past them the way they would in a real
     // gallery — only the Louvre group, at 3.15 m, keeps its distance.
     ["ancient-a", -3.4, -40.5, 3],
-    ["ancient-b", 2.9, -44, 1.1],
+    ["ancient-b", 4.1, -44, 2.4],
     ["ancient-c", -5.4, -47.5, 5.8],
     ["ancient-f", 4.4, -50.5, 2.6],
-    ["ancient-d", -2.9, -53.5, 1.1],
+    ["ancient-d", -4.1, -53.5, 2.6],
     // The tour ends facing the Buddha rather than beside it: the rail stops
     // 2.5 m short so the piece is seen whole, which is the point of a finale.
     ["ancient-e", 0, -57, 4],
@@ -155,6 +155,12 @@ function aimFills(wides: Pedestal[]) {
 
 // Reassign the pool to the pedestals nearest the camera. Cheap enough to run
 // every frame, but only touches lights when the selection actually changes.
+// Pedestals that must NOT get the cross fills. The fills light a skeleton's
+// skull and tail from the aisle; on an untextured cast they come in frontally
+// and flatten every relief — measured on the Augustus, removing them tripled
+// the local contrast that makes the cuirass readable.
+const NO_FILL = new Set(["ancient-e"]);
+
 const _lightScratch: { p: Pedestal; d: number }[] = [];
 const _chosen: Pedestal[] = [];
 const _wides: Pedestal[] = [];
@@ -191,7 +197,7 @@ export function updateLights(camera: THREE.Camera) {
   }
 
   _wides.length = 0;
-  for (const p of _chosen) if (p.width > 2) _wides.push(p);
+  for (const p of _chosen) if (p.width > 2 && !NO_FILL.has(p.id)) _wides.push(p);
   const changed =
     _wides.length !== new Set(fillUnits.map((u) => u.pedestal).filter(Boolean)).size ||
     _wides.some((p) => !fillUnits.some((u) => u.pedestal === p));

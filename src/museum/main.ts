@@ -276,3 +276,17 @@ if (debugMode) {
     },
   });
 }
+
+// Frame probe for performance work. Localhost only, and imported dynamically so
+// a deployed build never even downloads it. Everything else lives in probe.ts.
+if (["localhost", "127.0.0.1", "[::1]"].includes(location.hostname)) {
+  void import("./probe").then(({ mountProbe }) =>
+    mountProbe({
+      rail, camera, renderer,
+      pieces: () => readyPieces.flatMap((p) => {
+        const piece = exhibits.piece(p.id);
+        return piece ? [{ id: p.id, center: piece.center }] : [];
+      }),
+    }),
+  );
+}

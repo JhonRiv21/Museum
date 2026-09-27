@@ -456,12 +456,12 @@
       }
     },
     {
-      "id": "marcus-aurelius",
+      "id": "neptune-louvre",
       "hall": "ancient",
       "pedestal": "ancient-b",
       "source": {
-        "archive": "Fitzwilliam Museum, Cambridge · Sketchfab",
-        "uri": "manual:bust-of-marcus-aurelius",
+        "archive": "Benjamin Bardou · Musée du Louvre · Sketchfab",
+        "uri": "manual:neptune-louvre",
         "license": "CC BY 4.0"
       },
       "simplifyError": 0.0001,
@@ -469,23 +469,23 @@
         "upAxisFix": 0,
         "roll": 0,
         "pitch": 0,
-        "yaw": -1.5708,
-        "size": 0.31,
+        "yaw": 1.5708,
+        "size": 1.85,
         "yOffset": 0
       },
       "display": {
-        "name": "Marco Aurelio",
-        "species": "Roma · siglo II",
+        "name": "Neptuno",
+        "species": "Antoine Coysevox · 1703-1708",
         "facts": [
-          "Cabeza en <strong>mármol de Paros</strong>, 31 cm. Retrato del emperador que gobernó entre 161 y 180 y escribió las <em>Meditaciones</em> durante sus campañas en la frontera.",
-          "La barba densa y los rizos no son gusto del escultor: eran el código visual con el que los emperadores de su tiempo se presentaban como filósofos griegos.",
-          "Donada al museo en <strong>1850</strong> por el doctor John Disney; catalogada como GR.33.1850.",
-          "Fitzwilliam Museum, Cambridge · CC BY 4.0."
+          "Mármol de 1,85 m. Hardouin-Mansart lo encargó en 1698 junto a otros tres grupos —Anfítrite, el Sena y el Marne— para la Rivière del parque de <strong>Marly</strong>.",
+          "Es el mismo escultor y el mismo jardín que el <em>Mercurio sobre Pegaso</em> que tienes enfrente: Coysevox talló ambos para la residencia donde Luis XIV se quitaba el protocolo de encima.",
+          "Del modelo en yeso de 1699 al mármol terminado pasaron casi diez años; el último pago no llegó hasta <strong>1712</strong>.",
+          "Museo del Louvre desde 1966. Escaneo de <strong>Benjamin Bardou</strong> · CC BY 4.0."
         ]
       },
-      "textureSize": 1024,
+      "textureSize": 2048,
       "output": {
-        "bytes": 1133480
+        "bytes": 1670916
       }
     },
     {
@@ -523,12 +523,12 @@
       }
     },
     {
-      "id": "thoth-baboon",
+      "id": "maya-merit",
       "hall": "ancient",
       "pedestal": "ancient-d",
       "source": {
-        "archive": "The Hunt Museum, Limerick · Sketchfab",
-        "uri": "manual:limestone-statue-of-god-thoth-as-a-baboon",
+        "archive": "Rijksmuseum van Oudheden, Leiden · Sketchfab",
+        "uri": "manual:beeld-van-maya-en-merit",
         "license": "CC0"
       },
       "simplifyError": 0.0001,
@@ -536,56 +536,57 @@
         "upAxisFix": 0,
         "roll": 0,
         "pitch": 0,
-        "yaw": -1.5708,
-        "size": 0.195,
+        "yaw": 0,
+        "size": 1.57,
         "yOffset": 0
       },
       "display": {
-        "name": "Thot como babuino",
-        "species": "Egipto · Baja Época",
+        "name": "Maya y Merit",
+        "species": "Egipto · Saqqara, h. 1320 a.C.",
         "facts": [
-          "Caliza, <strong>19,5 cm</strong>. El babuino está en cuclillas, con los antebrazos sobre las rodillas — la postura en que los egipcios lo representaban al amanecer.",
-          "Es una manifestación de <strong>Thot</strong>, dios de la escritura, el cálculo y la luna. El orificio de la coronilla sujetaba un disco, probablemente de madera dorada.",
-          "El rostro liso y los hombros sin melena lo sitúan en la Baja Época y no en el Reino Nuevo.",
-          "The Hunt Museum, Limerick (MG 005) · dominio público (CC0)."
-        ]
-      },
-      "textureSize": 1024,
-      "output": {
-        "bytes": 459608
-      }
-    },
-    {
-      "id": "cosmic-buddha",
-      "hall": "ancient",
-      "pedestal": "ancient-e",
-      "source": {
-        "archive": "Smithsonian · Freer Gallery of Art",
-        "uri": "https://3d-api.si.edu/content/document/3d_package:d8c62be8-4ebc-11ea-b77f-2e728ce88125/cosmic-buddha-laser-scan-150k-4096-high.glb",
-        "license": "CC0"
-      },
-      "simplifyError": 0.0001,
-      "calibration": {
-        "upAxisFix": 0,
-        "roll": 0,
-        "pitch": 0,
-        "yaw": 3.1416,
-        "size": 1.51,
-        "yOffset": 0
-      },
-      "display": {
-        "name": "Buda Cósmico",
-        "species": "China · dinastía Qi del Norte, 550-577",
-        "facts": [
-          "Caliza, <strong>1,51 metros</strong>. Le faltan la cabeza y las manos, y aun así es una de las piezas capitales de la colección Freer.",
-          "Lo excepcional está en el manto: cubierto de <strong>escenas talladas</strong> que narran la vida de Buda y dibujan los Reinos de la Existencia, un mapa del cosmos budista.",
-          "Los relieves son tan tenues que apenas se leen de pie frente a la pieza. Fue el <strong>escaneo 3D</strong> del Smithsonian el que permitió descifrarlos.",
-          "Freer Gallery of Art (F1923.15) · dominio público (CC0)."
+          "Grupo en caliza de tamaño natural. Ella le pasa el brazo izquierdo por detrás; es de los gestos de afecto más antiguos que conserva la escultura egipcia.",
+          "<strong>Maya</strong> dirigía el Tesoro de Egipto bajo Tutankamón, y fue quien organizó la construcción de la tumba del faraón.",
+          "No es un retrato conmemorativo: la pareja está sentada <strong>esperando ser servida</strong>. La estatua recibía las ofrendas de comida en lugar de los muertos y alojaba sus <em>ka</em>, el principio vital que debía sobrevivirles.",
+          "Salió de la tumba de Saqqara y llegó a Leiden en 1826; la tumba vacía no se volvió a encontrar hasta <strong>1986</strong>.",
+          "Rijksmuseum van Oudheden, Leiden · dominio público (CC0)."
         ]
       },
       "textureSize": 2048,
       "output": {
-        "bytes": 1761520
+        "bytes": 2165236
+      }
+    },
+    {
+      "id": "augustus-prima-porta",
+      "hall": "ancient",
+      "pedestal": "ancient-e",
+      "source": {
+        "archive": "SMK · Colección Real de Vaciados, Copenhague (KAS65)",
+        "uri": "smk:dj52w921d_KAS65_small.stl",
+        "license": "CC0"
+      },
+      "simplifyError": 0.0001,
+      "calibration": {
+        "upAxisFix": -1.5708,
+        "roll": 0,
+        "pitch": 0,
+        "yaw": 0,
+        "size": 2.19,
+        "yOffset": 0
+      },
+      "display": {
+        "name": "Augusto de Prima Porta",
+        "species": "Roma · entre el 20 a.C. y el 29 d.C.",
+        "facts": [
+          "El primer emperador de Roma con <strong>coraza de general</strong> y el brazo alzado para arengar a sus tropas. El mármol original mide 2,08 m y pesa una tonelada.",
+          "La coraza es propaganda tallada: un parto <strong>devuelve a un romano los estandartes</strong> que Roma había perdido décadas antes. Augusto los recuperó en el 20 a.C. negociando, sin librar una batalla.",
+          "Va descalzo, como se representaba a los dioses, y a sus pies lleva un Cupido: su familia decía descender de Eneas, hijo de Venus.",
+          "Apareció en abril de 1863 en la villa de su esposa Livia, en Prima Porta, con restos de color. En 2002 se identificaron cinco o seis pigmentos invisibles a simple vista.",
+          "Vaciado en yeso de la Colección Real de Vaciados del SMK, Copenhague (KAS65). El mármol está en los Museos Vaticanos · dominio público (CC0)."
+        ]
+      },
+      "output": {
+        "bytes": 762792
       }
     },
     {

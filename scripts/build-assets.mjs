@@ -8,6 +8,7 @@ import { execFileSync } from "node:child_process";
 import { mkdirSync, existsSync, statSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { stlToGlb } from "./stl-to-glb.mjs";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const manifestPath = join(root, "assets", "pieces.json");
@@ -78,6 +79,22 @@ async function download(piece) {
     return extracted;
   }
 
+  // SMK Royal Cast Collection: public STL downloads, no account needed. The
+  // mesh is welded, given normals and a plaster material on the way in.
+  if (piece.source.uri?.startsWith("smk:")) {
+    const stl = join(originalsDir, `${piece.id}.stl`);
+    if (!existsSync(stl)) {
+      process.stdout.write(`  descargando ${piece.id} (SMK)… `);
+      const res = await fetch(`https://api.smk.dk/api/v1/download-3d/${piece.source.uri.slice(4)}`);
+      if (!res.ok) throw new Error(`SMK HTTP ${res.status} para ${piece.id}`);
+      writeFileSync(stl, Buffer.from(await res.arrayBuffer()));
+      console.log(`${mb(statSync(stl).size)} MB (stl)`);
+    }
+    const r = await stlToGlb(stl, file);
+    console.log(`  ${piece.id}: stl -> glb, ${r.triangles} triangulos`);
+    return file;
+  }
+
   // Multi-part scans (e.g. Wright Flyer wings+engine, Apollo shell+top):
   // download every part and merge them into a single glb before optimizing.
   if (Array.isArray(piece.source.uris)) {
@@ -105,8 +122,24 @@ async function download(piece) {
   return file;
 }
 
+// Three.js dropped KHR_materials_pbrSpecularGlossiness in r147 and ignores it
+// silently: the texture sits in the file and the material falls back to plain
+// white. Older museum scans still ship in that workflow, so convert first.
+function usesSpecGloss(file) {
+  if (!file.endsWith(".glb")) return false;
+  const b = readFileSync(file);
+  const json = JSON.parse(b.subarray(20, 20 + b.readUInt32LE(12)).toString("utf8"));
+  return (json.extensionsUsed ?? []).includes("KHR_materials_pbrSpecularGlossiness");
+}
+
 function optimize(piece, input) {
   const output = join(outputDir, `${piece.id}.glb`);
+  if (usesSpecGloss(input)) {
+    const converted = join(originalsDir, `${piece.id}.metalrough.glb`);
+    execFileSync("npx", ["gltf-transform", "metalrough", input, converted], { stdio: "pipe" });
+    console.log(`  ${piece.id}: spec/gloss -> metal/rough`);
+    input = converted;
+  }
   execFileSync("npx", [
     "gltf-transform", "optimize", input, output,
     "--compress", "draco",

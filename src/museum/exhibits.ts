@@ -55,6 +55,19 @@ function boxRaycast(this: THREE.Mesh, raycaster: THREE.Raycaster, intersects: TH
   intersects.push({ distance, point, object: this });
 }
 
+// The warm glow added on hover, on top of whatever the material already emits.
+const HOVER_TINT = new THREE.Color(0x3a2c14);
+const _emissive = new THREE.Color();
+
+// A material's emissive as it arrived from the file, remembered the first time
+// it is asked for so the hover effect is reversible.
+function baseEmissive(material: THREE.MeshStandardMaterial): THREE.Color {
+  if (material.userData.baseEmissive === undefined) {
+    material.userData.baseEmissive = material.emissive.getHex();
+  }
+  return _emissive.setHex(material.userData.baseEmissive as number);
+}
+
 function useCheapPicking(root: THREE.Object3D) {
   root.traverse((o) => {
     if (!(o instanceof THREE.Mesh)) return;
@@ -130,7 +143,12 @@ export class Exhibits {
       const active = p === piece;
       p.object.traverse((o) => {
         if (o instanceof THREE.Mesh && o.material instanceof THREE.MeshStandardMaterial) {
-          o.material.emissive.setHex(active ? 0x3a2c14 : 0x000000);
+          // Restore the material's OWN emissive, never a hard black. Museum
+          // scans exported as shadeless carry their whole colour in this
+          // channel over a black base — zeroing it turned the Louvre marble
+          // into a silhouette, and it never came back.
+          o.material.emissive.copy(baseEmissive(o.material));
+          if (active) o.material.emissive.add(HOVER_TINT);
         }
       });
     }

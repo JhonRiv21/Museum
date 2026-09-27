@@ -106,6 +106,8 @@ export class Rail {
   // and only then does the following piece exist for the camera.
   private stops: { point: THREE.Vector3; at: number; radius: number }[] = [];
 
+  private finale: THREE.Vector3 | null = null;
+
   setPOIs(points: { point: THREE.Vector3; radius: number }[]) {
     // Order stops by DEPTH along the hall, not by nearest point on the curve:
     // the rail weaves side to side, so projecting an off-axis exhibit onto it
@@ -124,6 +126,18 @@ export class Rail {
       }
       return at;
     };
+
+    // The finale — an exhibit set BEYOND the end of the rail — is not a stop.
+    // Its depth saturates at t = 1, which dropped it into the same slot as the
+    // last piece before it, and the clustering below kept only the larger of
+    // the two: whichever piece stood last lost its beat. The end of the tour
+    // looks at the finale instead (see rawTarget).
+    const railEndZ = this.curve.getPointAt(1).z;
+    const beyond = points.filter((p) => p.point.z < railEndZ - 0.5);
+    this.finale = beyond.length
+      ? beyond.reduce((a, b) => (b.point.z < a.point.z ? b : a)).point.clone()
+      : null;
+    points = points.filter((p) => !beyond.includes(p));
 
     const ordered = points
       .map((p) => ({ point: p.point, radius: p.radius, at: tForZ(p.point.z) }))
@@ -220,10 +234,10 @@ export class Rail {
     if (!this.stops.length) return out.copy(ahead);
 
     if (tc >= 0.965) {
-      let nearest = this.stops[0].point;
-      for (const stop of this.stops) {
-        if (stop.point.distanceTo(position) < nearest.distanceTo(position)) {
-          nearest = stop.point;
+      let nearest = this.finale ?? this.stops[0].point;
+      if (!this.finale) {
+        for (const stop of this.stops) {
+          if (stop.point.distanceTo(position) < nearest.distanceTo(position)) nearest = stop.point;
         }
       }
       return out.copy(ahead).lerp(nearest, 0.55);
