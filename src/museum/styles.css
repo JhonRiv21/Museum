@@ -11,6 +11,12 @@
 
 html, body {
   margin: 0;
+  /* Touch: holding a nav button must not start a text selection, a callout
+     or the system tap highlight over the whole scene. */
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
   height: 100%;
   background: var(--bg);
   color: var(--text);
@@ -161,6 +167,7 @@ html, body {
 
 #panel li:first-child { border-top: 0; }
 
+#panel li { -webkit-user-select: text; user-select: text; }
 #panel li strong { color: #241d12; font-weight: 700; }
 #panel li a { color: #6b4a14; text-decoration: underline; text-underline-offset: 2px; }
 #panel li a:hover { color: #241d12; }
@@ -179,6 +186,19 @@ html, body {
 }
 
 #panelClose:hover { background: #4a3d28; }
+
+#panelToggle {
+  display: none;
+  flex: none;
+  background: transparent;
+  color: #6b4a14;
+  border: 1px solid #c9b88f;
+  border-radius: 3px;
+  padding: 9px 12px;
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
 
 #loader {
   position: fixed;
@@ -359,4 +379,37 @@ div#perf { visibility: visible; }
     transform: translateY(12px);
   }
   #credits.show { transform: none; }
+}
+
+/* Phones: the label starts folded into a small card at the top right, so the
+   piece stays in view; "Ver ficha" unfolds the facts on demand. */
+@media (max-width: 700px) {
+  #panel {
+    top: 68px;
+    right: 16px;
+    width: min(300px, calc(100vw - 32px));
+    max-height: calc(100dvh - 68px - 130px);
+    overflow-y: auto;
+    padding: 14px 16px 12px;
+    transform: rotate(-0.8deg);
+  }
+  #panel.open { animation: dropIn 0.35s ease-out; }
+  #panel.closing { animation: liftOut 0.25s ease-in forwards; }
+  #panel h2 { font-size: 18px; }
+  #panel.collapsed { width: 215px; }
+  #panel.collapsed ul { display: none; }
+  #panelClose .long { display: none; }
+  #panel.collapsed header { border-bottom: 0; margin-bottom: 10px; padding-bottom: 0; }
+  #panel .panelActions { display: flex; gap: 8px; }
+  #panelToggle { display: block; }
+  #panelClose { padding: 9px 10px; }
+}
+
+@keyframes dropIn {
+  from { opacity: 0; transform: translateY(-10px) rotate(-0.8deg); }
+  to   { opacity: 1; transform: rotate(-0.8deg); }
+}
+
+@keyframes liftOut {
+  to { opacity: 0; transform: translateY(-10px) rotate(-0.8deg); }
 }

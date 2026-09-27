@@ -90,6 +90,8 @@ export class Exhibits {
   private panelName = document.getElementById("panelName") as HTMLElement;
   private panelSpecies = document.getElementById("panelSpecies") as HTMLElement;
   private panelFacts = document.getElementById("panelFacts") as HTMLElement;
+  private panelToggle = document.getElementById("panelToggle") as HTMLButtonElement;
+  private compact = matchMedia("(max-width: 700px)");
 
   constructor(
     private camera: THREE.PerspectiveCamera,
@@ -115,6 +117,7 @@ export class Exhibits {
       if (this.state === "rail" && this.hovered) void this.enter(this.hovered);
     });
     (document.getElementById("panelClose") as HTMLElement).onclick = () => void this.exit();
+    this.panelToggle.onclick = () => this.foldPanel(!this.panel.classList.contains("collapsed"));
     addEventListener("keydown", (e) => {
       if (e.key === "Escape" && this.state === "exhibit") void this.exit();
     });
@@ -202,9 +205,16 @@ export class Exhibits {
     this.panelName.textContent = piece.info.name;
     this.panelFacts.innerHTML = piece.info.facts.map((f) => `<li>${f}</li>`).join("");
     this.panel.classList.remove("closing", "open");
+    this.foldPanel(this.compact.matches);
     this.panel.hidden = false;
     void this.panel.offsetWidth; // restart the pick-up animation
     this.panel.classList.add("open");
+  }
+
+  private foldPanel(folded: boolean) {
+    this.panel.classList.toggle("collapsed", folded);
+    this.panelToggle.setAttribute("aria-expanded", String(!folded));
+    this.panelToggle.textContent = folded ? "Ver ficha" : "Ocultar ficha";
   }
 
   // Zoom for the on-screen buttons: scales the camera-to-target distance

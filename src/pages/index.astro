@@ -45,7 +45,10 @@ import "../museum/styles.css";
         <h2 id="panelName"></h2>
       </header>
       <ul id="panelFacts"></ul>
-      <button id="panelClose" type="button">← Volver al recorrido</button>
+      <div class="panelActions">
+        <button id="panelToggle" type="button" aria-controls="panelFacts" aria-expanded="true">Ocultar ficha</button>
+        <button id="panelClose" type="button">← Volver<span class="long"> al recorrido</span></button>
+      </div>
     </aside>
 
     <aside id="credits" aria-label="Autoría" aria-hidden="true">
