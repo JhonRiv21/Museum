@@ -50,7 +50,7 @@ const TARGET_FPS = Number(new URLSearchParams(location.search).get("fps")) || 30
 const SLOW_MS = (1000 / TARGET_FPS) * 1.2;
 
 function hallAt(z: number): string {
-  return (HALLS.find((h) => z > h.untilZ) ?? HALLS[HALLS.length - 1]).name;
+  return (HALLS.find((h) => z > h.untilZ) ?? HALLS[HALLS.length - 1]).name();
 }
 
 export function mountProbe(deps: Deps) {

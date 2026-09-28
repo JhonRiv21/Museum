@@ -2,17 +2,26 @@
   "halls": [
     {
       "id": "paleo",
-      "name": "Sala I · Paleontología",
+      "name": {
+        "es": "Sala I · Paleontología",
+        "en": "Hall I · Paleontology"
+      },
       "budgetMB": 11
     },
     {
       "id": "flight",
-      "name": "Sala II · Vuelo y espacio",
+      "name": {
+        "es": "Sala II · Vuelo y espacio",
+        "en": "Hall II · Flight and space"
+      },
       "budgetMB": 9
     },
     {
       "id": "ancient",
-      "name": "Sala III · Civilizaciones antiguas",
+      "name": {
+        "es": "Sala III · Civilizaciones antiguas",
+        "en": "Hall III · Ancient civilizations"
+      },
       "budgetMB": 10
     }
   ],
@@ -36,14 +45,26 @@
         "yOffset": -0.16
       },
       "display": {
-        "name": "Hatcher",
-        "species": "Triceratops horridus · Marsh, 1889",
-        "facts": [
-          "<strong>Cretácico tardío</strong> — vivió hace unos 68-66 millones de años.",
-          "Este ejemplar del Smithsonian fue <strong>el primer esqueleto de dinosaurio digitalizado en 3D</strong> de la historia.",
-          "El volante óseo y los tres cuernos le daban defensa y regulación térmica.",
-          "Escaneo real del NMNH · dominio público (CC0)."
-        ],
+        "es": {
+          "name": "Hatcher",
+          "species": "Triceratops horridus · Marsh, 1889",
+          "facts": [
+            "<strong>Cretácico tardío</strong> — vivió hace unos 68-66 millones de años.",
+            "Este ejemplar del Smithsonian fue <strong>el primer esqueleto de dinosaurio digitalizado en 3D</strong> de la historia.",
+            "El volante óseo y los tres cuernos le daban defensa y regulación térmica.",
+            "Escaneo real del NMNH · dominio público (CC0)."
+          ]
+        },
+        "en": {
+          "name": "Hatcher",
+          "species": "Triceratops horridus · Marsh, 1889",
+          "facts": [
+            "<strong>Late Cretaceous</strong> — it lived some 68-66 million years ago.",
+            "This Smithsonian specimen was <strong>the first dinosaur skeleton ever digitized in 3D</strong>.",
+            "The bony frill and the three horns gave it defence and heat regulation.",
+            "Real scan by the NMNH · public domain (CC0)."
+          ]
+        },
         "labelTop": true
       },
       "output": {
@@ -70,14 +91,26 @@
         "yOffset": 0
       },
       "display": {
-        "name": "Garra de Allosaurus",
-        "species": "Allosaurus fragilis · Marsh, 1877",
-        "facts": [
-          "Garra de la mano de uno de los <strong>grandes depredadores del Jurásico tardío</strong>, hace unos 150 millones de años.",
-          "Curvas y comprimidas lateralmente, las garras servían para <strong>sujetar a la presa</strong> mientras mordía.",
-          "Descrito por O. C. Marsh en 1877, en plena <strong>Guerra de los Huesos</strong> contra E. D. Cope.",
-          "Escaneo real del NMNH · dominio público (CC0)."
-        ]
+        "es": {
+          "name": "Garra de Allosaurus",
+          "species": "Allosaurus fragilis · Marsh, 1877",
+          "facts": [
+            "Garra de la mano de uno de los <strong>grandes depredadores del Jurásico tardío</strong>, hace unos 150 millones de años.",
+            "Curvas y comprimidas lateralmente, las garras servían para <strong>sujetar a la presa</strong> mientras mordía.",
+            "Descrito por O. C. Marsh en 1877, en plena <strong>Guerra de los Huesos</strong> contra E. D. Cope.",
+            "Escaneo real del NMNH · dominio público (CC0)."
+          ]
+        },
+        "en": {
+          "name": "Allosaurus claw",
+          "species": "Allosaurus fragilis · Marsh, 1877",
+          "facts": [
+            "Hand claw of one of the <strong>great predators of the Late Jurassic</strong>, some 150 million years ago.",
+            "Curved and flattened sideways, the claws helped <strong>hold the prey</strong> while it bit.",
+            "Described by O. C. Marsh in 1877, in the middle of the <strong>Bone Wars</strong> against E. D. Cope.",
+            "Real scan by the NMNH · public domain (CC0)."
+          ]
+        }
       },
       "output": {
         "bytes": 175832
@@ -103,14 +136,26 @@
         "yOffset": 0
       },
       "display": {
-        "name": "Muela de mamut",
-        "species": "Mammuthus primigenius · Blumenbach, 1799",
-        "facts": [
-          "¿Una roca? No: es <strong>una sola muela</strong> de mamut lanudo.",
-          "Las crestas de esmalte formaban una <strong>superficie de molienda</strong> para triturar hierba dura.",
-          "Un mamut reemplazaba sus muelas <strong>hasta seis veces</strong> en la vida; al gastarse el último juego, no podía alimentarse más.",
-          "Escaneo real del NMNH · dominio público (CC0)."
-        ]
+        "es": {
+          "name": "Muela de mamut",
+          "species": "Mammuthus primigenius · Blumenbach, 1799",
+          "facts": [
+            "¿Una roca? No: es <strong>una sola muela</strong> de mamut lanudo.",
+            "Las crestas de esmalte formaban una <strong>superficie de molienda</strong> para triturar hierba dura.",
+            "Un mamut reemplazaba sus muelas <strong>hasta seis veces</strong> en la vida; al gastarse el último juego, no podía alimentarse más.",
+            "Escaneo real del NMNH · dominio público (CC0)."
+          ]
+        },
+        "en": {
+          "name": "Mammoth molar",
+          "species": "Mammuthus primigenius · Blumenbach, 1799",
+          "facts": [
+            "A rock? No: it is <strong>a single molar</strong> of a woolly mammoth.",
+            "The enamel ridges formed a <strong>grinding surface</strong> for crushing tough grass.",
+            "A mammoth replaced its molars <strong>up to six times</strong> in its life; once the last set wore out, it could no longer feed.",
+            "Real scan by the NMNH · public domain (CC0)."
+          ]
+        }
       },
       "output": {
         "bytes": 770404
@@ -136,14 +181,26 @@
         "yOffset": 0
       },
       "display": {
-        "name": "Púa de Stegosaurus",
-        "species": "Stegosaurus stenops · Marsh, 1887",
-        "facts": [
-          "Púa de la cola de un Stegosaurus: su <strong>arma defensiva</strong> contra depredadores como Allosaurus.",
-          "El conjunto de cuatro púas se conoce como <strong>thagomizer</strong> — nombre nacido en una viñeta de Gary Larson (1982) y adoptado informalmente por los paleontólogos.",
-          "Jurásico tardío, hace unos 150 millones de años.",
-          "Escaneo real del NMNH · dominio público (CC0)."
-        ],
+        "es": {
+          "name": "Púa de Stegosaurus",
+          "species": "Stegosaurus stenops · Marsh, 1887",
+          "facts": [
+            "Púa de la cola de un Stegosaurus: su <strong>arma defensiva</strong> contra depredadores como Allosaurus.",
+            "El conjunto de cuatro púas se conoce como <strong>thagomizer</strong> — nombre nacido en una viñeta de Gary Larson (1982) y adoptado informalmente por los paleontólogos.",
+            "Jurásico tardío, hace unos 150 millones de años.",
+            "Escaneo real del NMNH · dominio público (CC0)."
+          ]
+        },
+        "en": {
+          "name": "Stegosaurus spike",
+          "species": "Stegosaurus stenops · Marsh, 1887",
+          "facts": [
+            "A tail spike from a Stegosaurus: its <strong>defensive weapon</strong> against predators such as Allosaurus.",
+            "The set of four spikes is known as the <strong>thagomizer</strong> — a name born in a Gary Larson cartoon (1982) and informally adopted by paleontologists.",
+            "Late Jurassic, some 150 million years ago.",
+            "Real scan by the NMNH · public domain (CC0)."
+          ]
+        },
         "labelTop": true
       },
       "output": {
@@ -170,14 +227,26 @@
         "yOffset": 0
       },
       "display": {
-        "name": "Diplocaulus",
-        "species": "Diplocaulus magnicornis · Pérmico",
-        "facts": [
-          "Cráneo en <strong>forma de búmeran</strong> de un anfibio del Pérmico, hace unos 275 millones de años.",
-          "Las 'alas' óseas pudieron dar <strong>sustentación al nadar</strong> — o simplemente hacerlo muy difícil de tragar.",
-          "No es un dinosaurio: es <strong>40 millones de años más antiguo</strong> que el primero de ellos.",
-          "Escaneo real del NMNH · dominio público (CC0)."
-        ],
+        "es": {
+          "name": "Diplocaulus",
+          "species": "Diplocaulus magnicornis · Pérmico",
+          "facts": [
+            "Cráneo en <strong>forma de búmeran</strong> de un anfibio del Pérmico, hace unos 275 millones de años.",
+            "Las 'alas' óseas pudieron dar <strong>sustentación al nadar</strong> — o simplemente hacerlo muy difícil de tragar.",
+            "No es un dinosaurio: es <strong>40 millones de años más antiguo</strong> que el primero de ellos.",
+            "Escaneo real del NMNH · dominio público (CC0)."
+          ]
+        },
+        "en": {
+          "name": "Diplocaulus",
+          "species": "Diplocaulus magnicornis · Permian",
+          "facts": [
+            "<strong>Boomerang-shaped</strong> skull of a Permian amphibian, some 275 million years ago.",
+            "The bony 'wings' may have given it <strong>lift while swimming</strong> — or simply made it very hard to swallow.",
+            "It is not a dinosaur: it is <strong>40 million years older</strong> than the first of them.",
+            "Real scan by the NMNH · public domain (CC0)."
+          ]
+        },
         "labelTop": true
       },
       "output": {
@@ -206,14 +275,26 @@
         "offsetZ": 0.7
       },
       "display": {
-        "name": "Tyrannosaurus rex",
-        "species": "Tyrannosaurus rex · esqueleto completo",
-        "facts": [
-          "El depredador terrestre más famoso: hasta <strong>12 metros de largo</strong> y la mordida más potente conocida en un animal terrestre.",
-          "Cretácico tardío, 68-66 millones de años — cazaba en los mismos ecosistemas que Triceratops, aquí <strong>frente a frente</strong>.",
-          "<strong>Fotogrametría real</strong> de la réplica montada en el Knuthenborg Safaripark (Dinamarca).",
-          "Captura de <a href=\"https://sketchfab.com/3d-models/77e21c4e5d65468bbe11780ae0557b95\" target=\"_blank\" rel=\"noopener\">Rigsters</a> · <a href=\"https://creativecommons.org/licenses/by/4.0/deed.es\" target=\"_blank\" rel=\"noopener\">CC BY 4.0</a>. Modelo simplificado y comprimido para la web."
-        ],
+        "es": {
+          "name": "Tyrannosaurus rex",
+          "species": "Tyrannosaurus rex · esqueleto completo",
+          "facts": [
+            "El depredador terrestre más famoso: hasta <strong>12 metros de largo</strong> y la mordida más potente conocida en un animal terrestre.",
+            "Cretácico tardío, 68-66 millones de años — cazaba en los mismos ecosistemas que Triceratops, aquí <strong>frente a frente</strong>.",
+            "<strong>Fotogrametría real</strong> de la réplica montada en el Knuthenborg Safaripark (Dinamarca).",
+            "Captura de <a href=\"https://sketchfab.com/3d-models/77e21c4e5d65468bbe11780ae0557b95\" target=\"_blank\" rel=\"noopener\">Rigsters</a> · <a href=\"https://creativecommons.org/licenses/by/4.0/deed.es\" target=\"_blank\" rel=\"noopener\">CC BY 4.0</a>. Modelo simplificado y comprimido para la web."
+          ]
+        },
+        "en": {
+          "name": "Tyrannosaurus rex",
+          "species": "Tyrannosaurus rex · complete skeleton",
+          "facts": [
+            "The most famous land predator: up to <strong>12 metres long</strong> and the most powerful bite known in a land animal.",
+            "Late Cretaceous, 68-66 million years ago — it hunted in the same ecosystems as Triceratops, here <strong>face to face</strong>.",
+            "<strong>Real photogrammetry</strong> of the mounted replica at Knuthenborg Safaripark (Denmark).",
+            "Capture by <a href=\"https://sketchfab.com/3d-models/77e21c4e5d65468bbe11780ae0557b95\" target=\"_blank\" rel=\"noopener\">Rigsters</a> · <a href=\"https://creativecommons.org/licenses/by/4.0/deed.en\" target=\"_blank\" rel=\"noopener\">CC BY 4.0</a>. Model simplified and compressed for the web."
+          ]
+        },
         "labelTop": true
       },
       "output": {
@@ -242,14 +323,26 @@
         "offsetZ": 0.6
       },
       "display": {
-        "name": "Stegosaurus",
-        "species": "Stegosaurus · esqueleto completo",
-        "facts": [
-          "<strong>Fotogrametría del ejemplar real</strong> montado en el Denver Museum of Nature & Science: más de 8 metros de largo.",
-          "Las placas dorsales pudieron servir para <strong>regular temperatura</strong> y para exhibirse.",
-          "La púa de la vitrina de esta misma sala pertenece a su arma de cola: el <strong>thagomizer</strong>.",
-          "Escaneo de <a href=\"https://sketchfab.com/3d-models/dc6e1c748484449587b81426d41da6cb\" target=\"_blank\" rel=\"noopener\">E_G_</a> · <a href=\"https://creativecommons.org/licenses/by/4.0/deed.es\" target=\"_blank\" rel=\"noopener\">CC BY 4.0</a>. Modelo simplificado y comprimido para la web."
-        ]
+        "es": {
+          "name": "Stegosaurus",
+          "species": "Stegosaurus · esqueleto completo",
+          "facts": [
+            "<strong>Fotogrametría del ejemplar real</strong> montado en el Denver Museum of Nature & Science: más de 8 metros de largo.",
+            "Las placas dorsales pudieron servir para <strong>regular temperatura</strong> y para exhibirse.",
+            "La púa de la vitrina de esta misma sala pertenece a su arma de cola: el <strong>thagomizer</strong>.",
+            "Escaneo de <a href=\"https://sketchfab.com/3d-models/dc6e1c748484449587b81426d41da6cb\" target=\"_blank\" rel=\"noopener\">E_G_</a> · <a href=\"https://creativecommons.org/licenses/by/4.0/deed.es\" target=\"_blank\" rel=\"noopener\">CC BY 4.0</a>. Modelo simplificado y comprimido para la web."
+          ]
+        },
+        "en": {
+          "name": "Stegosaurus",
+          "species": "Stegosaurus · complete skeleton",
+          "facts": [
+            "<strong>Photogrammetry of the real specimen</strong> mounted at the Denver Museum of Nature & Science: more than 8 metres long.",
+            "The back plates may have served to <strong>regulate temperature</strong> and for display.",
+            "The spike in the display case of this same hall belongs to its tail weapon: the <strong>thagomizer</strong>.",
+            "Scan by <a href=\"https://sketchfab.com/3d-models/dc6e1c748484449587b81426d41da6cb\" target=\"_blank\" rel=\"noopener\">E_G_</a> · <a href=\"https://creativecommons.org/licenses/by/4.0/deed.en\" target=\"_blank\" rel=\"noopener\">CC BY 4.0</a>. Model simplified and compressed for the web."
+          ]
+        }
       },
       "output": {
         "bytes": 1023600
@@ -277,14 +370,26 @@
         "offsetX": -0.35
       },
       "display": {
-        "name": "Utahraptor",
-        "species": "Utahraptor ostrommaysi · Cretácico temprano",
-        "facts": [
-          "El <strong>raptor gigante real</strong>: unos 5 metros de largo y una garra falciforme de más de 20 cm en cada pie.",
-          "Los 'velociraptores' del cine tenían <strong>este tamaño</strong> — el Velociraptor real era como un pavo con plumas.",
-          "Descrito en 1993 en Utah, casi al tiempo que la película que hizo famosos a los raptores.",
-          "Modelo de <a href=\"https://sketchfab.com/3d-models/2ef1135c92854ee0bc234e966adabcc2\" target=\"_blank\" rel=\"noopener\">tech.service.allwe</a> · <a href=\"https://creativecommons.org/licenses/by/4.0/deed.es\" target=\"_blank\" rel=\"noopener\">CC BY 4.0</a>. Modelo simplificado y comprimido para la web."
-        ],
+        "es": {
+          "name": "Utahraptor",
+          "species": "Utahraptor ostrommaysi · Cretácico temprano",
+          "facts": [
+            "El <strong>raptor gigante real</strong>: unos 5 metros de largo y una garra falciforme de más de 20 cm en cada pie.",
+            "Los 'velociraptores' del cine tenían <strong>este tamaño</strong> — el Velociraptor real era como un pavo con plumas.",
+            "Descrito en 1993 en Utah, casi al tiempo que la película que hizo famosos a los raptores.",
+            "Modelo de <a href=\"https://sketchfab.com/3d-models/2ef1135c92854ee0bc234e966adabcc2\" target=\"_blank\" rel=\"noopener\">tech.service.allwe</a> · <a href=\"https://creativecommons.org/licenses/by/4.0/deed.es\" target=\"_blank\" rel=\"noopener\">CC BY 4.0</a>. Modelo simplificado y comprimido para la web."
+          ]
+        },
+        "en": {
+          "name": "Utahraptor",
+          "species": "Utahraptor ostrommaysi · Early Cretaceous",
+          "facts": [
+            "The <strong>real giant raptor</strong>: about 5 metres long, with a sickle claw over 20 cm long on each foot.",
+            "The 'velociraptors' in the movies were <strong>this size</strong> — the real Velociraptor was more like a feathered turkey.",
+            "Described in 1993 in Utah, almost at the same time as the film that made raptors famous.",
+            "Model by <a href=\"https://sketchfab.com/3d-models/2ef1135c92854ee0bc234e966adabcc2\" target=\"_blank\" rel=\"noopener\">tech.service.allwe</a> · <a href=\"https://creativecommons.org/licenses/by/4.0/deed.en\" target=\"_blank\" rel=\"noopener\">CC BY 4.0</a>. Model simplified and compressed for the web."
+          ]
+        },
         "labelTop": true
       },
       "output": {
@@ -311,14 +416,26 @@
         "yOffset": 0
       },
       "display": {
-        "name": "Cher Ami",
-        "species": "Paloma mensajera · I Guerra Mundial",
-        "facts": [
-          "El vuelo más antiguo de esta sala es <strong>biológico</strong>: una paloma mensajera del ejército de EE. UU.",
-          "En octubre de 1918, gravemente herida, entregó el mensaje que ayudó a salvar a los ~190 hombres del <strong>'Batallón Perdido'</strong>.",
-          "Francia la condecoró con la <strong>Croix de Guerre</strong>.",
-          "Taxidermia real del Smithsonian · dominio público (CC0)."
-        ]
+        "es": {
+          "name": "Cher Ami",
+          "species": "Paloma mensajera · I Guerra Mundial",
+          "facts": [
+            "El vuelo más antiguo de esta sala es <strong>biológico</strong>: una paloma mensajera del ejército de EE. UU.",
+            "En octubre de 1918, gravemente herida, entregó el mensaje que ayudó a salvar a los ~190 hombres del <strong>'Batallón Perdido'</strong>.",
+            "Francia la condecoró con la <strong>Croix de Guerre</strong>.",
+            "Taxidermia real del Smithsonian · dominio público (CC0)."
+          ]
+        },
+        "en": {
+          "name": "Cher Ami",
+          "species": "Homing pigeon · World War I",
+          "facts": [
+            "The oldest flight in this hall is <strong>biological</strong>: a homing pigeon of the US Army.",
+            "In October 1918, badly wounded, she delivered the message that helped save the ~190 men of the <strong>'Lost Battalion'</strong>.",
+            "France awarded her the <strong>Croix de Guerre</strong>.",
+            "Real taxidermy from the Smithsonian · public domain (CC0)."
+          ]
+        }
       },
       "output": {
         "bytes": 970692
@@ -344,13 +461,24 @@
         "yOffset": 0
       },
       "display": {
-        "name": "Escotilla del Apollo 11",
-        "species": "Módulo de mando Columbia · 1969",
-        "facts": [
-          "La puerta por la que salieron y volvieron a entrar los <strong>primeros humanos que pisaron la Luna</strong>.",
-          "Rediseñada tras el incendio del Apollo 1 para poder <strong>abrirse en segundos</strong>.",
-          "Escaneo del original · dominio público (CC0)."
-        ]
+        "es": {
+          "name": "Escotilla del Apollo 11",
+          "species": "Módulo de mando Columbia · 1969",
+          "facts": [
+            "La puerta por la que salieron y volvieron a entrar los <strong>primeros humanos que pisaron la Luna</strong>.",
+            "Rediseñada tras el incendio del Apollo 1 para poder <strong>abrirse en segundos</strong>.",
+            "Escaneo del original · dominio público (CC0)."
+          ]
+        },
+        "en": {
+          "name": "Apollo 11 hatch",
+          "species": "Command module Columbia · 1969",
+          "facts": [
+            "The door through which the <strong>first humans to walk on the Moon</strong> went out and came back in.",
+            "Redesigned after the Apollo 1 fire so it could <strong>open in seconds</strong>.",
+            "Scan of the original · public domain (CC0)."
+          ]
+        }
       },
       "output": {
         "bytes": 815284
@@ -380,14 +508,26 @@
         "yOffset": 0
       },
       "display": {
-        "name": "Wright Flyer",
-        "species": "El primer avión · 1903",
-        "facts": [
-          "La máquina del <strong>primer vuelo controlado y con motor</strong> de la historia: Kitty Hawk, 17 de diciembre de 1903.",
-          "El primer vuelo duró <strong>12 segundos y 36 metros</strong> — menos que la envergadura de un 747.",
-          "Orville pilotaba tumbado sobre el ala inferior; Wilbur corría al lado sujetando el ala.",
-          "Escaneo del original · Smithsonian · dominio público (CC0)."
-        ],
+        "es": {
+          "name": "Wright Flyer",
+          "species": "El primer avión · 1903",
+          "facts": [
+            "La máquina del <strong>primer vuelo controlado y con motor</strong> de la historia: Kitty Hawk, 17 de diciembre de 1903.",
+            "El primer vuelo duró <strong>12 segundos y 36 metros</strong> — menos que la envergadura de un 747.",
+            "Orville pilotaba tumbado sobre el ala inferior; Wilbur corría al lado sujetando el ala.",
+            "Escaneo del original · Smithsonian · dominio público (CC0)."
+          ]
+        },
+        "en": {
+          "name": "Wright Flyer",
+          "species": "The first airplane · 1903",
+          "facts": [
+            "The machine of the <strong>first controlled, powered flight</strong> in history: Kitty Hawk, 17 December 1903.",
+            "The first flight lasted <strong>12 seconds and 36 metres</strong> — less than the wingspan of a 747.",
+            "Orville flew lying on the lower wing; Wilbur ran alongside holding the wing.",
+            "Scan of the original · Smithsonian · public domain (CC0)."
+          ]
+        },
         "labelTop": true
       },
       "output": {
@@ -417,14 +557,26 @@
         "yOffset": -0.35
       },
       "display": {
-        "name": "Columbia",
-        "species": "Módulo de mando del Apollo 11 · 1969",
-        "facts": [
-          "La <strong>única parte de la nave que regresó</strong> del primer viaje a la Luna, julio de 1969.",
-          "Llevó a Armstrong, Aldrin y Collins — y soportó unos <strong>2.800 °C</strong> en la reentrada.",
-          "De la paloma a la cápsula: <strong>66 años</strong> separan esta pieza del Wright Flyer de enfrente.",
-          "Escaneo del original · dominio público (CC0)."
-        ]
+        "es": {
+          "name": "Columbia",
+          "species": "Módulo de mando del Apollo 11 · 1969",
+          "facts": [
+            "La <strong>única parte de la nave que regresó</strong> del primer viaje a la Luna, julio de 1969.",
+            "Llevó a Armstrong, Aldrin y Collins — y soportó unos <strong>2.800 °C</strong> en la reentrada.",
+            "De la paloma a la cápsula: <strong>66 años</strong> separan esta pieza del Wright Flyer de enfrente.",
+            "Escaneo del original · dominio público (CC0)."
+          ]
+        },
+        "en": {
+          "name": "Columbia",
+          "species": "Apollo 11 command module · 1969",
+          "facts": [
+            "The <strong>only part of the spacecraft that came back</strong> from the first trip to the Moon, July 1969.",
+            "It carried Armstrong, Aldrin and Collins — and withstood some <strong>2,800 °C</strong> on reentry.",
+            "From the pigeon to the capsule: <strong>66 years</strong> separate this piece from the Wright Flyer across the hall.",
+            "Scan of the original · public domain (CC0)."
+          ]
+        }
       },
       "output": {
         "bytes": 1987504
@@ -451,14 +603,26 @@
         "yOffset": 0
       },
       "display": {
-        "name": "Ramsés III",
-        "species": "Egipto · dinastía XX, 1185-1153 a.C.",
-        "facts": [
-          "Estatua sedente en <strong>basalto</strong>, de tamaño natural. Ramsés III gobernó 32 años y suele considerarse el último faraón poderoso del Reino Nuevo.",
-          "No apareció en el valle del Nilo sino en <strong>Bet She'an</strong>, en Canaán: se erigió en un templo local como afirmación de autoridad, justo cuando el dominio egipcio sobre la región se apagaba.",
-          "Se encontró rota y mutilada, y fuera del sitio para el que se hizo — una estatua de propaganda que sobrevivió al poder que anunciaba.",
-          "Museo de Israel. Fotogrametría de <a href=\"https://sketchfab.com/3d-models/dec51e9168814cd38982e9f0d165de80\" target=\"_blank\" rel=\"noopener\">Abby Gancz</a> · <a href=\"https://creativecommons.org/licenses/by/4.0/deed.es\" target=\"_blank\" rel=\"noopener\">CC BY 4.0</a>. Modelo simplificado y comprimido para la web."
-        ]
+        "es": {
+          "name": "Ramsés III",
+          "species": "Egipto · dinastía XX, 1185-1153 a.C.",
+          "facts": [
+            "Estatua sedente en <strong>basalto</strong>, de tamaño natural. Ramsés III gobernó 32 años y suele considerarse el último faraón poderoso del Reino Nuevo.",
+            "No apareció en el valle del Nilo sino en <strong>Bet She'an</strong>, en Canaán: se erigió en un templo local como afirmación de autoridad, justo cuando el dominio egipcio sobre la región se apagaba.",
+            "Se encontró rota y mutilada, y fuera del sitio para el que se hizo — una estatua de propaganda que sobrevivió al poder que anunciaba.",
+            "Museo de Israel. Fotogrametría de <a href=\"https://sketchfab.com/3d-models/dec51e9168814cd38982e9f0d165de80\" target=\"_blank\" rel=\"noopener\">Abby Gancz</a> · <a href=\"https://creativecommons.org/licenses/by/4.0/deed.es\" target=\"_blank\" rel=\"noopener\">CC BY 4.0</a>. Modelo simplificado y comprimido para la web."
+          ]
+        },
+        "en": {
+          "name": "Ramesses III",
+          "species": "Egypt · 20th dynasty, 1185-1153 BC",
+          "facts": [
+            "Life-size seated statue in <strong>basalt</strong>. Ramesses III ruled for 32 years and is usually considered the last powerful pharaoh of the New Kingdom.",
+            "It was not found in the Nile valley but in <strong>Beth She'an</strong>, in Canaan: it was set up in a local temple as a statement of authority, just as Egyptian rule over the region was fading.",
+            "It was found broken and defaced, far from the place it was made for — a propaganda statue that outlived the power it proclaimed.",
+            "Israel Museum. Photogrammetry by <a href=\"https://sketchfab.com/3d-models/dec51e9168814cd38982e9f0d165de80\" target=\"_blank\" rel=\"noopener\">Abby Gancz</a> · <a href=\"https://creativecommons.org/licenses/by/4.0/deed.en\" target=\"_blank\" rel=\"noopener\">CC BY 4.0</a>. Model simplified and compressed for the web."
+          ]
+        }
       },
       "textureSize": 2048,
       "output": {
@@ -485,14 +649,26 @@
         "yOffset": 0
       },
       "display": {
-        "name": "Neptuno",
-        "species": "Antoine Coysevox · 1703-1708",
-        "facts": [
-          "Mármol de 1,85 m. Hardouin-Mansart lo encargó en 1698 junto a otros tres grupos —Anfítrite, el Sena y el Marne— para la Rivière del parque de <strong>Marly</strong>.",
-          "Es el mismo escultor y el mismo jardín que el <em>Mercurio sobre Pegaso</em> que tienes enfrente: Coysevox talló ambos para la residencia donde Luis XIV se quitaba el protocolo de encima.",
-          "Del modelo en yeso de 1699 al mármol terminado pasaron casi diez años; el último pago no llegó hasta <strong>1712</strong>.",
-          "Museo del Louvre desde 1966. Escaneo de <a href=\"https://sketchfab.com/3d-models/e091d1ff1d2b44fd88d113fccb5623aa\" target=\"_blank\" rel=\"noopener\">Benjamin Bardou</a> · <a href=\"https://creativecommons.org/licenses/by/4.0/deed.es\" target=\"_blank\" rel=\"noopener\">CC BY 4.0</a>. Modelo simplificado y comprimido para la web."
-        ]
+        "es": {
+          "name": "Neptuno",
+          "species": "Antoine Coysevox · 1703-1708",
+          "facts": [
+            "Mármol de 1,85 m. Hardouin-Mansart lo encargó en 1698 junto a otros tres grupos —Anfítrite, el Sena y el Marne— para la Rivière del parque de <strong>Marly</strong>.",
+            "Es el mismo escultor y el mismo jardín que el <em>Mercurio sobre Pegaso</em> que tienes enfrente: Coysevox talló ambos para la residencia donde Luis XIV se quitaba el protocolo de encima.",
+            "Del modelo en yeso de 1699 al mármol terminado pasaron casi diez años; el último pago no llegó hasta <strong>1712</strong>.",
+            "Museo del Louvre desde 1966. Escaneo de <a href=\"https://sketchfab.com/3d-models/e091d1ff1d2b44fd88d113fccb5623aa\" target=\"_blank\" rel=\"noopener\">Benjamin Bardou</a> · <a href=\"https://creativecommons.org/licenses/by/4.0/deed.es\" target=\"_blank\" rel=\"noopener\">CC BY 4.0</a>. Modelo simplificado y comprimido para la web."
+          ]
+        },
+        "en": {
+          "name": "Neptune",
+          "species": "Antoine Coysevox · 1703-1708",
+          "facts": [
+            "Marble, 1.85 m. Hardouin-Mansart commissioned it in 1698 together with three other groups —Amphitrite, the Seine and the Marne— for the Rivière in the park of <strong>Marly</strong>.",
+            "Same sculptor and same garden as the <em>Mercury Riding Pegasus</em> in front of you: Coysevox carved both for the residence where Louis XIV set court protocol aside.",
+            "From the 1699 plaster model to the finished marble took almost ten years; the last payment did not arrive until <strong>1712</strong>.",
+            "In the Louvre since 1966. Scan by <a href=\"https://sketchfab.com/3d-models/e091d1ff1d2b44fd88d113fccb5623aa\" target=\"_blank\" rel=\"noopener\">Benjamin Bardou</a> · <a href=\"https://creativecommons.org/licenses/by/4.0/deed.en\" target=\"_blank\" rel=\"noopener\">CC BY 4.0</a>. Model simplified and compressed for the web."
+          ]
+        }
       },
       "textureSize": 2048,
       "output": {
@@ -519,15 +695,28 @@
         "yOffset": 0
       },
       "display": {
-        "name": "Mercurio sobre Pegaso",
-        "species": "Antoine Coysevox · 1701-1702",
-        "facts": [
-          "<strong>3,15 metros</strong> tallados en un solo bloque de mármol de Carrara. Coysevox presumía en el pedestal de haber resuelto semejante monolito en apenas dos años.",
-          "Se encargó en 1699 para el abrevadero de <strong>Marly</strong>, la residencia donde Luis XIV escapaba del protocolo de Versalles. Se instaló allí en agosto de 1702.",
-          "Mercurio, mensajero de los dioses, cabalga a Pegaso; hacía pareja con <em>La Renommée</em>, y juntas anunciaban al visitante la gloria del rey.",
-          "En 1719 pasaron a la entrada de las <strong>Tullerías</strong>, sustituidas por moldes en 1986. Los originales están en el Louvre.",
-          "Escaneo de <a href=\"https://sketchfab.com/3d-models/b1cd021ccf804ffc902aa3bcdd6b8079\" target=\"_blank\" rel=\"noopener\">Benjamin Bardou</a> · <a href=\"https://creativecommons.org/licenses/by/4.0/deed.es\" target=\"_blank\" rel=\"noopener\">CC BY 4.0</a>. Modelo simplificado y comprimido para la web."
-        ]
+        "es": {
+          "name": "Mercurio sobre Pegaso",
+          "species": "Antoine Coysevox · 1701-1702",
+          "facts": [
+            "<strong>3,15 metros</strong> tallados en un solo bloque de mármol de Carrara. Coysevox presumía en el pedestal de haber resuelto semejante monolito en apenas dos años.",
+            "Se encargó en 1699 para el abrevadero de <strong>Marly</strong>, la residencia donde Luis XIV escapaba del protocolo de Versalles. Se instaló allí en agosto de 1702.",
+            "Mercurio, mensajero de los dioses, cabalga a Pegaso; hacía pareja con <em>La Renommée</em>, y juntas anunciaban al visitante la gloria del rey.",
+            "En 1719 pasaron a la entrada de las <strong>Tullerías</strong>, sustituidas por moldes en 1986. Los originales están en el Louvre.",
+            "Escaneo de <a href=\"https://sketchfab.com/3d-models/b1cd021ccf804ffc902aa3bcdd6b8079\" target=\"_blank\" rel=\"noopener\">Benjamin Bardou</a> · <a href=\"https://creativecommons.org/licenses/by/4.0/deed.es\" target=\"_blank\" rel=\"noopener\">CC BY 4.0</a>. Modelo simplificado y comprimido para la web."
+          ]
+        },
+        "en": {
+          "name": "Mercury Riding Pegasus",
+          "species": "Antoine Coysevox · 1701-1702",
+          "facts": [
+            "<strong>3.15 metres</strong> carved from a single block of Carrara marble. On the pedestal, Coysevox boasted of having finished such a monolith in barely two years.",
+            "It was commissioned in 1699 for the horse pond at <strong>Marly</strong>, the residence where Louis XIV escaped the protocol of Versailles. It was installed there in August 1702.",
+            "Mercury, messenger of the gods, rides Pegasus; it was paired with <em>La Renommée</em> (Fame), and together they announced the king's glory to visitors.",
+            "In 1719 they were moved to the entrance of the <strong>Tuileries</strong>, and replaced there by casts in 1986. The originals are in the Louvre.",
+            "Scan by <a href=\"https://sketchfab.com/3d-models/b1cd021ccf804ffc902aa3bcdd6b8079\" target=\"_blank\" rel=\"noopener\">Benjamin Bardou</a> · <a href=\"https://creativecommons.org/licenses/by/4.0/deed.en\" target=\"_blank\" rel=\"noopener\">CC BY 4.0</a>. Model simplified and compressed for the web."
+          ]
+        }
       },
       "textureSize": 2048,
       "output": {
@@ -553,15 +742,28 @@
         "yOffset": 0
       },
       "display": {
-        "name": "Maya y Merit",
-        "species": "Egipto · Saqqara, h. 1320 a.C.",
-        "facts": [
-          "Grupo en caliza de tamaño natural. Ella le pasa el brazo izquierdo por detrás; es de los gestos de afecto más antiguos que conserva la escultura egipcia.",
-          "<strong>Maya</strong> dirigía el Tesoro de Egipto bajo Tutankamón, y fue quien organizó la construcción de la tumba del faraón.",
-          "No es un retrato conmemorativo: la pareja está sentada <strong>esperando ser servida</strong>. La estatua recibía las ofrendas de comida en lugar de los muertos y alojaba sus <em>ka</em>, el principio vital que debía sobrevivirles.",
-          "Salió de la tumba de Saqqara y llegó a Leiden en 1826; la tumba vacía no se volvió a encontrar hasta <strong>1986</strong>.",
-          "Rijksmuseum van Oudheden, Leiden · dominio público (CC0)."
-        ]
+        "es": {
+          "name": "Maya y Merit",
+          "species": "Egipto · Saqqara, h. 1320 a.C.",
+          "facts": [
+            "Grupo en caliza de tamaño natural. Ella le pasa el brazo izquierdo por detrás; es de los gestos de afecto más antiguos que conserva la escultura egipcia.",
+            "<strong>Maya</strong> dirigía el Tesoro de Egipto bajo Tutankamón, y fue quien organizó la construcción de la tumba del faraón.",
+            "No es un retrato conmemorativo: la pareja está sentada <strong>esperando ser servida</strong>. La estatua recibía las ofrendas de comida en lugar de los muertos y alojaba sus <em>ka</em>, el principio vital que debía sobrevivirles.",
+            "Salió de la tumba de Saqqara y llegó a Leiden en 1826; la tumba vacía no se volvió a encontrar hasta <strong>1986</strong>.",
+            "Rijksmuseum van Oudheden, Leiden · dominio público (CC0)."
+          ]
+        },
+        "en": {
+          "name": "Maya and Merit",
+          "species": "Egypt · Saqqara, c. 1320 BC",
+          "facts": [
+            "Life-size limestone group. She puts her left arm around him from behind; it is one of the oldest gestures of affection preserved in Egyptian sculpture.",
+            "<strong>Maya</strong> ran the Treasury of Egypt under Tutankhamun, and was the one who organized the building of the pharaoh's tomb.",
+            "It is not a commemorative portrait: the couple sits <strong>waiting to be served</strong>. The statue received the food offerings in place of the dead and housed their <em>ka</em>, the life force meant to outlive them.",
+            "It left the tomb at Saqqara and reached Leiden in 1826; the empty tomb was not found again until <strong>1986</strong>.",
+            "Rijksmuseum van Oudheden, Leiden · public domain (CC0)."
+          ]
+        }
       },
       "textureSize": 2048,
       "output": {
@@ -587,15 +789,28 @@
         "yOffset": 0
       },
       "display": {
-        "name": "Augusto de Prima Porta",
-        "species": "Roma · entre el 20 a.C. y el 29 d.C.",
-        "facts": [
-          "El primer emperador de Roma con <strong>coraza de general</strong> y el brazo alzado para arengar a sus tropas. El mármol original mide 2,08 m y pesa una tonelada.",
-          "La coraza es propaganda tallada: un parto <strong>devuelve a un romano los estandartes</strong> que Roma había perdido décadas antes. Augusto los recuperó en el 20 a.C. negociando, sin librar una batalla.",
-          "Va descalzo, como se representaba a los dioses, y a sus pies lleva un Cupido: su familia decía descender de Eneas, hijo de Venus.",
-          "Apareció en abril de 1863 en la villa de su esposa Livia, en Prima Porta, con restos de color. En 2002 se identificaron cinco o seis pigmentos invisibles a simple vista.",
-          "Vaciado en yeso de la Colección Real de Vaciados del SMK, Copenhague (KAS65). El mármol está en los Museos Vaticanos · dominio público (CC0)."
-        ]
+        "es": {
+          "name": "Augusto de Prima Porta",
+          "species": "Roma · entre el 20 a.C. y el 29 d.C.",
+          "facts": [
+            "El primer emperador de Roma con <strong>coraza de general</strong> y el brazo alzado para arengar a sus tropas. El mármol original mide 2,08 m y pesa una tonelada.",
+            "La coraza es propaganda tallada: un parto <strong>devuelve a un romano los estandartes</strong> que Roma había perdido décadas antes. Augusto los recuperó en el 20 a.C. negociando, sin librar una batalla.",
+            "Va descalzo, como se representaba a los dioses, y a sus pies lleva un Cupido: su familia decía descender de Eneas, hijo de Venus.",
+            "Apareció en abril de 1863 en la villa de su esposa Livia, en Prima Porta, con restos de color. En 2002 se identificaron cinco o seis pigmentos invisibles a simple vista.",
+            "Vaciado en yeso de la Colección Real de Vaciados del SMK, Copenhague (KAS65). El mármol está en los Museos Vaticanos · dominio público (CC0)."
+          ]
+        },
+        "en": {
+          "name": "Augustus of Prima Porta",
+          "species": "Rome · between 20 BC and AD 29",
+          "facts": [
+            "Rome's first emperor in a <strong>general's breastplate</strong>, arm raised to address his troops. The original marble is 2.08 m tall and weighs a tonne.",
+            "The breastplate is carved propaganda: a Parthian <strong>hands back to a Roman the standards</strong> Rome had lost decades earlier. Augustus recovered them in 20 BC by negotiating, without fighting a battle.",
+            "He is barefoot, as the gods were portrayed, and has a Cupid at his feet: his family claimed descent from Aeneas, son of Venus.",
+            "It was found in April 1863 at the villa of his wife Livia, in Prima Porta, with traces of colour. In 2002, five or six pigments invisible to the naked eye were identified.",
+            "Plaster cast from the SMK Royal Cast Collection, Copenhagen (KAS65). The marble is in the Vatican Museums · public domain (CC0)."
+          ]
+        }
       },
       "output": {
         "bytes": 762792
@@ -620,15 +835,28 @@
         "yOffset": 0
       },
       "display": {
-        "name": "Espíritu protector",
-        "species": "Asiria · Nimrud, 883-859 a.C.",
-        "facts": [
-          "Panel de <strong>yeso</strong> de 2,3 metros, del palacio noroeste de Asurnasirpal II en Nimrud. Cientos como este forraban sus salas.",
-          "La figura alada alza la mano derecha en saludo ritual y sostiene con la izquierda una rama con rosetas, probablemente una palmera datilera: protección y abundancia en un solo gesto.",
-          "Cruzando la imagen corre una inscripción en <strong>cuneiforme acadio</strong> con las conquistas del rey y la reconstrucción de la ciudad — el texto pasa por encima del relieve sin pedirle permiso.",
-          "El palacio cayó en 612 a.C. y quedó enterrado <strong>veinticuatro siglos</strong>, hasta 1845.",
-          "Cleveland Museum of Art (1943.246) · dominio público (CC0)."
-        ]
+        "es": {
+          "name": "Espíritu protector",
+          "species": "Asiria · Nimrud, 883-859 a.C.",
+          "facts": [
+            "Panel de <strong>yeso</strong> de 2,3 metros, del palacio noroeste de Asurnasirpal II en Nimrud. Cientos como este forraban sus salas.",
+            "La figura alada alza la mano derecha en saludo ritual y sostiene con la izquierda una rama con rosetas, probablemente una palmera datilera: protección y abundancia en un solo gesto.",
+            "Cruzando la imagen corre una inscripción en <strong>cuneiforme acadio</strong> con las conquistas del rey y la reconstrucción de la ciudad — el texto pasa por encima del relieve sin pedirle permiso.",
+            "El palacio cayó en 612 a.C. y quedó enterrado <strong>veinticuatro siglos</strong>, hasta 1845.",
+            "Cleveland Museum of Art (1943.246) · dominio público (CC0)."
+          ]
+        },
+        "en": {
+          "name": "Protective spirit",
+          "species": "Assyria · Nimrud, 883-859 BC",
+          "facts": [
+            "A 2.3-metre <strong>gypsum</strong> panel from the Northwest Palace of Ashurnasirpal II at Nimrud. Hundreds like it lined its rooms.",
+            "The winged figure raises its right hand in ritual greeting and holds in its left a branch with rosettes, probably a date palm: protection and abundance in a single gesture.",
+            "Across the image runs an inscription in <strong>Akkadian cuneiform</strong> listing the king's conquests and the rebuilding of the city — the text runs over the relief without asking permission.",
+            "The palace fell in 612 BC and lay buried for <strong>twenty-four centuries</strong>, until 1845.",
+            "Cleveland Museum of Art (1943.246) · public domain (CC0)."
+          ]
+        }
       },
       "textureSize": 2048,
       "output": {

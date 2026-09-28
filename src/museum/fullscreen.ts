@@ -2,6 +2,8 @@
 // browser's own fullscreen state, so leaving with Esc (or the OS gesture)
 // updates it too instead of leaving the icon out of step.
 
+import { onLangChange, t } from "./i18n";
+
 type WebkitDocument = Document & {
   webkitFullscreenEnabled?: boolean;
   webkitFullscreenElement?: Element | null;
@@ -24,7 +26,7 @@ export function bindFullscreen(button: HTMLButtonElement) {
   const sync = () => {
     const on = isActive();
     button.setAttribute("aria-pressed", String(on));
-    button.setAttribute("aria-label", on ? "Salir de pantalla completa" : "Pantalla completa");
+    button.setAttribute("aria-label", t(on ? "fullscreenOff" : "fullscreenOn"));
     button.dataset.state = on ? "on" : "off";
   };
 
@@ -45,5 +47,6 @@ export function bindFullscreen(button: HTMLButtonElement) {
 
   document.addEventListener("fullscreenchange", sync);
   document.addEventListener("webkitfullscreenchange", sync);
+  onLangChange(sync);
   sync();
 }

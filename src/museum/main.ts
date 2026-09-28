@@ -7,10 +7,11 @@ import { buildStage, createDust, animateDust, updateSigns, updateLights, addName
 import { Rail } from "./rail";
 import { Exhibits } from "./exhibits";
 import { loadHall } from "./loader";
-import { MANIFEST, HALLS, pieceInfo, hallName, type Calibration } from "./data";
+import { MANIFEST, HALLS, pieceInfo, pieceNames, hallName, type Calibration } from "./data";
 import { Perf } from "./perf";
 import { bindFullscreen } from "./fullscreen";
 import { bindCredits } from "./credits";
+import { bindLangSelector } from "./i18n";
 
 const app = document.getElementById("app") as HTMLElement;
 const params = new URLSearchParams(location.search);
@@ -97,7 +98,7 @@ function placePiece(gltf: { scene: THREE.Object3D }, piece: (typeof readyPieces)
   if (!pedestal) return;
   const mount = mountPiece(gltf.scene, piece.id, piece.calibration, pedestal);
   exhibits.register(mount, pieceInfo(piece));
-  addNamePlate(scene, piece.display.name, pedestal);
+  addNamePlate(scene, pieceNames(piece), pedestal);
 }
 
 // Textures are only uploaded to the GPU the first time their material is
@@ -240,7 +241,8 @@ const hallLabel = document.getElementById("hudHall") as HTMLElement;
 function updateHallLabel() {
   const z = camera.position.z;
   const hall = HALLS.find((h) => z > h.untilZ) ?? HALLS[HALLS.length - 1];
-  if (hallLabel.textContent !== hall.name) hallLabel.textContent = hall.name;
+  const name = hall.name();
+  if (hallLabel.textContent !== name) hallLabel.textContent = name;
 }
 
 const timer = new THREE.Timer();
@@ -290,6 +292,7 @@ renderer.setAnimationLoop((now: number) => {
   perf?.update();
 });
 
+bindLangSelector(document.getElementById("lang") as HTMLElement);
 bindFullscreen(document.getElementById("fullscreen") as HTMLButtonElement);
 const updateCredits = bindCredits(document.getElementById("credits") as HTMLElement);
 

@@ -1,4 +1,6 @@
 import * as THREE from "three";
+import { hallNames } from "./data";
+import { lang, onLangChange, type Localized } from "./i18n";
 
 // Builds the gray-box museum architecture: floor, walls, partial partitions,
 // pedestals, and the "museum at night" lighting (warm spotlights + low ambient).
@@ -307,6 +309,30 @@ function makeSignTexture(kicker: string, title: string): THREE.CanvasTexture {
 
 const plaques: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial>[] = [];
 
+// Text painted on canvases (hall signs, nameplates) is repainted when the
+// language changes, swapping in a fresh texture.
+const relabels: (() => void)[] = [];
+onLangChange(() => {
+  for (const relabel of relabels) relabel();
+});
+
+function paintedMap<M extends THREE.MeshBasicMaterial | THREE.MeshStandardMaterial>(material: M, paint: () => THREE.CanvasTexture): M {
+  material.map = paint();
+  relabels.push(() => {
+    material.map?.dispose();
+    material.map = paint();
+  });
+  return material;
+}
+
+// "Sala II · Vuelo y espacio" -> kicker "Sala II", title "Vuelo y espacio".
+function hallSign(hall: string) {
+  return () => {
+    const [kicker, title] = hallNames(hall)[lang()].split(" · ");
+    return makeSignTexture(kicker, title);
+  };
+}
+
 // How much room the orbit camera has around a point before it would reach a
 // wall or a hall partition. The old flat 4.8 m cap only knew about the side
 // walls, so orbiting a piece parked near a partition went straight through it.
@@ -321,10 +347,7 @@ function addHallSigns(scene: THREE.Scene) {
 
   const hanging = new THREE.Mesh(
     new THREE.PlaneGeometry(3.4, 1.0),
-    new THREE.MeshBasicMaterial({
-      map: makeSignTexture("Sala I", "Paleontología"),
-      transparent: true,
-    }),
+    paintedMap(new THREE.MeshBasicMaterial({ transparent: true }), hallSign("paleo")),
   );
   hanging.position.set(0, 3.0, 2.9);
   scene.add(hanging);
@@ -336,17 +359,14 @@ function addHallSigns(scene: THREE.Scene) {
   }
 
   const doorwaySigns = [
-    { kicker: "Sala II", title: "Vuelo y espacio", z: -17.2 },
-    { kicker: "Sala III", title: "Civilizaciones antiguas", z: -35.7 },
+    { hall: "flight", z: -17.2 },
+    { hall: "ancient", z: -35.7 },
   ];
   for (const sign of doorwaySigns) {
     for (const x of [-4.2, 4.2]) {
       const panel = new THREE.Mesh(
         new THREE.PlaneGeometry(2.5, 0.74),
-        new THREE.MeshBasicMaterial({
-          map: makeSignTexture(sign.kicker, sign.title),
-          transparent: true,
-        }),
+        paintedMap(new THREE.MeshBasicMaterial({ transparent: true }), hallSign(sign.hall)),
       );
       panel.position.set(x, 2.4, sign.z);
       scene.add(panel);
@@ -399,15 +419,14 @@ function makePlateTexture(text: string): THREE.CanvasTexture {
   return texture;
 }
 
-export function addNamePlate(scene: THREE.Scene, name: string, pedestal: Pedestal) {
+export function addNamePlate(scene: THREE.Scene, names: Localized<string>, pedestal: Pedestal) {
   const wide = pedestal.width > 2;
   const plate = new THREE.Mesh(
     new THREE.PlaneGeometry(wide ? 0.9 : 0.55, wide ? 0.22 : 0.14),
-    new THREE.MeshStandardMaterial({
-      map: makePlateTexture(name),
-      roughness: 0.35,
-      metalness: 0.55,
-    }),
+    paintedMap(
+      new THREE.MeshStandardMaterial({ roughness: 0.35, metalness: 0.55 }),
+      () => makePlateTexture(names[lang()]),
+    ),
   );
 
   // Lean the plate on the top edge that faces the walking aisle.

@@ -3,6 +3,7 @@ import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import type { Rail } from "./rail";
 import type { PieceInfo } from "./data";
 import { clearance } from "./stage";
+import { lang, onLangChange, t } from "./i18n";
 
 // Exhibited pieces and the tour state machine:
 // rail <-> (animated camera flight) <-> exhibit with free orbit.
@@ -81,6 +82,7 @@ export class Exhibits {
   state: TourState = "rail";
   private pieces: Piece[] = [];
   private hovered: Piece | null = null;
+  private shown: Piece | null = null;
   private raycaster = new THREE.Raycaster();
   private lastPick = 0;
   private pointer = new THREE.Vector2();
@@ -118,6 +120,10 @@ export class Exhibits {
     });
     (document.getElementById("panelClose") as HTMLElement).onclick = () => void this.exit();
     this.panelToggle.onclick = () => this.foldPanel(!this.panel.classList.contains("collapsed"));
+    onLangChange(() => {
+      if (this.shown) this.fillPanel(this.shown);
+      this.foldPanel(this.panel.classList.contains("collapsed"));
+    });
     addEventListener("keydown", (e) => {
       if (e.key === "Escape" && this.state === "exhibit") void this.exit();
     });
@@ -201,9 +207,7 @@ export class Exhibits {
     this.controls.enabled = true;
     this.state = "exhibit";
 
-    this.panelSpecies.textContent = piece.info.species;
-    this.panelName.textContent = piece.info.name;
-    this.panelFacts.innerHTML = piece.info.facts.map((f) => `<li>${f}</li>`).join("");
+    this.fillPanel(piece);
     this.panel.classList.remove("closing", "open");
     this.foldPanel(this.compact.matches);
     this.panel.classList.toggle("low", !piece.info.labelTop);
@@ -212,10 +216,18 @@ export class Exhibits {
     this.panel.classList.add("open");
   }
 
+  private fillPanel(piece: Piece) {
+    this.shown = piece;
+    const text = piece.info.text[lang()];
+    this.panelSpecies.textContent = text.species;
+    this.panelName.textContent = text.name;
+    this.panelFacts.innerHTML = text.facts.map((f) => `<li>${f}</li>`).join("");
+  }
+
   private foldPanel(folded: boolean) {
     this.panel.classList.toggle("collapsed", folded);
     this.panelToggle.setAttribute("aria-expanded", String(!folded));
-    this.panelToggle.textContent = folded ? "Ver ficha" : "Ocultar ficha";
+    this.panelToggle.textContent = t(folded ? "showFacts" : "hideFacts");
   }
 
   // Zoom for the on-screen buttons: scales the camera-to-target distance

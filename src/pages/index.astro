@@ -28,16 +28,22 @@ import "../museum/styles.css";
     <header id="hud">
       <div class="brand">
         <span class="dot"></span>
-        <strong>Museo</strong>
+        <strong data-i18n="brand">Museo</strong>
         <span class="hall" id="hudHall">Vestíbulo</span>
       </div>
-      <button class="hudBtn" id="fullscreen" type="button" aria-label="Pantalla completa" aria-pressed="false" data-state="off">
-        <svg class="iconEnter" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" /></svg>
-        <svg class="iconExit" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5" /></svg>
-      </button>
+      <div class="hudRight">
+        <div class="langSwitch" id="lang" role="group" aria-label="Idioma" data-i18n-aria="langLabel">
+          <button type="button" data-lang="es" aria-pressed="true">ES</button>
+          <button type="button" data-lang="en" aria-pressed="false">EN</button>
+        </div>
+        <button class="hudBtn" id="fullscreen" type="button" aria-label="Pantalla completa" aria-pressed="false" data-state="off">
+          <svg class="iconEnter" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" /></svg>
+          <svg class="iconExit" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5" /></svg>
+        </button>
+      </div>
     </header>
 
-    <p id="hint">Desplázate para recorrer · clic en una pieza para acercarte</p>
+    <p id="hint" data-i18n="hint">Desplázate para recorrer · clic en una pieza para acercarte</p>
 
     <aside id="panel" hidden>
       <header>
@@ -47,27 +53,27 @@ import "../museum/styles.css";
       <ul id="panelFacts"></ul>
       <div class="panelActions">
         <button id="panelToggle" type="button" aria-controls="panelFacts" aria-expanded="true">Ocultar ficha</button>
-        <button id="panelClose" type="button">← Volver<span class="long"> al recorrido</span></button>
+        <button id="panelClose" type="button"><span data-i18n="back">← Volver</span><span class="long" data-i18n="backLong"> al recorrido</span></button>
       </div>
     </aside>
 
-    <aside id="credits" aria-label="Autoría" aria-hidden="true">
-      <p class="kicker">Desarrollado por</p>
+    <aside id="credits" aria-label="Autoría" data-i18n-aria="authorship" aria-hidden="true">
+      <p class="kicker" data-i18n="developedBy">Desarrollado por</p>
       <p class="author">Jhon Rivero</p>
       <p class="links">
         <a href="https://github.com/JhonRiv21/Museum" target="_blank" rel="noopener">GitHub <span aria-hidden="true">↗</span></a>
-        <a href="https://jhon.riverogz.com/" target="_blank" rel="noopener">Portafolio <span aria-hidden="true">↗</span></a>
+        <a href="https://jhon.riverogz.com/" target="_blank" rel="noopener"><span data-i18n="portfolio">Portafolio</span> <span aria-hidden="true">↗</span></a>
       </p>
     </aside>
 
-    <nav id="nav" aria-label="Controles de navegación">
+    <nav id="nav" aria-label="Controles de navegación" data-i18n-aria="navLabel">
       <div id="railNav">
-        <button class="navBtn" id="navForward" type="button" aria-label="Avanzar por el recorrido">▲</button>
-        <button class="navBtn" id="navBack" type="button" aria-label="Retroceder por el recorrido">▼</button>
+        <button class="navBtn" id="navForward" type="button" aria-label="Avanzar por el recorrido" data-i18n-aria="forward">▲</button>
+        <button class="navBtn" id="navBack" type="button" aria-label="Retroceder por el recorrido" data-i18n-aria="backward">▼</button>
       </div>
       <div id="zoomNav" hidden>
-        <button class="navBtn" id="navZoomIn" type="button" aria-label="Acercar">+</button>
-        <button class="navBtn" id="navZoomOut" type="button" aria-label="Alejar">−</button>
+        <button class="navBtn" id="navZoomIn" type="button" aria-label="Acercar" data-i18n-aria="zoomIn">+</button>
+        <button class="navBtn" id="navZoomOut" type="button" aria-label="Alejar" data-i18n-aria="zoomOut">−</button>
       </div>
     </nav>
 

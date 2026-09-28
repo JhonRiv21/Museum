@@ -25,6 +25,7 @@ Every exhibit is a scan of a real object — fossils from the Smithsonian, the A
 - **Static site.** Astro renders a single page; Three.js does everything else in the browser. No backend, no database, no cookies.
 - **Guided rail.** The camera follows a spline. Near each piece it slows down and turns toward it; the windows are measured in metres, so the pacing does not depend on hall length.
 - **Constant 30 fps.** The render loop is capped at 30 fps, snapped to whole display refreshes. A steady 30 looks smoother than a frame rate that alternates between 60 and 30, and it runs the same on laptops, phones and weak GPUs.
+- **Bilingual.** A Spanish / English switch in the top bar changes every text in place — interface, labels, hall signs and nameplates — mid-tour. The choice is remembered in the browser.
 - **Asset pipeline.** `assets/pieces.json` is the single source of truth: source, license, calibration and label text of every piece. `npm run assets` downloads the originals, optimizes them with `gltf-transform` (Draco geometry, WebP textures, simplification) and fails if a hall exceeds its weight budget. The whole museum ships in about 21 MB.
 
 ### Stack
@@ -81,6 +82,7 @@ Cada pieza es el escaneo de un objeto real — fósiles del Smithsonian, el mód
 - **Sitio estático.** Astro genera una sola página; Three.js hace todo lo demás en el navegador. Sin backend, sin base de datos, sin cookies.
 - **Riel guiado.** La cámara sigue una curva. Cerca de cada pieza frena y gira hacia ella; las ventanas se miden en metros, así que el ritmo no depende del largo de la sala.
 - **30 fps constantes.** El bucle de render está limitado a 30 fps, ajustado a refrescos completos de pantalla. Unos 30 estables se ven más fluidos que una tasa que alterna entre 60 y 30, y el recorrido se comporta igual en portátiles, celulares y GPUs modestas.
+- **Bilingüe.** Un selector español / inglés en la barra superior cambia todo el texto en el momento —interfaz, fichas, letreros de sala y placas— sin salir del recorrido. La elección queda guardada en el navegador.
 - **Pipeline de modelos.** `assets/pieces.json` es la única fuente de verdad: origen, licencia, calibración y texto de la ficha de cada pieza. `npm run assets` descarga los originales, los optimiza con `gltf-transform` (geometría Draco, texturas WebP, simplificación) y falla si una sala supera su presupuesto de peso. El museo completo pesa unos 21 MB.
 
 ### Stack

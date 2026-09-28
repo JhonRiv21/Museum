@@ -60,6 +60,40 @@ html, body {
 
 .hall { color: var(--muted); font-size: 12px; }
 
+/* Narrow screens: the hall name gives way to the controls on the right. */
+.brand { min-width: 0; }
+.hall { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.hudRight { display: flex; align-items: center; gap: 8px; flex: none; }
+
+/* ES | EN pill, same material as the other HUD controls. */
+.langSwitch {
+  pointer-events: auto;
+  display: flex;
+  height: 40px;
+  padding: 4px;
+  gap: 2px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  backdrop-filter: blur(8px);
+}
+.langSwitch button {
+  min-width: 34px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  font: 600 12px/1 system-ui, sans-serif;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  transition: color 0.15s, background 0.15s;
+}
+.langSwitch button:hover { color: var(--text); }
+.langSwitch button[aria-pressed="true"] { color: var(--accent); background: rgba(232, 195, 122, 0.14); }
+.langSwitch button:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+
 /* Round HUD control, same material as the brand pill. The HUD itself lets
    clicks through to the scene, so the button has to opt back in. */
 .hudBtn {
